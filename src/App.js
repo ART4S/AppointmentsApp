@@ -1,7 +1,8 @@
 import styles from "./App.scss";
+import Home from "pages/Home";
 
 const App = () => {
-  return <div className="App">Hello</div>;
+  return <Home />;
 };
 
 export default App;
