@@ -1,5 +1,7 @@
 import React from "react";
 
+import { Link } from "react-router-dom";
+
 import { Box, Grid, Typography, makeStyles } from "@material-ui/core";
 
 import Header from "components/Header/Header";
@@ -15,15 +17,15 @@ import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg"
 const TITLE = "Домашняя";
 
 const NAVIGATION_ITEMS = [
-  { title: "Приёмы", Icon: AppointmentIcon },
-  { title: "События", Icon: StarIcon },
-  { title: "Оповещения", Icon: BroadcastIcon },
-  { title: "Сообщения", Icon: MessagesIcon },
-  { title: "Клиенты", Icon: ClientsIcon },
-  { title: "Сотрудники", Icon: EmployeesIcon },
+  { title: "Приёмы", Icon: AppointmentIcon, href: "/appointments" },
+  { title: "События", Icon: StarIcon, href: "/" },
+  { title: "Оповещения", Icon: BroadcastIcon, href: "/" },
+  { title: "Сообщения", Icon: MessagesIcon, href: "/" },
+  { title: "Клиенты", Icon: ClientsIcon, href: "/" },
+  { title: "Сотрудники", Icon: EmployeesIcon, href: "/" },
 ];
 
-const useStyles = makeStyles((theme) => ({
+const styles = (theme) => ({
   body: {
     display: "flex",
     justifyContent: "center",
@@ -54,25 +56,33 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     fill: theme.palette.primary.main,
   },
-}));
 
-const NavigationItem = (props) => {
-  const { title, Icon } = props;
+  link: {
+    color: "inherit",
+    textDecoration: "inherit",
+  },
+});
+
+const useStyles = makeStyles(styles);
+
+function NavigationItem({ title, Icon, href }) {
   const classes = useStyles();
 
   return (
-    <Box className={classes.navigationItem}>
-      <Icon className={classes.icon} />
-      <Typography variant="h5">{title}</Typography>
-    </Box>
+    <Link to={href} className={classes.link}>
+      <Box className={classes.navigationItem}>
+        <Icon className={classes.icon} />
+        <Typography variant="h5">{title}</Typography>
+      </Box>
+    </Link>
   );
-};
+}
 
-const NavigationPanel = () => {
+function NavigationPanel() {
   const classes = useStyles();
 
-  const items = NAVIGATION_ITEMS.map((item) => (
-    <Grid item key={item.title}>
+  const items = NAVIGATION_ITEMS.map((item, index) => (
+    <Grid key={index} item>
       <NavigationItem {...item} />
     </Grid>
   ));
@@ -84,9 +94,9 @@ const NavigationPanel = () => {
       </Grid>
     </Box>
   );
-};
+}
 
-const Home = () => {
+export default function Home() {
   const classes = useStyles();
 
   return (
@@ -98,6 +108,4 @@ const Home = () => {
       </Box>
     </Box>
   );
-};
-
-export default Home;
+}

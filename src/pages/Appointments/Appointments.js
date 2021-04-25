@@ -5,6 +5,7 @@ import { Box, Container, withStyles } from "@material-ui/core";
 import moment from "moment";
 
 import appointmentsListActions from "redux/appointments/list/actions";
+import appointmentStatusesActions from "redux/dictionaries/appointmentStatuses/actions";
 import { getAppointments, getFilter } from "redux/appointments/list/selectors";
 
 import Header from "components/Header/Header";
@@ -41,18 +42,21 @@ const columns = [
 ];
 
 class Appointments extends React.Component {
+  get actions() {
+    return this.props.actions;
+  }
+
   componentDidMount() {
-    this.props.actions.load();
+    this.actions.load();
+    this.actions.dictionaries.appointmentStatuses.load();
   }
 
   handleFilterChange = (name, value) => {
-    this.props.actions.setFilterValue(name, value);
+    this.actions.setFilterValue(name, value);
   };
 
   handleOnSearch = () => {
-    const { actions, filter } = this.props;
-
-    actions.load(filter);
+    this.actions.load(this.props.filter);
   };
 
   render() {
@@ -85,15 +89,24 @@ class Appointments extends React.Component {
   }
 }
 
-const mapState = (state) => ({
-  appointments: getAppointments(state),
-  filter: getFilter(state),
-});
+function mapState(state) {
+  return {
+    appointments: getAppointments(state),
+    filter: getFilter(state),
+  };
+}
 
-const mapDispatch = (dispatch) => ({
-  actions: {
-    ...bindActionCreators(appointmentsListActions, dispatch),
-  },
-});
+function mapDispatch(dispatch) {
+  return {
+    actions: {
+      ...bindActionCreators(appointmentsListActions, dispatch),
+      dictionaries: {
+        appointmentStatuses: {
+          ...bindActionCreators(appointmentStatusesActions, dispatch),
+        },
+      },
+    },
+  };
+}
 
 export default connect(mapState, mapDispatch)(withStyles(styles)(Appointments));

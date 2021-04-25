@@ -1,9 +1,9 @@
 import { createSelector } from "reselect";
 
-import converter from "utils/entitiesConverter";
+import { entitiesToArray } from "utils";
 
 export const getAppointments = (state) =>
-  converter.entitiesToArray(state.appointments.list.dataSource.entities);
+  entitiesToArray(state.appointments.list.dataSource.entities);
 
 export const getFilter = (state) =>
   state.appointments.list.dataSource.filter.toJS();

@@ -1,7 +1,10 @@
-import InitialState from "./initialState";
+import { Record } from "immutable";
+
 import listReducer from "./list/reducer";
 
-const initialState = new InitialState();
+const initialState = Record({
+  list: Record({})(),
+})();
 
 function reducer(state = initialState, action) {
   let nextState = state;

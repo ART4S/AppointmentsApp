@@ -43,7 +43,9 @@ function get(filter) {
       (!filter.startDate || item.date >= filter.startDate) &&
       (!filter.finishDate || item.date <= filter.finishDate) &&
       item.clientName.match(new RegExp(filter.clientName)) &&
-      (filter.onlyMe === "false" || item.holderName === "Иванов Иван Иванович")
+      (!filter.onlyMe ||
+        filter.onlyMe === "false" ||
+        item.holderName === "Иванов Иван Иванович")
   );
 }
 

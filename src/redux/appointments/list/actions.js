@@ -3,28 +3,28 @@ import appointmentService from "services/appointmentService";
 import ACTION_TYPES from "./actionTypes";
 
 const {
-  APPOINTMENTS_SET_FILTER_VALUE,
-  APPOINTMENTS_DATA_LOADING_STARTED,
-  APPOINTMENTS_DATA_LOADING_SUCCESS,
-  APPOINTMENTS_DATA_LOADING_FAIL,
+  APPOINTMENTS_FILTER_SET_VALUE,
+  APPOINTMENTS_DATA_LOAD,
+  APPOINTMENTS_DATA_LOAD_SUCCEEDED,
+  APPOINTMENTS_DATA_LOAD_FAILED,
 } = ACTION_TYPES;
 
 const setFilterValue = (name, value) => ({
-  type: APPOINTMENTS_SET_FILTER_VALUE,
+  type: APPOINTMENTS_FILTER_SET_VALUE,
   payload: { name, value },
 });
 
 const loadStarted = () => ({
-  type: APPOINTMENTS_DATA_LOADING_STARTED,
+  type: APPOINTMENTS_DATA_LOAD,
 });
 
-const loadSuccess = (data) => ({
-  type: APPOINTMENTS_DATA_LOADING_SUCCESS,
+const loadSucceeded = (data) => ({
+  type: APPOINTMENTS_DATA_LOAD_SUCCEEDED,
   payload: data,
 });
 
-const loadFail = (error) => ({
-  type: APPOINTMENTS_DATA_LOADING_FAIL,
+const loadFailed = (error) => ({
+  type: APPOINTMENTS_DATA_LOAD_FAILED,
   payload: error,
 });
 
@@ -32,10 +32,8 @@ const load = (filter) => async (dispatch) => {
   dispatch(loadStarted());
   return appointmentService
     .getAll(filter)
-    .then((data) => dispatch(loadSuccess(data)))
-    .catch((error) => dispatch(loadFail(error.message)));
+    .then((data) => dispatch(loadSucceeded(data)))
+    .catch((error) => dispatch(loadFailed(error.message)));
 };
 
-const actions = { setFilterValue, load };
-
-export default actions;
+export default { setFilterValue, load };

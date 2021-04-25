@@ -32,9 +32,7 @@ const TableRow = withStyles((theme) => ({
   },
 }))(MuiTableRow);
 
-const Table = (props) => {
-  const { columns, rows } = props;
-
+export default function Table({ columns, rows }) {
   const formatData = (row, column) => {
     const data = row[column.field];
     const formatter = column.formatter;
@@ -69,6 +67,4 @@ const Table = (props) => {
       </MuiTable>
     </TableContainer>
   );
-};
-
-export default Table;
+}

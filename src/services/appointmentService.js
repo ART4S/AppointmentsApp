@@ -4,8 +4,7 @@ class AppointmentService {
   getAll(filter) {
     return client
       .get("/appointments", filter)
-      .then((response) => response.data)
-      .catch((error) => []);
+      .then((response) => response.data);
   }
 }
 

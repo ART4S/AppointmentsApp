@@ -1,5 +1,8 @@
-import createConstants from "utils/createConstants";
-
-const LOADING_STATUSES = createConstants("idle", "loading", "success", "fail");
+const LOADING_STATUSES = {
+  idle: "idle",
+  loading: "loading",
+  success: "success",
+  fail: "fail",
+};
 
 export default LOADING_STATUSES;

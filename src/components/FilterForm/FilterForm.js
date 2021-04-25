@@ -1,16 +1,16 @@
 import { useSelector } from "react-redux";
-
-import { getFilter } from "redux/appointments/list/selectors";
-
 import {
+  Select,
   TextField,
   IconButton,
   FormControlLabel,
   Checkbox,
   makeStyles,
 } from "@material-ui/core";
-
 import SearchIcon from "@material-ui/icons/Search";
+
+import { getAppointmentStatuses } from "redux/dictionaries/appointmentStatuses/selectors";
+import { getFilter } from "redux/appointments/list/selectors";
 
 const useStyle = makeStyles((theme) => ({
   form: {
@@ -22,8 +22,12 @@ const useStyle = makeStyles((theme) => ({
   },
 }));
 
-const FilterForm = ({ onFilterChange, onSearch }) => {
-  const { startDate, finishDate, clientName, onlyMe } = useSelector(getFilter);
+export default function FilterForm({ onFilterChange, onSearch }) {
+  const { startDate, finishDate, clientName, onlyMe, statusId } = useSelector(
+    getFilter
+  );
+  
+  const { appointmentStatuses } = useSelector(getAppointmentStatuses);
 
   const classes = useStyle();
 
@@ -85,11 +89,23 @@ const FilterForm = ({ onFilterChange, onSearch }) => {
         label="Только я"
       />
 
+      <FormControl>
+        <InputLabel id="statusId-label">Age</InputLabel>
+        <Select
+          id="statusId"
+          labelId="statusId-label"
+          value={age}
+          onChange={handleChange}
+        >
+          <MenuItem value={10}>Ten</MenuItem>
+          <MenuItem value={20}>Twenty</MenuItem>
+          <MenuItem value={30}>Thirty</MenuItem>
+        </Select>
+      </FormControl>
+
       <IconButton color="default" onClick={onSearch}>
         <SearchIcon />
       </IconButton>
     </form>
   );
-};
-
-export default FilterForm;
+}

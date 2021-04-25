@@ -1,48 +1,65 @@
-import InitialState from "./initialState";
+import { Record } from "immutable";
 
-import converter from "utils/entitiesConverter";
+import { arrayToEntities } from "utils";
 
-import ACTION_TYPES from "./actionTypes";
 import LOADING_STATUSES from "constants/loadingStatuses";
+import ACTION_TYPES from "./actionTypes";
+
+const InitialState = Record({
+  status: LOADING_STATUSES.idle,
+  error: null,
+
+  dataSource: Record({
+    entities: Record({})(),
+
+    filter: Record({
+      startDate: null,
+      finishDate: null,
+      clientName: "",
+      onlyMe: false,
+      statusId: null,
+    })(),
+  })(),
+});
 
 const {
-  APPOINTMENTS_SET_FILTER_VALUE,
-  APPOINTMENTS_DATA_LOADING_STARTED,
-  APPOINTMENTS_DATA_LOADING_SUCCESS,
-  APPOINTMENTS_DATA_LOADING_FAIL,
+  APPOINTMENTS_FILTER_SET_VALUE,
+  APPOINTMENTS_DATA_LOAD,
+  APPOINTMENTS_DATA_LOAD_SUCCEEDED,
+  APPOINTMENTS_DATA_LOAD_FAILED,
 } = ACTION_TYPES;
 
-const setFilterValue = (state, { name, value }) =>
-  state.setIn(["dataSource", "filter", name], value);
-
-const loadStarted = (state) =>
-  state.setIn(["status"], LOADING_STATUSES.loading);
-
-const loadSuccess = (state, data) =>
-  state.setIn(["status"], LOADING_STATUSES.success).setIn(
-    ["dataSource", "entities"],
-    converter.arrayToEntities(data, (x) => x.id)
-  );
-
-const loadFail = (state, error) =>
-  state.setIn(["status"], LOADING_STATUSES.fail).setIn(["error"], error);
-
-const initialState = new InitialState();
-
-function reducer(state = initialState, action) {
+function reducer(state, action) {
   if (!(state instanceof InitialState)) {
-    return initialState;
+    return new InitialState();
   }
 
   switch (action.type) {
-    case APPOINTMENTS_SET_FILTER_VALUE:
-      return setFilterValue(state, action.payload);
-    case APPOINTMENTS_DATA_LOADING_STARTED:
-      return loadStarted(state);
-    case APPOINTMENTS_DATA_LOADING_SUCCESS:
-      return loadSuccess(state, action.payload);
-    case APPOINTMENTS_DATA_LOADING_FAIL:
-      return loadFail(state, action.payload);
+    case APPOINTMENTS_FILTER_SET_VALUE: {
+      const { name, value } = action.payload;
+      return state.setIn(["dataSource", "filter", name], value);
+    }
+
+    case APPOINTMENTS_DATA_LOAD:
+      return state.setIn(["status"], LOADING_STATUSES.loading);
+
+    case APPOINTMENTS_DATA_LOAD_SUCCEEDED: {
+      const data = action.payload;
+
+      return state.setIn(["status"], LOADING_STATUSES.success).setIn(
+        ["dataSource", "entities"],
+        arrayToEntities(data, (x) => x.id)
+      );
+    }
+
+    case APPOINTMENTS_DATA_LOAD_FAILED: {
+      const error = action.payload;
+
+      return state
+        .setIn(["status"], LOADING_STATUSES.fail)
+        .setIn(["error"], error);
+    }
+
     default:
       return state;
   }
