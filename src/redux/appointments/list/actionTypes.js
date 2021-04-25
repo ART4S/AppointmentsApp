@@ -1,0 +1,10 @@
+import createConstants from "utils/createConstants";
+
+const ACTION_TYPES = createConstants(
+  "APPOINTMENTS_SET_FILTER_VALUE",
+  "APPOINTMENTS_DATA_LOADING_STARTED",
+  "APPOINTMENTS_DATA_LOADING_SUCCESS",
+  "APPOINTMENTS_DATA_LOADING_FAIL"
+);
+
+export default ACTION_TYPES;

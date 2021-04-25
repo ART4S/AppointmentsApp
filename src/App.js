@@ -1,9 +1,18 @@
+import { Provider } from "react-redux";
+
+import store from "redux/store";
+
 import Home from "pages/Home/Home";
 
-import "./App.scss";
+import Appointments from "pages/Appointments/Appointments";
 
 const App = () => {
-  return <Home />;
+  return (
+    <Provider store={store}>
+      {/* <Home /> */}
+      <Appointments />
+    </Provider>
+  );
 };
 
 export default App;

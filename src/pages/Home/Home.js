@@ -28,11 +28,13 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    border: "2px dashed",
+    height: "100vh",
   },
 
   navigationPanel: {
-    width: "fit-content",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   navigationItem: {
@@ -66,21 +68,21 @@ const NavigationItem = (props) => {
   );
 };
 
-const NavigationPanel = (props) => {
+const NavigationPanel = () => {
   const classes = useStyles();
 
   const items = NAVIGATION_ITEMS.map((item) => (
-    <Grid item xs={4} key={item.title}>
+    <Grid item key={item.title}>
       <NavigationItem {...item} />
     </Grid>
   ));
 
   return (
-    <div className={classes.navigationPanel}>
-      <Grid container spacing={1}>
+    <Box className={classes.navigationPanel}>
+      <Grid container spacing={1} xs={8} justify="center">
         {items}
       </Grid>
-    </div>
+    </Box>
   );
 };
 
