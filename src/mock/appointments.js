@@ -37,30 +37,14 @@ const appointments = [
   },
 ];
 
-function applyFilter(item, filter) {
-  if (filter.startDate && item.date < filter.startDate) {
-    return false;
-  }
-
-  if (filter.finishDate && item.date > filter.finishDate) {
-    return false;
-  }
-
-  const reg = new RegExp(filter.clientName);
-
-  if (!item.clientName.match(reg)) {
-    return false;
-  }
-
-  if (filter.onlyMe === "true" && item.holderName !== "Иванов Иван Иванович") {
-    return false;
-  }
-
-  return true;
-}
-
 function get(filter) {
-  return appointments.filter((item) => applyFilter(item, filter));
+  return appointments.filter(
+    (item) =>
+      (!filter.startDate || item.date >= filter.startDate) &&
+      (!filter.finishDate || item.date <= filter.finishDate) &&
+      item.clientName.match(new RegExp(filter.clientName)) &&
+      (filter.onlyMe === "false" || item.holderName === "Иванов Иван Иванович")
+  );
 }
 
 export default { get };
