@@ -1,52 +1,60 @@
-const appointments = [
-  {
-    id: 0,
-    date: "2011-10-10T00:00:00",
-    clientName: "Должанский Николай Сергеевич",
-    status: "Завершён",
-    holderName: "Иванов Иван Иванович",
-    compliences: "Боль в правом ухе",
-    diagnosis: "Застужено правое ухо",
-  },
-  {
-    id: 1,
-    date: "2012-10-10T00:00:01",
-    clientName: "Петров Пётр Генадьевич",
-    status: "Завершён",
-    holderName: "Иванов Иван Иванович",
-    compliences: "Боль в горле",
-    diagnosis: "Ангина",
-  },
-  {
-    id: 2,
-    date: "2013-10-10T00:00:00",
-    clientName: "Буйкевич Галина Петровна",
-    status: "Завершён",
-    holderName: "Нестеров Валерий Викторович",
-    compliences: "Головные боли",
-    diagnosis: "Мигрень",
-  },
-  {
-    id: 3,
-    date: "2014-10-10T00:00:00",
-    clientName: "Астафьева Ирина Михайловна",
-    status: "Завершён",
-    holderName: "Сидоров Генадий Павлович",
-    compliences: "Тошнота",
-    diagnosis: "Ротавирус",
-  },
+import faker from "faker";
+
+import appointmentStatuses from "./dictionaries/appointmentStatuses";
+import pickFrom from "utils/pickFrom";
+
+const appointments = [];
+
+const nameTemplate = "{{name.firstName}} {{name.middleName}} {{name.lastName}}";
+
+const holders = [
+  faker.fake(nameTemplate),
+  faker.fake(nameTemplate),
+  faker.fake(nameTemplate),
 ];
 
-function get(filter) {
-  return appointments.filter(
-    (item) =>
-      (!filter.startDate || item.date >= filter.startDate) &&
-      (!filter.finishDate || item.date <= filter.finishDate) &&
-      item.clientName.match(new RegExp(filter.clientName)) &&
-      (!filter.onlyMe ||
-        filter.onlyMe === "false" ||
-        item.holderName === "Иванов Иван Иванович")
-  );
+const compliences = [
+  "Боль в правом ухе",
+  "Боль в горле",
+  "Головные боли",
+  "Тошнота",
+  "Ротавирус",
+];
+
+const diagnosis = ["Застужено правое ухо", "Ангина", "Мигрень"];
+
+function getAll(filter) {
+  if (!appointments.length) {
+    const statuses = appointmentStatuses.getAll();
+
+    for (let i = 0; i < 100; i++) {
+      const status = pickFrom(statuses);
+
+      appointments.push({
+        id: i,
+        date: faker.date.recent(),
+        clientName: faker.fake(nameTemplate),
+        statusId: status.id,
+        status: status.name,
+        holderName: pickFrom(holders),
+        compliences: pickFrom(compliences),
+        diagnosis: pickFrom(diagnosis),
+      });
+    }
+  }
+
+  return appointments
+    .filter(
+      (item) =>
+        (!filter.startDate || item.date >= filter.startDate) &&
+        (!filter.finishDate || item.date <= filter.finishDate) &&
+        item.clientName.match(new RegExp(filter.clientName)) &&
+        (!filter.onlyMe ||
+          filter.onlyMe === "false" ||
+          item.holderName === holders[0]) &&
+        (isNaN(parseInt(filter.statusId)) || filter.statusId == item.statusId)
+    )
+    .slice(filter.skip, filter.take);
 }
 
-export default { get };
+export default { getAll };

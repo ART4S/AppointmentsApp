@@ -1,4 +1,2 @@
-import { entitiesToArray } from "utils";
-
 export const getAppointmentStatuses = (state) =>
-  entitiesToArray(state.dictionaries.appointmentStatuses);
+  state.dictionaries.appointmentStatuses.dataSource.entities;

@@ -2,7 +2,8 @@ import { Record } from "immutable";
 
 import ACTION_TYPES from "./actionTypes";
 import LOADING_STATUSES from "constants/loadingStatuses";
-import { arrayToEntities } from "utils";
+
+import normalize from "utils/normalize";
 
 const InitialState = Record({
   status: LOADING_STATUSES.idle,
@@ -30,9 +31,9 @@ export default function reducer(state, action) {
     case APPOINTMENT_STATUSES_LOAD_SUCCEEDED: {
       const data = action.payload;
 
-      return state.setIn(["status"], LOADING_STATUSES.success).setIn(
+      return state.setIn(["status"], LOADING_STATUSES.idle).setIn(
         ["dataSource", "entities"],
-        arrayToEntities(data, (x) => x.id)
+        normalize(data, (x) => x.id)
       );
     }
 

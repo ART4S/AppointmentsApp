@@ -7,11 +7,11 @@ function server() {
   createServer({
     routes() {
       this.get("/api/appointments", (schema, request) =>
-        mockAppointments.get(request.queryParams)
+        mockAppointments.getAll(request.queryParams)
       );
 
       this.get("/api/dictionaries/appointmentStatuses", () =>
-        mockAppointmetStatuses.get()
+        mockAppointmetStatuses.getAll()
       );
     },
   });

@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
 import { Button, Box, Typography, makeStyles } from "@material-ui/core";
+import PropTypes from "prop-types";
 
 const CURRENT_USER = "Чулец Вячеслав Анатольевич";
 
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   header: {
     display: "flex",
     justifyContent: "space-around",
@@ -23,15 +24,13 @@ const styles = (theme) => ({
     color: "inherit",
     textDecoration: "inherit",
   },
-});
-
-const useStyles = makeStyles(styles);
+}));
 
 export default function Header({ title, Icon }) {
   const classes = useStyles();
 
   return (
-    <Box className={classes.header}>
+    <div className={classes.header}>
       <Link to="/home" className={classes.link}>
         <Box display="flex" justifyContent="center" alignItems="center">
           <Icon className={classes.icon} />
@@ -46,6 +45,11 @@ export default function Header({ title, Icon }) {
           Выйти
         </Button>
       </Box>
-    </Box>
+    </div>
   );
 }
+
+Header.propTypes = {
+  title: PropTypes.string.isRequired,
+  Icon: PropTypes.elementType.isRequired,
+};

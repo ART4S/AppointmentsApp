@@ -81,18 +81,16 @@ function NavigationItem({ title, Icon, href }) {
 function NavigationPanel() {
   const classes = useStyles();
 
-  const items = NAVIGATION_ITEMS.map((item, index) => (
-    <Grid key={index} item>
-      <NavigationItem {...item} />
-    </Grid>
-  ));
-
   return (
-    <Box className={classes.navigationPanel}>
-      <Grid container spacing={1} xs={8} justify="center">
-        {items}
+    <div className={classes.navigationPanel}>
+      <Grid container spacing={1} justify="center">
+        {NAVIGATION_ITEMS.map((item, index) => (
+          <Grid key={index} item>
+            <NavigationItem {...item} />
+          </Grid>
+        ))}
       </Grid>
-    </Box>
+    </div>
   );
 }
 
@@ -100,12 +98,12 @@ export default function Home() {
   const classes = useStyles();
 
   return (
-    <Box>
+    <div>
       <Header Icon={HouseIcon} title={TITLE} />
 
-      <Box className={classes.body}>
+      <div className={classes.body}>
         <NavigationPanel />
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }

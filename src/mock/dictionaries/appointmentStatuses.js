@@ -1,10 +1,10 @@
 const appointmentStatuses = [
-  { id: 0, title: "Завершён" },
-  { id: 1, title: "Ожидается" },
-  { id: 2, title: "Пропущен" },
-  { id: 3, title: "Отменён" },
-  { id: 4, title: "Перенесён" },
-  { id: 5, title: "Активен" },
+  { id: 0, name: "Завершён" },
+  { id: 1, name: "Ожидается" },
+  { id: 2, name: "Пропущен" },
+  { id: 3, name: "Отменён" },
+  { id: 4, name: "Перенесён" },
+  { id: 5, name: "Активен" },
 ];
 
-export default { get: () => appointmentStatuses };
+export default { getAll: () => appointmentStatuses };

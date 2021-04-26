@@ -33,11 +33,11 @@ const TableRow = withStyles((theme) => ({
 }))(MuiTableRow);
 
 export default function Table({ columns, rows }) {
-  const formatData = (row, column) => {
+  function formatData(row, column) {
     const data = row[column.field];
     const formatter = column.formatter;
     return formatter ? formatter(data) : data;
-  };
+  }
 
   return (
     <TableContainer component={Paper} style={{ overflowX: "auto" }}>
@@ -56,10 +56,12 @@ export default function Table({ columns, rows }) {
         </TableHead>
 
         <TableBody>
-          {rows.map((row) => (
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell>{formatData(row, column)}</TableCell>
+          {rows.map((row, rowIndex) => (
+            <TableRow key={rowIndex}>
+              {columns.map((column, columnIndex) => (
+                <TableCell key={columnIndex}>
+                  {formatData(row, column)}
+                </TableCell>
               ))}
             </TableRow>
           ))}

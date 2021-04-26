@@ -1,6 +1,6 @@
 import { Record } from "immutable";
 
-import { arrayToEntities } from "utils";
+import normalize from "utils/normalize";
 
 import LOADING_STATUSES from "constants/loadingStatuses";
 import ACTION_TYPES from "./actionTypes";
@@ -13,11 +13,11 @@ const InitialState = Record({
     entities: Record({})(),
 
     filter: Record({
-      startDate: null,
-      finishDate: null,
+      startDate: "",
+      finishDate: "",
       clientName: "",
       onlyMe: false,
-      statusId: null,
+      statusId: "",
     })(),
   })(),
 });
@@ -46,9 +46,9 @@ function reducer(state, action) {
     case APPOINTMENTS_DATA_LOAD_SUCCEEDED: {
       const data = action.payload;
 
-      return state.setIn(["status"], LOADING_STATUSES.success).setIn(
+      return state.setIn(["status"], LOADING_STATUSES.idle).setIn(
         ["dataSource", "entities"],
-        arrayToEntities(data, (x) => x.id)
+        normalize(data, (x) => x.id)
       );
     }
 

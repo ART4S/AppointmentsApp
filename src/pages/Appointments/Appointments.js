@@ -1,7 +1,6 @@
-import React from "react";
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
-import { Box, Container, withStyles } from "@material-ui/core";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { Box, Container, makeStyles } from "@material-ui/core";
 import moment from "moment";
 
 import appointmentsListActions from "redux/appointments/list/actions";
@@ -9,14 +8,17 @@ import appointmentStatusesActions from "redux/dictionaries/appointmentStatuses/a
 import { getAppointments, getFilter } from "redux/appointments/list/selectors";
 
 import Header from "components/Header/Header";
-import FilterForm from "components/FilterForm/FilterForm";
+import AppointmentsFilter from "components/AppointmentsFilter/AppointmentsFilter";
 import Table from "components/Table/Table";
 
 import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg";
 
+import useActions from "hooks/useActions";
+import useEntities from "hooks/useEntities";
+
 const TITLE = "Приемы";
 
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   root: {},
   body: {
     display: "flex",
@@ -26,7 +28,7 @@ const styles = (theme) => ({
     maxWidth: 800,
     margin: "auto",
   },
-});
+}));
 
 const columns = [
   {
@@ -41,72 +43,38 @@ const columns = [
   { field: "diagnosis", header: "Диагноз" },
 ];
 
-class Appointments extends React.Component {
-  get actions() {
-    return this.props.actions;
-  }
-
-  componentDidMount() {
-    this.actions.load();
-    this.actions.dictionaries.appointmentStatuses.load();
-  }
-
-  handleFilterChange = (name, value) => {
-    this.actions.setFilterValue(name, value);
+export default function Appointments() {
+  const classes = useStyles();
+  const actions = {
+    appointments: useActions(appointmentsListActions),
+    appointmentStatuses: useActions(appointmentStatusesActions),
   };
+  const appointments = useEntities(getAppointments);
 
-  handleOnSearch = () => {
-    this.actions.load(this.props.filter);
-  };
+  useEffect(() => {
+    actions.appointments.load();
+    actions.appointmentStatuses.load();
+  }, []);
 
-  render() {
-    const { classes, appointments } = this.props;
+  return (
+    <div className={classes.root}>
+      <Header title={TITLE} Icon={AppointmentIcon} />
 
-    return (
-      <Box className={classes.root}>
-        <Header title={TITLE} Icon={AppointmentIcon} />
+      <Container maxWidth="md">
+        <Box mt={5}>
+          <AppointmentsFilter />
+        </Box>
 
-        <Container maxWidth="md">
-          <Box mt={5}>
-            <FilterForm
-              onFilterChange={this.handleFilterChange}
-              onSearch={this.handleOnSearch}
-            />
-          </Box>
+        <Box mt={5}>
+          <Table columns={columns} rows={appointments} />
+        </Box>
+      </Container>
 
-          <Box mt={5}>
-            <Table columns={columns} rows={appointments} />
-          </Box>
-        </Container>
+      {/* <Box className={classes.body}>
+        <FilterForm onFilterChange={handleFilterChange} />
 
-        {/* <Box className={classes.body}>
-          <FilterForm onFilterChange={handleFilterChange} />
-  
-          <Table columns={columns} rows={data} />
-        </Box> */}
-      </Box>
-    );
-  }
+        <Table columns={columns} rows={data} />
+      </Box> */}
+    </div>
+  );
 }
-
-function mapState(state) {
-  return {
-    appointments: getAppointments(state),
-    filter: getFilter(state),
-  };
-}
-
-function mapDispatch(dispatch) {
-  return {
-    actions: {
-      ...bindActionCreators(appointmentsListActions, dispatch),
-      dictionaries: {
-        appointmentStatuses: {
-          ...bindActionCreators(appointmentStatusesActions, dispatch),
-        },
-      },
-    },
-  };
-}
-
-export default connect(mapState, mapDispatch)(withStyles(styles)(Appointments));
