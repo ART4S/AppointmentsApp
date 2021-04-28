@@ -1,25 +1,15 @@
 import faker from "faker";
 
-import appointmentStatuses from "./dictionaries/appointmentStatuses";
 import pickFrom from "utils/pickFrom";
+import appointmentStatuses from "./dictionaries/appointmentStatuses";
 
 const appointments = [];
 
 const nameTemplate = "{{name.firstName}} {{name.middleName}} {{name.lastName}}";
 
-const holders = [
-  faker.fake(nameTemplate),
-  faker.fake(nameTemplate),
-  faker.fake(nameTemplate),
-];
+const holders = [faker.fake(nameTemplate), faker.fake(nameTemplate), faker.fake(nameTemplate)];
 
-const compliences = [
-  "Боль в правом ухе",
-  "Боль в горле",
-  "Головные боли",
-  "Тошнота",
-  "Ротавирус",
-];
+const compliences = ["Боль в правом ухе", "Боль в горле", "Головные боли", "Тошнота", "Ротавирус"];
 
 const diagnosis = ["Застужено правое ухо", "Ангина", "Мигрень"];
 
@@ -49,10 +39,8 @@ function getAll(filter) {
         (!filter.startDate || item.date >= filter.startDate) &&
         (!filter.finishDate || item.date <= filter.finishDate) &&
         item.clientName.match(new RegExp(filter.clientName)) &&
-        (!filter.onlyMe ||
-          filter.onlyMe === "false" ||
-          item.holderName === holders[0]) &&
-        (isNaN(parseInt(filter.statusId)) || filter.statusId == item.statusId)
+        (!filter.onlyMe || filter.onlyMe === "false" || item.holderName === holders[0]) &&
+        (Number.isNaN(Number.parseInt(filter.statusId, 10)) || +filter.statusId === item.statusId),
     )
     .slice(filter.skip, filter.take);
 }

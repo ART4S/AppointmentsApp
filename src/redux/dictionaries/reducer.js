@@ -9,10 +9,7 @@ const initialState = Record({
 export default function reducer(state = initialState, action) {
   let nextState = state;
 
-  const appointmentStatuses = appointmentStatusesReducer(
-    state.appointmentStatuses,
-    action
-  );
+  const appointmentStatuses = appointmentStatusesReducer(state.appointmentStatuses, action);
 
   if (nextState.appointmentStatuses !== appointmentStatuses) {
     nextState = nextState.setIn(["appointmentStatuses"], appointmentStatuses);

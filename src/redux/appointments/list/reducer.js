@@ -48,16 +48,14 @@ function reducer(state, action) {
 
       return state.setIn(["status"], LOADING_STATUSES.idle).setIn(
         ["dataSource", "entities"],
-        normalize(data, (x) => x.id)
+        normalize(data, (x) => x.id),
       );
     }
 
     case APPOINTMENTS_DATA_LOAD_FAILED: {
       const error = action.payload;
 
-      return state
-        .setIn(["status"], LOADING_STATUSES.fail)
-        .setIn(["error"], error);
+      return state.setIn(["status"], LOADING_STATUSES.fail).setIn(["error"], error);
     }
 
     default:

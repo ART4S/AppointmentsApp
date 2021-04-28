@@ -18,7 +18,7 @@ const TableCell = withStyles((theme) => ({
   },
 }))(MuiTableCell);
 
-const TableHeaderCell = withStyles((theme) => ({
+const TableHeaderCell = withStyles(() => ({
   head: {
     fontSize: 18,
   },
@@ -35,7 +35,7 @@ const TableRow = withStyles((theme) => ({
 export default function Table({ columns, rows }) {
   function formatData(row, column) {
     const data = row[column.field];
-    const formatter = column.formatter;
+    const { formatter } = column;
     return formatter ? formatter(data) : data;
   }
 
@@ -44,11 +44,8 @@ export default function Table({ columns, rows }) {
       <MuiTable>
         <TableHead>
           <TableRow>
-            {columns.map((column, index) => (
-              <TableHeaderCell
-                key={index}
-                width={column.width ?? DEFAULT_COLUMN_WIDTH}
-              >
+            {columns.map((column) => (
+              <TableHeaderCell key={column.header} width={column.width ?? DEFAULT_COLUMN_WIDTH}>
                 {column.header}
               </TableHeaderCell>
             ))}
@@ -56,12 +53,10 @@ export default function Table({ columns, rows }) {
         </TableHead>
 
         <TableBody>
-          {rows.map((row, rowIndex) => (
-            <TableRow key={rowIndex}>
-              {columns.map((column, columnIndex) => (
-                <TableCell key={columnIndex}>
-                  {formatData(row, column)}
-                </TableCell>
+          {rows.map((row) => (
+            <TableRow key={row.id}>
+              {columns.map((column) => (
+                <TableCell key={column.header}>{formatData(row, column)}</TableCell>
               ))}
             </TableRow>
           ))}

@@ -1,4 +1,5 @@
 import axios from "axios";
+import ClientError from "errors/clientError";
 
 const httpClient = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
@@ -12,13 +13,6 @@ class Client {
     } catch (e) {
       throw new ClientError(e.message);
     }
-  }
-}
-
-class ClientError extends Error {
-  constructor(message) {
-    super();
-    this.message = message;
   }
 }
 

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
 
 import { Link } from "react-router-dom";
@@ -84,8 +85,8 @@ function NavigationPanel() {
   return (
     <div className={classes.navigationPanel}>
       <Grid container spacing={1} justify="center">
-        {NAVIGATION_ITEMS.map((item, index) => (
-          <Grid key={index} item>
+        {NAVIGATION_ITEMS.map((item) => (
+          <Grid key={item.title} item>
             <NavigationItem {...item} />
           </Grid>
         ))}

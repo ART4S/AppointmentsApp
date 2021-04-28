@@ -1,11 +1,10 @@
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
 import { Box, Container, makeStyles } from "@material-ui/core";
 import moment from "moment";
 
 import appointmentsListActions from "redux/appointments/list/actions";
 import appointmentStatusesActions from "redux/dictionaries/appointmentStatuses/actions";
-import { getAppointments, getFilter } from "redux/appointments/list/selectors";
+import { getAppointments } from "redux/appointments/list/selectors";
 
 import Header from "components/Header/Header";
 import AppointmentsFilter from "components/AppointmentsFilter/AppointmentsFilter";

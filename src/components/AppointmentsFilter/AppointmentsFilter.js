@@ -12,8 +12,6 @@ import {
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 
-import PropTypes from "prop-types";
-
 import { getAppointmentStatuses } from "redux/dictionaries/appointmentStatuses/selectors";
 import { getFilter } from "redux/appointments/list/selectors";
 
@@ -106,8 +104,8 @@ export default function AppointmentsFilter() {
         >
           <MenuItem key={-1} value="" />
 
-          {appointmentStatuses.map((status, index) => (
-            <MenuItem key={index} value={status.id}>
+          {appointmentStatuses.map((status) => (
+            <MenuItem key={status.id} value={status.id}>
               {status.name}
             </MenuItem>
           ))}
