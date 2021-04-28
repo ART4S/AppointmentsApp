@@ -7,26 +7,24 @@ const {
   APPOINTMENT_STATUSES_LOAD_FAILED,
 } = ACTION_TYPES;
 
-const loadStarted = () => ({
+export const loadStarted = () => ({
   type: APPOINTMENT_STATUSES_LOAD,
 });
 
-const loadSucceeded = (data) => ({
+export const loadSucceeded = (data) => ({
   type: APPOINTMENT_STATUSES_LOAD_SUCCEEDED,
   payload: data,
 });
 
-const loadFailed = (error) => ({
+export const loadFailed = (error) => ({
   type: APPOINTMENT_STATUSES_LOAD_FAILED,
   payload: error,
 });
 
-const load = () => (dispatch) => {
+export const load = () => (dispatch) => {
   dispatch(loadStarted());
   return appointmentStatusService
     .getAll()
     .then((data) => dispatch(loadSucceeded(data)))
     .catch((error) => dispatch(loadFailed(error)));
 };
-
-export default { load };

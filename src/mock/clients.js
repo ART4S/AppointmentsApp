@@ -1,20 +1,20 @@
 import faker from "faker";
 
-const users = [];
+const clients = [];
 
 function getAll() {
-  if (!users.length) {
+  if (!clients.length) {
     for (let i = 0; i < 100; i++) {
-      users.push({
+      clients.push({
         id: faker.datatype.uuid(),
-        firstName: faker.name.findName(),
+        firstName: faker.name.firstName(),
         middleName: faker.name.middleName(),
         lastName: faker.name.lastName(),
       });
     }
   }
 
-  return users;
+  return clients;
 }
 
 export default { getAll };

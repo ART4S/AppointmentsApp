@@ -3,10 +3,12 @@ import { composeWithDevTools } from "redux-devtools-extension";
 
 import { thunkMiddleware } from "./middleware";
 
+import users from "./users/reducer";
 import appointments from "./appointments/reducer";
 import dictionaries from "./dictionaries/reducer";
 
 const reducer = combineReducers({
+  users,
   appointments,
   dictionaries,
 });

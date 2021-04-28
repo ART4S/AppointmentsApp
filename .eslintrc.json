@@ -38,6 +38,7 @@
     "operator-linebreak": "off",
     "object-curly-newline": "off",
     "no-plusplus": "off",
-    "no-unused-vars": "off"
+    "no-unused-vars": "off",
+    "linebreak-style": "off"
   }
 }

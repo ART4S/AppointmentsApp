@@ -2,8 +2,9 @@ import { useEffect } from "react";
 import { Box, Container, makeStyles } from "@material-ui/core";
 import moment from "moment";
 
-import appointmentsListActions from "redux/appointments/list/actions";
-import appointmentStatusesActions from "redux/dictionaries/appointmentStatuses/actions";
+import * as appointmentsListActions from "redux/appointments/list/actions";
+import * as appointmentStatusesActions from "redux/dictionaries/appointmentStatuses/actions";
+import * as userActions from "redux/users/actions";
 import { getAppointments } from "redux/appointments/list/selectors";
 
 import Header from "components/Header/Header";
@@ -47,12 +48,14 @@ export default function Appointments() {
   const actions = {
     appointments: useActions(appointmentsListActions),
     appointmentStatuses: useActions(appointmentStatusesActions),
+    users: useActions(userActions),
   };
   const appointments = useEntities(getAppointments);
 
   useEffect(() => {
     actions.appointments.load();
     actions.appointmentStatuses.load();
+    actions.users.load();
   }, []);
 
   return (

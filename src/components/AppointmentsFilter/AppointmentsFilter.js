@@ -14,11 +14,13 @@ import SearchIcon from "@material-ui/icons/Search";
 
 import { getAppointmentStatuses } from "redux/dictionaries/appointmentStatuses/selectors";
 import { getFilter } from "redux/appointments/list/selectors";
+import { getUsers } from "redux/users/selectors";
 
-import appointmentsActions from "redux/appointments/list/actions";
+import * as appointmentsActions from "redux/appointments/list/actions";
 
 import useActions from "hooks/useActions";
 import useEntities from "hooks/useEntities";
+import getFullName from "utils/getFullName";
 
 const useStyle = makeStyles((theme) => ({
   form: {
@@ -36,6 +38,7 @@ export default function AppointmentsFilter() {
   const classes = useStyle();
   const filter = useSelector(getFilter);
   const appointmentStatuses = useEntities(getAppointmentStatuses);
+  const users = useEntities(getUsers);
 
   function handleFieldChange(e) {
     const field = e.target.name;
@@ -92,7 +95,7 @@ export default function AppointmentsFilter() {
         label="Только я"
       />
 
-      <FormControl style={{ minWidth: 100 }}>
+      <FormControl>
         <InputLabel id="statusId-label">Статус</InputLabel>
 
         <Select
@@ -111,6 +114,33 @@ export default function AppointmentsFilter() {
           ))}
         </Select>
       </FormControl>
+
+      <FormControl>
+        <InputLabel id="holderId-label">Принимающий</InputLabel>
+
+        <Select
+          id="holderId-select"
+          name="holderId"
+          labelId="holderId-label"
+          value={filter.holderId}
+          onChange={handleFieldChange}
+        >
+          <MenuItem key={-1} value="" />
+
+          {users.map((user) => (
+            <MenuItem key={user.id} value={user.id}>
+              {getFullName(user)}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
+      <TextField
+        name="complaints"
+        label="Жалобы"
+        value={filter.complaints}
+        onChange={handleFieldChange}
+      />
 
       <IconButton color="default" onClick={handleOnSearch}>
         <SearchIcon />
