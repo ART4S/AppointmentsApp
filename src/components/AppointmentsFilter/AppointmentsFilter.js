@@ -11,6 +11,8 @@ import {
   MenuItem,
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
+import ClearIcon from "@material-ui/icons/Clear";
+import { Autocomplete } from "@material-ui/lab";
 
 import { getAppointmentStatuses } from "redux/dictionaries/appointmentStatuses/selectors";
 import { getFilter } from "redux/appointments/list/selectors";
@@ -21,6 +23,7 @@ import * as appointmentsActions from "redux/appointments/list/actions";
 import useActions from "hooks/useActions";
 import useEntities from "hooks/useEntities";
 import getFullName from "utils/getFullName";
+import { matchSorter } from "match-sorter";
 
 const useStyle = makeStyles((theme) => ({
   form: {
@@ -40,7 +43,7 @@ export default function AppointmentsFilter() {
   const appointmentStatuses = useEntities(getAppointmentStatuses);
   const users = useEntities(getUsers);
 
-  function handleFieldChange(e) {
+  function handleFilterFieldChange(e) {
     const field = e.target.name;
     const value =
       e.target.type === "checkbox" ? e.target.checked : e.target.value;
@@ -48,8 +51,16 @@ export default function AppointmentsFilter() {
     actions.setFilterValue(field, value);
   }
 
+  function handleHolderOnChange(event, holder) {
+    actions.setFilterValue("holderId", holder.id);
+  }
+
   function handleOnSearch() {
     actions.load(filter.toJS());
+  }
+
+  function handleOnClear() {
+    actions.clearFilter();
   }
 
   return (
@@ -59,7 +70,7 @@ export default function AppointmentsFilter() {
         label="С"
         type="date"
         value={filter.startDate}
-        onChange={handleFieldChange}
+        onChange={handleFilterFieldChange}
         InputLabelProps={{
           shrink: true,
         }}
@@ -70,7 +81,7 @@ export default function AppointmentsFilter() {
         label="По"
         type="date"
         value={filter.finishDate}
-        onChange={handleFieldChange}
+        onChange={handleFilterFieldChange}
         InputLabelProps={{
           shrink: true,
         }}
@@ -80,7 +91,7 @@ export default function AppointmentsFilter() {
         name="clientName"
         label="Клиент"
         value={filter.clientName}
-        onChange={handleFieldChange}
+        onChange={handleFilterFieldChange}
       />
 
       <FormControlLabel
@@ -88,7 +99,7 @@ export default function AppointmentsFilter() {
           <Checkbox
             name="onlyMe"
             checked={filter.onlyMe}
-            onChange={handleFieldChange}
+            onChange={handleFilterFieldChange}
             color="primary"
           />
         }
@@ -103,7 +114,7 @@ export default function AppointmentsFilter() {
           name="statusId"
           labelId="statusId-label"
           value={filter.statusId}
-          onChange={handleFieldChange}
+          onChange={handleFilterFieldChange}
         >
           <MenuItem key={-1} value="" />
 
@@ -115,35 +126,43 @@ export default function AppointmentsFilter() {
         </Select>
       </FormControl>
 
-      <FormControl>
-        <InputLabel id="holderId-label">Принимающий</InputLabel>
+      <Autocomplete
+        id="holderId"
+        filterOptions={(options, { inputValue }) =>
+          matchSorter(options, inputValue)
+        }
+        options={users.sort((firstUser, secondUser) => {
+          const first = firstUser.lastName && firstUser.lastName.charAt(0);
+          const second = secondUser.lastName && secondUser.lastName.charAt(0);
 
-        <Select
-          id="holderId-select"
-          name="holderId"
-          labelId="holderId-label"
-          value={filter.holderId}
-          onChange={handleFieldChange}
-        >
-          <MenuItem key={-1} value="" />
-
-          {users.map((user) => (
-            <MenuItem key={user.id} value={user.id}>
-              {getFullName(user)}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+          if (first > second) return 1;
+          if (first < second) return -1;
+          return 0;
+        })}
+        getOptionLabel={(option) => option && getFullName(option)}
+        style={{ minWidth: 200 }}
+        groupBy={(option) =>
+          option.lastName && option.lastName.charAt(0).toUpperCase()
+        }
+        onChange={handleHolderOnChange}
+        renderInput={(params) => (
+          <TextField {...params} name="holderId" label="Принимающий" />
+        )}
+      />
 
       <TextField
         name="complaints"
         label="Жалобы"
         value={filter.complaints}
-        onChange={handleFieldChange}
+        onChange={handleFilterFieldChange}
       />
 
       <IconButton color="default" onClick={handleOnSearch}>
         <SearchIcon />
+      </IconButton>
+
+      <IconButton color="default" onClick={handleOnClear}>
+        <ClearIcon />
       </IconButton>
     </form>
   );

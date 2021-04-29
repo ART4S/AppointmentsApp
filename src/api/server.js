@@ -11,9 +11,7 @@ function server() {
         mockAppointments.getAll(request.queryParams),
       );
 
-      this.get("/api/dictionaries/appointmentStatuses", () =>
-        mockAppointmetStatuses.getAll(),
-      );
+      this.get("/api/dictionaries/appointmentStatuses", () => mockAppointmetStatuses.getAll());
 
       this.get("/api/users", () => mockUsers.getAll());
     },

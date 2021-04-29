@@ -7,6 +7,7 @@ const {
   APPOINTMENTS_DATA_LOAD,
   APPOINTMENTS_DATA_LOAD_SUCCEEDED,
   APPOINTMENTS_DATA_LOAD_FAILED,
+  APPOINTMENTS_DATA_CLEAR_FILTER,
 } = ACTION_TYPES;
 
 export const setFilterValue = (name, value) => ({
@@ -35,3 +36,5 @@ export const load = (filter) => async (dispatch) => {
     .then((data) => dispatch(loadSucceeded(data)))
     .catch((error) => dispatch(loadFailed(error.message)));
 };
+
+export const clearFilter = () => ({ type: APPOINTMENTS_DATA_CLEAR_FILTER });

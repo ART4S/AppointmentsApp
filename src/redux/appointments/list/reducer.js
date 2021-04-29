@@ -1,4 +1,4 @@
-import { Record } from "immutable";
+import { Record, setIn } from "immutable";
 
 import normalize from "utils/normalize";
 
@@ -29,6 +29,7 @@ const {
   APPOINTMENTS_DATA_LOAD,
   APPOINTMENTS_DATA_LOAD_SUCCEEDED,
   APPOINTMENTS_DATA_LOAD_FAILED,
+  APPOINTMENTS_DATA_CLEAR_FILTER,
 } = ACTION_TYPES;
 
 function reducer(state, action) {
@@ -57,7 +58,15 @@ function reducer(state, action) {
     case APPOINTMENTS_DATA_LOAD_FAILED: {
       const error = action.payload;
 
-      return state.setIn(["status"], LOADING_STATUSES.fail).setIn(["error"], error);
+      return state
+        .setIn(["status"], LOADING_STATUSES.fail)
+        .setIn(["error"], error);
+    }
+
+    case APPOINTMENTS_DATA_CLEAR_FILTER: {
+      const filter = ["dataSource", "filter"];
+
+      return state.setIn(filter, state.getIn(filter).clear());
     }
 
     default:

@@ -34,9 +34,7 @@ export default function reducer(state, action) {
 
     case USERS_LOAD_FAILED: {
       const error = action.payload;
-      return state
-        .setIn(["status"], LOADING_STATUSES.fail)
-        .setIn(["error"], error);
+      return state.setIn(["status"], LOADING_STATUSES.fail).setIn(["error"], error);
     }
 
     default:
