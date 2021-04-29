@@ -51,8 +51,8 @@ export default function AppointmentsFilter() {
     actions.setFilterValue(field, value);
   }
 
-  function handleHolderOnChange(event, holder) {
-    actions.setFilterValue("holderId", holder.id);
+  function handleHolderChange(_, holder) {
+    actions.setFilterValue("holderId", holder?.id ?? "");
   }
 
   function handleOnSearch() {
@@ -128,25 +128,33 @@ export default function AppointmentsFilter() {
 
       <Autocomplete
         id="holderId"
+        onChange={handleHolderChange}
+        value={users.find((x) => x.id === filter.holderId) ?? ""}
         filterOptions={(options, { inputValue }) =>
           matchSorter(options, inputValue)
         }
         options={users.sort((firstUser, secondUser) => {
-          const first = firstUser.lastName && firstUser.lastName.charAt(0);
-          const second = secondUser.lastName && secondUser.lastName.charAt(0);
+          const first =
+            firstUser.lastName && firstUser.lastName.charAt(0).toUpperCase();
+          const second =
+            secondUser.lastName && secondUser.lastName.charAt(0).toUpperCase();
 
           if (first > second) return 1;
           if (first < second) return -1;
           return 0;
         })}
-        getOptionLabel={(option) => option && getFullName(option)}
+        getOptionLabel={(option) => getFullName(option)}
         style={{ minWidth: 200 }}
         groupBy={(option) =>
           option.lastName && option.lastName.charAt(0).toUpperCase()
         }
-        onChange={handleHolderOnChange}
         renderInput={(params) => (
-          <TextField {...params} name="holderId" label="Принимающий" />
+          <TextField
+            {...params}
+            name="holderId"
+            label="Принимающий"
+            fullWidth
+          />
         )}
       />
 

@@ -1,3 +1,8 @@
 export default function getFullName(user) {
-  return `${user.firstName} ${user.middleName} ${user.lastName}`;
+  let fullName = "";
+  if (!user) return fullName;
+  if (user.firstName) fullName += user.firstName;
+  if (user.middleName) fullName += ` ${user.middleName}`;
+  if (user.lastName) fullName += ` ${user.lastName}`;
+  return fullName.trim();
 }
