@@ -1,11 +1,7 @@
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Box, Container, makeStyles } from "@material-ui/core";
 import moment from "moment";
-
-import * as appointmentsListActions from "redux/appointments/list/actions";
-import * as appointmentStatusesActions from "redux/dictionaries/appointmentStatuses/actions";
-import * as userActions from "redux/users/actions";
-import { getAppointments } from "redux/appointments/list/selectors";
 
 import Header from "components/Header/Header";
 import AppointmentsFilter from "components/AppointmentsFilter/AppointmentsFilter";
@@ -14,7 +10,11 @@ import Table from "components/Table/Table";
 import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg";
 
 import useActions from "hooks/useActions";
-import useEntities from "hooks/useEntities";
+
+import {
+  appointmentsActions,
+  appointmentsSelectors,
+} from "./appointmentsSlice";
 
 const TITLE = "Приемы";
 
@@ -46,16 +46,12 @@ const columns = [
 export default function Appointments() {
   const classes = useStyles();
   const actions = {
-    appointments: useActions(appointmentsListActions),
-    appointmentStatuses: useActions(appointmentStatusesActions),
-    users: useActions(userActions),
+    appointments: useActions(appointmentsActions),
   };
-  const appointments = useEntities(getAppointments);
+  const appointments = useSelector(appointmentsSelectors.selectAll);
 
   useEffect(() => {
     actions.appointments.load();
-    actions.appointmentStatuses.load();
-    actions.users.load();
   }, []);
 
   return (

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
   FormControl,
@@ -14,14 +15,17 @@ import SearchIcon from "@material-ui/icons/Search";
 import ClearIcon from "@material-ui/icons/Clear";
 import { Autocomplete } from "@material-ui/lab";
 
-import { getAppointmentStatuses } from "redux/dictionaries/appointmentStatuses/selectors";
-import { getFilter } from "redux/appointments/list/selectors";
-import { getUsers } from "redux/users/selectors";
-
-import * as appointmentsActions from "redux/appointments/list/actions";
+import {
+  appointmentsActions,
+  appointmentsSelectors,
+} from "features/Appointments/appointmentsSlice";
+import { usersActions, usersSelectors } from "redux/slices/usersSlice";
+import {
+  appointmentStatusesActions,
+  appointmentStatusesSelectors,
+} from "redux/slices/appointmentStatusesSlice";
 
 import useActions from "hooks/useActions";
-import useEntities from "hooks/useEntities";
 import getFullName from "utils/getFullName";
 import { matchSorter } from "match-sorter";
 
@@ -37,30 +41,42 @@ const useStyle = makeStyles((theme) => ({
 }));
 
 export default function AppointmentsFilter() {
-  const actions = useActions(appointmentsActions);
+  const actions = {
+    appointments: useActions(appointmentsActions),
+    appointmentStatuses: useActions(appointmentStatusesActions),
+    users: useActions(usersActions),
+  };
   const classes = useStyle();
-  const filter = useSelector(getFilter);
-  const appointmentStatuses = useEntities(getAppointmentStatuses);
-  const users = useEntities(getUsers);
+  const filter = useSelector(appointmentsSelectors.selectFilter);
+  const appointmentStatuses = useSelector(appointmentStatusesSelectors.selectAll);
+  const users = useSelector(usersSelectors.selectAll);
+
+  useEffect(() => {
+    actions.users.load();
+    actions.appointmentStatuses.load();
+  }, []);
 
   function handleFilterFieldChange(e) {
-    const field = e.target.name;
-    const value =
-      e.target.type === "checkbox" ? e.target.checked : e.target.value;
+    const { name } = e.target;
+    const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
 
-    actions.setFilterValue(field, value);
+    actions.appointments.setFilterValue({ name, value });
   }
 
   function handleHolderChange(_, holder) {
-    actions.setFilterValue("holderId", holder?.id ?? "");
+    actions.appointments.setFilterValue({
+      name: "holderId",
+      value: holder?.id ?? "",
+    });
   }
 
   function handleOnSearch() {
-    actions.load(filter.toJS());
+    actions.appointments.load(filter);
   }
 
   function handleOnClear() {
-    actions.clearFilter();
+    actions.appointments.clearFilter();
+    actions.appointments.load();
   }
 
   return (
@@ -130,14 +146,10 @@ export default function AppointmentsFilter() {
         id="holderId"
         onChange={handleHolderChange}
         value={users.find((x) => x.id === filter.holderId) ?? ""}
-        filterOptions={(options, { inputValue }) =>
-          matchSorter(options, inputValue)
-        }
+        filterOptions={(options, { inputValue }) => matchSorter(options, inputValue)}
         options={users.sort((firstUser, secondUser) => {
-          const first =
-            firstUser.lastName && firstUser.lastName.charAt(0).toUpperCase();
-          const second =
-            secondUser.lastName && secondUser.lastName.charAt(0).toUpperCase();
+          const first = firstUser.lastName && firstUser.lastName.charAt(0).toUpperCase();
+          const second = secondUser.lastName && secondUser.lastName.charAt(0).toUpperCase();
 
           if (first > second) return 1;
           if (first < second) return -1;
@@ -145,16 +157,9 @@ export default function AppointmentsFilter() {
         })}
         getOptionLabel={(option) => getFullName(option)}
         style={{ minWidth: 200 }}
-        groupBy={(option) =>
-          option.lastName && option.lastName.charAt(0).toUpperCase()
-        }
+        groupBy={(option) => option.lastName && option.lastName.charAt(0).toUpperCase()}
         renderInput={(params) => (
-          <TextField
-            {...params}
-            name="holderId"
-            label="Принимающий"
-            fullWidth
-          />
+          <TextField {...params} name="holderId" label="Принимающий" fullWidth />
         )}
       />
 

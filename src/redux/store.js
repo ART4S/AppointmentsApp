@@ -1,20 +1,13 @@
-import { createStore, combineReducers, applyMiddleware } from "redux";
-import { composeWithDevTools } from "redux-devtools-extension";
+import { configureStore } from "@reduxjs/toolkit";
 
-import { thunkMiddleware } from "./middleware";
+import { appointmentsReducer } from "features/Appointments/appointmentsSlice";
+import { usersReducer } from "./slices/usersSlice";
+import { appointmentStatusesReducer } from "./slices/appointmentStatusesSlice";
 
-import users from "./users/reducer";
-import appointments from "./appointments/reducer";
-import dictionaries from "./dictionaries/reducer";
-
-const reducer = combineReducers({
-  users,
-  appointments,
-  dictionaries,
+export default configureStore({
+  reducer: {
+    appointments: appointmentsReducer,
+    appointmentStatuses: appointmentStatusesReducer,
+    users: usersReducer,
+  },
 });
-
-const enhancer = composeWithDevTools(applyMiddleware(thunkMiddleware));
-
-const store = createStore(reducer, enhancer);
-
-export default store;
