@@ -1,9 +1,14 @@
 import { Provider } from "react-redux";
-import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
 
 import store from "redux/store";
-import Home from "features/Home/Home";
-import Appointments from "features/Appointments/Appointments";
+import Home from "pages/Home/Home";
+import Appointments from "pages/Appointments/Appointments";
 
 export default function App() {
   return (

@@ -8,7 +8,13 @@ import clients from "./clients";
 
 const appointments = [];
 
-const compliences = ["Боль в правом ухе", "Боль в горле", "Головные боли", "Тошнота", "Ротавирус"];
+const compliences = [
+  "Боль в правом ухе",
+  "Боль в горле",
+  "Головные боли",
+  "Тошнота",
+  "Ротавирус",
+];
 
 const diagnosis = ["Застужено правое ухо", "Ангина", "Мигрень"];
 
@@ -40,9 +46,11 @@ function getAll(filter) {
         (!filter.startDate || item.date >= filter.startDate) &&
         (!filter.finishDate || item.date <= filter.finishDate) &&
         item.clientName.match(new RegExp(filter.clientName)) &&
-        (!filter.onlyMe || filter.onlyMe === "false" || item.holderName === users[0]) &&
-        (!filter.statusId || filter.statusId === item.statusId) &&
-        (!filter.holderId || filter.holderId === item.holderId) &&
+        (!filter.onlyMe ||
+          filter.onlyMe === "false" ||
+          item.holderName === users[0]) &&
+        (!filter.statusId || +filter.statusId === item.statusId) &&
+        (!filter.holderId || +filter.holderId === item.holderId) &&
         item.compliences.match(new RegExp(filter.compliences)),
     )
     .slice(filter.skip, filter.take);

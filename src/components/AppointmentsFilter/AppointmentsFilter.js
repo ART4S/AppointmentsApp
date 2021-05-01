@@ -16,13 +16,15 @@ import ClearIcon from "@material-ui/icons/Clear";
 import { Autocomplete } from "@material-ui/lab";
 
 import {
-  appointmentsActions,
-  appointmentsSelectors,
-} from "features/Appointments/appointmentsSlice";
-import { usersActions, usersSelectors } from "redux/slices/usersSlice";
+  selectFilter,
+  setFilterValue,
+  clearFilter,
+  loadAppointments,
+} from "pages/Appointments/appointmentsSlice";
+import { loadUsers, selectAllUsers } from "redux/slices/usersSlice";
 import {
-  appointmentStatusesActions,
-  appointmentStatusesSelectors,
+  loadAppointmentStatuses,
+  selectAllAppointmentStatuses,
 } from "redux/slices/appointmentStatusesSlice";
 
 import useActions from "hooks/useActions";
@@ -41,42 +43,45 @@ const useStyle = makeStyles((theme) => ({
 }));
 
 export default function AppointmentsFilter() {
-  const actions = {
-    appointments: useActions(appointmentsActions),
-    appointmentStatuses: useActions(appointmentStatusesActions),
-    users: useActions(usersActions),
-  };
+  const actions = useActions({
+    loadUsers,
+    loadAppointments,
+    loadAppointmentStatuses,
+    setFilterValue,
+    clearFilter,
+  });
   const classes = useStyle();
-  const filter = useSelector(appointmentsSelectors.selectFilter);
-  const appointmentStatuses = useSelector(appointmentStatusesSelectors.selectAll);
-  const users = useSelector(usersSelectors.selectAll);
+  const filter = useSelector(selectFilter);
+  const appointmentStatuses = useSelector(selectAllAppointmentStatuses);
+  const users = useSelector(selectAllUsers);
 
   useEffect(() => {
-    actions.users.load();
-    actions.appointmentStatuses.load();
+    actions.loadUsers();
+    actions.loadAppointmentStatuses();
   }, []);
 
   function handleFilterFieldChange(e) {
     const { name } = e.target;
-    const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
+    const value =
+      e.target.type === "checkbox" ? e.target.checked : e.target.value;
 
-    actions.appointments.setFilterValue({ name, value });
+    actions.setFilterValue({ name, value });
   }
 
   function handleHolderChange(_, holder) {
-    actions.appointments.setFilterValue({
+    actions.setFilterValue({
       name: "holderId",
       value: holder?.id ?? "",
     });
   }
 
   function handleOnSearch() {
-    actions.appointments.load(filter);
+    actions.loadAppointments(filter);
   }
 
   function handleOnClear() {
-    actions.appointments.clearFilter();
-    actions.appointments.load();
+    actions.clearFilter();
+    actions.loadAppointments();
   }
 
   return (
@@ -146,20 +151,38 @@ export default function AppointmentsFilter() {
         id="holderId"
         onChange={handleHolderChange}
         value={users.find((x) => x.id === filter.holderId) ?? ""}
-        filterOptions={(options, { inputValue }) => matchSorter(options, inputValue)}
-        options={users.sort((firstUser, secondUser) => {
-          const first = firstUser.lastName && firstUser.lastName.charAt(0).toUpperCase();
-          const second = secondUser.lastName && secondUser.lastName.charAt(0).toUpperCase();
+        filterOptions={(options, { inputValue }) =>
+          matchSorter(options, inputValue, {
+            keys: [
+              (item) => item.firstName,
+              (item) => item.middleName,
+              (item) => item.lastName,
+            ],
+          }).sort((firstUser, secondUser) => {
+            const first =
+              firstUser.lastName && firstUser.lastName.charAt(0).toUpperCase();
+            const second =
+              secondUser.lastName &&
+              secondUser.lastName.charAt(0).toUpperCase();
 
-          if (first > second) return 1;
-          if (first < second) return -1;
-          return 0;
-        })}
+            if (first > second) return 1;
+            if (first < second) return -1;
+            return 0;
+          })
+        }
+        options={users}
         getOptionLabel={(option) => getFullName(option)}
         style={{ minWidth: 200 }}
-        groupBy={(option) => option.lastName && option.lastName.charAt(0).toUpperCase()}
+        groupBy={(option) =>
+          option.lastName && option.lastName.charAt(0).toUpperCase()
+        }
         renderInput={(params) => (
-          <TextField {...params} name="holderId" label="Принимающий" fullWidth />
+          <TextField
+            {...params}
+            name="holderId"
+            label="Принимающий"
+            fullWidth
+          />
         )}
       />
 

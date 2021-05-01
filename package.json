@@ -73,7 +73,9 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
-    "lint": "prettier-eslint --write \"src/**/*.js\""
+    "prettier": "prettier --write \"src/**/*.js\"",
+    "lint": "eslint --fix \"src/**/*.js\"",
+    "format": "npm run prettier && npm run lint"
   },
   "browserslist": {
     "production": [
@@ -157,7 +159,6 @@
     "eslint-plugin-testing-library": "^3.10.2",
     "eslint-webpack-plugin": "^2.5.4",
     "prettier": "2.2.1",
-    "prettier-eslint": "^12.0.0",
     "prettier-eslint-cli": "^5.0.1"
   }
 }

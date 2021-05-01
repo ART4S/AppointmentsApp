@@ -11,10 +11,7 @@ import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg"
 
 import useActions from "hooks/useActions";
 
-import {
-  appointmentsActions,
-  appointmentsSelectors,
-} from "./appointmentsSlice";
+import { loadAppointments, selectAllAppointments } from "./appointmentsSlice";
 
 const TITLE = "Приемы";
 
@@ -44,14 +41,12 @@ const columns = [
 ];
 
 export default function Appointments() {
+  const actions = useActions({ loadAppointments });
   const classes = useStyles();
-  const actions = {
-    appointments: useActions(appointmentsActions),
-  };
-  const appointments = useSelector(appointmentsSelectors.selectAll);
+  const appointments = useSelector(selectAllAppointments);
 
   useEffect(() => {
-    actions.appointments.load();
+    actions.loadAppointments();
   }, []);
 
   return (

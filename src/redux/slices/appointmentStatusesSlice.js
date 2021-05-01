@@ -1,5 +1,9 @@
 /* eslint-disable no-param-reassign */
-import { createSlice, createEntityAdapter, createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  createEntityAdapter,
+  createAsyncThunk,
+} from "@reduxjs/toolkit";
 
 import LOADING_STATUSES from "constants/loadingStatuses";
 
@@ -13,7 +17,10 @@ const initialState = {
   dataSource: appointmentStatusesAdapter.getInitialState(),
 };
 
-const load = createAsyncThunk("appointmentStatuses/load", () => appointmentStatusService.getAll());
+export const loadAppointmentStatuses = createAsyncThunk(
+  "appointmentStatuses/load",
+  () => appointmentStatusService.getAll(),
+);
 
 const appointmentStatusesSlice = createSlice({
   name: "appointmentStatuses",
@@ -21,16 +28,19 @@ const appointmentStatusesSlice = createSlice({
   initialState,
 
   extraReducers: {
-    [load.pending](state) {
+    [loadAppointmentStatuses.pending](state) {
       state.status = LOADING_STATUSES.loading;
     },
 
-    [load.fulfilled](state, action) {
+    [loadAppointmentStatuses.fulfilled](state, action) {
       state.status = LOADING_STATUSES.idle;
-      state.dataSource = appointmentStatusesAdapter.setAll(state.dataSource, action.payload);
+      state.dataSource = appointmentStatusesAdapter.setAll(
+        state.dataSource,
+        action.payload,
+      );
     },
 
-    [load.rejected](state, action) {
+    [loadAppointmentStatuses.rejected](state, action) {
       state.status = LOADING_STATUSES.error;
       state.error = action.error.message;
     },
@@ -39,13 +49,14 @@ const appointmentStatusesSlice = createSlice({
 
 export const appointmentStatusesReducer = appointmentStatusesSlice.reducer;
 
-export const appointmentStatusesActions = {
-  load,
-  ...appointmentStatusesSlice.actions,
-};
-
-export const appointmentStatusesSelectors = {
-  ...appointmentStatusesAdapter.getSelectors((state) => state.appointmentStatuses.dataSource),
-};
+export const {
+  selectIds: selectAppointmentStatusIds,
+  selectEntities: selectAppointmentStatusEntities,
+  selectAll: selectAllAppointmentStatuses,
+  selectTotal: selectTotalAppointmentStatuses,
+  selectById: selectAppointmentStatusById,
+} = appointmentStatusesAdapter.getSelectors(
+  (state) => state.appointmentStatuses.dataSource,
+);
 
 export default appointmentStatusesSlice;

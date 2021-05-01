@@ -45,7 +45,10 @@ export default function Table({ columns, rows }) {
         <TableHead>
           <TableRow>
             {columns.map((column) => (
-              <TableHeaderCell key={column.header} width={column.width ?? DEFAULT_COLUMN_WIDTH}>
+              <TableHeaderCell
+                key={column.header}
+                width={column.width ?? DEFAULT_COLUMN_WIDTH}
+              >
                 {column.header}
               </TableHeaderCell>
             ))}
@@ -56,7 +59,9 @@ export default function Table({ columns, rows }) {
           {rows.map((row) => (
             <TableRow key={row.id}>
               {columns.map((column) => (
-                <TableCell key={column.header}>{formatData(row, column)}</TableCell>
+                <TableCell key={column.header}>
+                  {formatData(row, column)}
+                </TableCell>
               ))}
             </TableRow>
           ))}

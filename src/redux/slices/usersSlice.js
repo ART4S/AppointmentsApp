@@ -1,5 +1,9 @@
 /* eslint-disable no-param-reassign */
-import { createSlice, createEntityAdapter, createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  createEntityAdapter,
+  createAsyncThunk,
+} from "@reduxjs/toolkit";
 
 import LOADING_STATUSES from "constants/loadingStatuses";
 
@@ -13,7 +17,9 @@ const initialState = {
   dataSource: usersAdapter.getInitialState(),
 };
 
-const load = createAsyncThunk("users/load", () => userService.getAll());
+export const loadUsers = createAsyncThunk("users/load", () =>
+  userService.getAll(),
+);
 
 const usersSlice = createSlice({
   name: "users",
@@ -21,16 +27,16 @@ const usersSlice = createSlice({
   initialState,
 
   extraReducers: {
-    [load.pending](state) {
+    [loadUsers.pending](state) {
       state.status = LOADING_STATUSES.loading;
     },
 
-    [load.fulfilled](state, action) {
+    [loadUsers.fulfilled](state, action) {
       state.status = LOADING_STATUSES.idle;
       usersAdapter.setAll(state.dataSource, action.payload);
     },
 
-    [load.rejected](state, action) {
+    [loadUsers.rejected](state, action) {
       state.status = LOADING_STATUSES.error;
       state.error = action.error.message;
     },
@@ -39,10 +45,12 @@ const usersSlice = createSlice({
 
 export const usersReducer = usersSlice.reducer;
 
-export const usersActions = { load, ...usersSlice.actions };
-
-export const usersSelectors = {
-  ...usersAdapter.getSelectors((state) => state.users.dataSource),
-};
+export const {
+  selectIds: selectUserIds,
+  selectEntities: selectUserEntities,
+  selectAll: selectAllUsers,
+  selectTotal: selectTotalUsers,
+  selectById: selectUserById,
+} = usersAdapter.getSelectors((state) => state.users.dataSource);
 
 export default usersSlice;
