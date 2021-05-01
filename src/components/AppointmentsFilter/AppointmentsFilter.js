@@ -10,6 +10,8 @@ import {
   Checkbox,
   makeStyles,
   MenuItem,
+  Grid,
+  Paper,
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import ClearIcon from "@material-ui/icons/Clear";
@@ -32,13 +34,8 @@ import getFullName from "utils/getFullName";
 import { matchSorter } from "match-sorter";
 
 const useStyle = makeStyles((theme) => ({
-  form: {
-    "& > *": {
-      marginRight: theme.spacing(5),
-    },
-    display: "flex",
-    flexWrap: "wrap",
-    flexDirection: "flex-start",
+  control: {
+    width: 200,
   },
 }));
 
@@ -84,122 +81,154 @@ export default function AppointmentsFilter() {
     actions.loadAppointments();
   }
 
+  const rowSpacing = 3;
+
   return (
     <form className={classes.form} noValidate>
-      <TextField
-        name="startDate"
-        label="С"
-        type="date"
-        value={filter.startDate}
-        onChange={handleFilterFieldChange}
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
+      <Grid container>
+        <Grid item container xs direction="column" spacing={rowSpacing}>
+          <Grid item container justify="center">
+            <TextField
+              className={classes.control}
+              name="startDate"
+              label="С"
+              type="date"
+              value={filter.startDate}
+              onChange={handleFilterFieldChange}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </Grid>
 
-      <TextField
-        name="finishDate"
-        label="По"
-        type="date"
-        value={filter.finishDate}
-        onChange={handleFilterFieldChange}
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
+          <Grid item container justify="center">
+            <FormControl className={classes.control}>
+              <InputLabel id="statusId-label">Статус</InputLabel>
 
-      <TextField
-        name="clientName"
-        label="Клиент"
-        value={filter.clientName}
-        onChange={handleFilterFieldChange}
-      />
+              <Select
+                id="statusId-select"
+                name="statusId"
+                labelId="statusId-label"
+                value={filter.statusId}
+                onChange={handleFilterFieldChange}
+              >
+                <MenuItem key={-1} value="" />
 
-      <FormControlLabel
-        control={
-          <Checkbox
-            name="onlyMe"
-            checked={filter.onlyMe}
-            onChange={handleFilterFieldChange}
-            color="primary"
-          />
-        }
-        label="Только я"
-      />
+                {appointmentStatuses.map((status) => (
+                  <MenuItem key={status.id} value={status.id}>
+                    {status.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
 
-      <FormControl>
-        <InputLabel id="statusId-label">Статус</InputLabel>
+          <Grid item container justify="center">
+            <FormControlLabel
+              className={classes.control}
+              control={
+                <Checkbox
+                  name="onlyMe"
+                  checked={filter.onlyMe}
+                  onChange={handleFilterFieldChange}
+                  color="primary"
+                />
+              }
+              label="Только я"
+            />
+          </Grid>
+        </Grid>
 
-        <Select
-          id="statusId-select"
-          name="statusId"
-          labelId="statusId-label"
-          value={filter.statusId}
-          onChange={handleFilterFieldChange}
-        >
-          <MenuItem key={-1} value="" />
+        <Grid item container xs direction="column" spacing={rowSpacing}>
+          <Grid item container justify="center">
+            <TextField
+              className={classes.control}
+              name="finishDate"
+              label="По"
+              type="date"
+              value={filter.finishDate}
+              onChange={handleFilterFieldChange}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </Grid>
 
-          {appointmentStatuses.map((status) => (
-            <MenuItem key={status.id} value={status.id}>
-              {status.name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+          <Grid item container justify="center">
+            <Autocomplete
+              className={classes.control}
+              id="holderId"
+              onChange={handleHolderChange}
+              value={users.find((x) => x.id === filter.holderId) ?? ""}
+              filterOptions={(options, { inputValue }) =>
+                matchSorter(options, inputValue, {
+                  keys: [
+                    (item) => item.firstName,
+                    (item) => item.middleName,
+                    (item) => item.lastName,
+                  ],
+                }).sort((firstUser, secondUser) => {
+                  const first =
+                    firstUser.lastName &&
+                    firstUser.lastName.charAt(0).toUpperCase();
+                  const second =
+                    secondUser.lastName &&
+                    secondUser.lastName.charAt(0).toUpperCase();
 
-      <Autocomplete
-        id="holderId"
-        onChange={handleHolderChange}
-        value={users.find((x) => x.id === filter.holderId) ?? ""}
-        filterOptions={(options, { inputValue }) =>
-          matchSorter(options, inputValue, {
-            keys: [
-              (item) => item.firstName,
-              (item) => item.middleName,
-              (item) => item.lastName,
-            ],
-          }).sort((firstUser, secondUser) => {
-            const first =
-              firstUser.lastName && firstUser.lastName.charAt(0).toUpperCase();
-            const second =
-              secondUser.lastName &&
-              secondUser.lastName.charAt(0).toUpperCase();
+                  if (first > second) return 1;
+                  if (first < second) return -1;
+                  return 0;
+                })
+              }
+              options={users}
+              getOptionLabel={(option) => getFullName(option)}
+              groupBy={(option) =>
+                option.lastName && option.lastName.charAt(0).toUpperCase()
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  name="holderId"
+                  label="Принимающий"
+                  fullWidth
+                />
+              )}
+            />
+          </Grid>
+        </Grid>
 
-            if (first > second) return 1;
-            if (first < second) return -1;
-            return 0;
-          })
-        }
-        options={users}
-        getOptionLabel={(option) => getFullName(option)}
-        style={{ minWidth: 200 }}
-        groupBy={(option) =>
-          option.lastName && option.lastName.charAt(0).toUpperCase()
-        }
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            name="holderId"
-            label="Принимающий"
-            fullWidth
-          />
-        )}
-      />
+        <Grid item container xs spacing={rowSpacing}>
+          <Grid item container justify="center">
+            <TextField
+              className={classes.control}
+              name="complaints"
+              label="Жалобы"
+              value={filter.complaints}
+              onChange={handleFilterFieldChange}
+            />
+          </Grid>
 
-      <TextField
-        name="complaints"
-        label="Жалобы"
-        value={filter.complaints}
-        onChange={handleFilterFieldChange}
-      />
+          <Grid item container justify="center">
+            <TextField
+              className={classes.control}
+              name="clientName"
+              label="Клиент"
+              value={filter.clientName}
+              onChange={handleFilterFieldChange}
+            />
+          </Grid>
 
-      <IconButton color="default" onClick={handleOnSearch}>
-        <SearchIcon />
-      </IconButton>
+          <Grid item container justify="center">
+            <IconButton color="default" onClick={handleOnSearch}>
+              <SearchIcon />
+            </IconButton>
 
-      <IconButton color="default" onClick={handleOnClear}>
-        <ClearIcon />
-      </IconButton>
+            <IconButton color="default" onClick={handleOnClear}>
+              <ClearIcon />
+            </IconButton>
+          </Grid>
+        </Grid>
+      </Grid>
     </form>
   );
 }

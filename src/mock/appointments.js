@@ -1,4 +1,5 @@
 import faker from "faker";
+import { matchSorter } from "match-sorter";
 
 import pickFrom from "utils/pickFrom";
 import getFullName from "utils/getFullName";
@@ -34,26 +35,33 @@ function getAll(filter) {
         status: status.name,
         holderId: holder.id,
         holderName: getFullName(holder),
-        compliences: pickFrom(compliences),
+        complaints: pickFrom(compliences),
         diagnosis: pickFrom(diagnosis),
       });
     }
   }
 
-  return appointments
-    .filter(
-      (item) =>
-        (!filter.startDate || item.date >= filter.startDate) &&
-        (!filter.finishDate || item.date <= filter.finishDate) &&
-        item.clientName.match(new RegExp(filter.clientName)) &&
-        (!filter.onlyMe ||
-          filter.onlyMe === "false" ||
-          item.holderName === users[0]) &&
-        (!filter.statusId || +filter.statusId === item.statusId) &&
-        (!filter.holderId || +filter.holderId === item.holderId) &&
-        item.compliences.match(new RegExp(filter.compliences)),
-    )
-    .slice(filter.skip, filter.take);
+  let filteredAppointments = appointments.filter(
+    (item) =>
+      (!filter.startDate || item.date >= filter.startDate) &&
+      (!filter.finishDate || item.date <= filter.finishDate) &&
+      item.clientName.match(new RegExp(filter.clientName)) &&
+      (!filter.onlyMe ||
+        filter.onlyMe === "false" ||
+        item.holderName === users[0]) &&
+      (!filter.statusId || +filter.statusId === item.statusId) &&
+      (!filter.holderId || +filter.holderId === item.holderId),
+  );
+
+  if (filter.complaints) {
+    filteredAppointments = matchSorter(
+      filteredAppointments,
+      filter.complaints,
+      { keys: [(item) => item.complaints] },
+    );
+  }
+
+  return filteredAppointments.slice(filter.skip, filter.take);
 }
 
 export default { getAll };

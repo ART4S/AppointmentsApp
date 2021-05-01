@@ -5,6 +5,7 @@ import moment from "moment";
 
 import Header from "components/Header/Header";
 import AppointmentsFilter from "components/AppointmentsFilter/AppointmentsFilter";
+import AppointmentsAccordion from "components/AppointmentsAccordion/AppointmentsAccordion";
 import Table from "components/Table/Table";
 
 import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg";
@@ -36,7 +37,7 @@ const columns = [
   { field: "clientName", header: "Клиент" },
   { field: "status", header: "Статус" },
   { field: "holderName", header: "Принимающий" },
-  { field: "compliences", header: "Жалобы" },
+  { field: "complaints", header: "Жалобы" },
   { field: "diagnosis", header: "Диагноз" },
 ];
 
@@ -55,7 +56,9 @@ export default function Appointments() {
 
       <Container maxWidth="md">
         <Box mt={5}>
-          <AppointmentsFilter />
+          <AppointmentsAccordion>
+            <AppointmentsFilter />
+          </AppointmentsAccordion>
         </Box>
 
         <Box mt={5}>
