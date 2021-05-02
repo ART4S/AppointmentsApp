@@ -1,10 +1,12 @@
+import faker from "faker";
+
 const appointmentStatuses = [
-  { id: 0, name: "Завершён" },
-  { id: 1, name: "Ожидается" },
-  { id: 2, name: "Пропущен" },
-  { id: 3, name: "Отменён" },
-  { id: 4, name: "Перенесён" },
-  { id: 5, name: "Активен" },
+  { id: faker.datatype.uuid(), name: "Завершён" },
+  { id: faker.datatype.uuid(), name: "Ожидается" },
+  { id: faker.datatype.uuid(), name: "Пропущен" },
+  { id: faker.datatype.uuid(), name: "Отменён" },
+  { id: faker.datatype.uuid(), name: "Перенесён" },
+  { id: faker.datatype.uuid(), name: "Активен" },
 ];
 
 export default { getAll: () => appointmentStatuses };

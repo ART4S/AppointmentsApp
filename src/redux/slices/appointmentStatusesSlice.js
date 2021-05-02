@@ -51,9 +51,7 @@ export const appointmentStatusesReducer = appointmentStatusesSlice.reducer;
 
 export const {
   selectIds: selectAppointmentStatusIds,
-  selectEntities: selectAppointmentStatusEntities,
   selectAll: selectAllAppointmentStatuses,
-  selectTotal: selectTotalAppointmentStatuses,
   selectById: selectAppointmentStatusById,
 } = appointmentStatusesAdapter.getSelectors(
   (state) => state.appointmentStatuses.dataSource,

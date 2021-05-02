@@ -4,9 +4,10 @@ import { Box, Container, makeStyles } from "@material-ui/core";
 import moment from "moment";
 
 import Header from "components/Header/Header";
-import AppointmentsFilter from "components/AppointmentsFilter/AppointmentsFilter";
-import AppointmentsAccordion from "components/AppointmentsAccordion/AppointmentsAccordion";
+import AppointmentsFilter from "features/Appointments/AppointmentsFilter";
+import AppointmentsAccordion from "features/Appointments/AppointmentsAccordion";
 import Table from "components/Table/Table";
+import EnhancedTable from "components/Table/Demo";
 
 import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg";
 
@@ -51,7 +52,7 @@ export default function Appointments() {
   }, []);
 
   return (
-    <div className={classes.root}>
+    <Box className={classes.root}>
       <Header title={TITLE} Icon={AppointmentIcon} />
 
       <Container maxWidth="md">
@@ -62,15 +63,10 @@ export default function Appointments() {
         </Box>
 
         <Box mt={5}>
-          <Table columns={columns} rows={appointments} />
+          {/* <Table columns={columns} rows={appointments} /> */}
+          <EnhancedTable />
         </Box>
       </Container>
-
-      {/* <Box className={classes.body}>
-        <FilterForm onFilterChange={handleFilterChange} />
-
-        <Table columns={columns} rows={data} />
-      </Box> */}
-    </div>
+    </Box>
   );
 }

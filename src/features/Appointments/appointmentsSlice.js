@@ -17,11 +17,11 @@ const initialState = {
     filter: {
       startDate: "",
       finishDate: "",
-      clientName: "",
-      onlyMe: false,
+      clientId: "",
       statusId: "",
       holderId: "",
       complaints: "",
+      onlyMe: false,
     },
   }),
 };

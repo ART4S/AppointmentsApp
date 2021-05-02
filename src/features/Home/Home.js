@@ -15,18 +15,7 @@ import { ReactComponent as BroadcastIcon } from "assets/icons/broadcast.svg";
 import { ReactComponent as EmployeesIcon } from "assets/icons/employees.svg";
 import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg";
 
-const TITLE = "Домашняя";
-
-const NAVIGATION_ITEMS = [
-  { title: "Приёмы", Icon: AppointmentIcon, href: "/appointments" },
-  { title: "События", Icon: StarIcon, href: "/" },
-  { title: "Оповещения", Icon: BroadcastIcon, href: "/" },
-  { title: "Сообщения", Icon: MessagesIcon, href: "/" },
-  { title: "Клиенты", Icon: ClientsIcon, href: "/" },
-  { title: "Сотрудники", Icon: EmployeesIcon, href: "/" },
-];
-
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   body: {
     display: "flex",
     justifyContent: "center",
@@ -62,15 +51,13 @@ const styles = (theme) => ({
     color: "inherit",
     textDecoration: "inherit",
   },
-});
+}));
 
-const useStyles = makeStyles(styles);
-
-function NavigationItem({ title, Icon, href }) {
+function NavigationItem({ title, Icon, link }) {
   const classes = useStyles();
 
   return (
-    <Link to={href} className={classes.link}>
+    <Link to={link} className={classes.link}>
       <Box className={classes.navigationItem}>
         <Icon className={classes.icon} />
         <Typography variant="h5">{title}</Typography>
@@ -79,19 +66,28 @@ function NavigationItem({ title, Icon, href }) {
   );
 }
 
+const navigationItems = [
+  { title: "Приёмы", Icon: AppointmentIcon, link: "/appointments" },
+  { title: "События", Icon: StarIcon, link: "/" },
+  { title: "Оповещения", Icon: BroadcastIcon, link: "/" },
+  { title: "Сообщения", Icon: MessagesIcon, link: "/" },
+  { title: "Клиенты", Icon: ClientsIcon, link: "/" },
+  { title: "Сотрудники", Icon: EmployeesIcon, link: "/" },
+];
+
 function NavigationPanel() {
   const classes = useStyles();
 
   return (
-    <div className={classes.navigationPanel}>
+    <Box className={classes.navigationPanel}>
       <Grid container spacing={1} justify="center">
-        {NAVIGATION_ITEMS.map((item) => (
+        {navigationItems.map((item) => (
           <Grid key={item.title} item>
             <NavigationItem {...item} />
           </Grid>
         ))}
       </Grid>
-    </div>
+    </Box>
   );
 }
 
@@ -99,12 +95,12 @@ export default function Home() {
   const classes = useStyles();
 
   return (
-    <div>
-      <Header Icon={HouseIcon} title={TITLE} />
+    <Box>
+      <Header Icon={HouseIcon} title="Домашняя" />
 
-      <div className={classes.body}>
+      <Box className={classes.body}>
         <NavigationPanel />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }

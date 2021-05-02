@@ -47,9 +47,7 @@ export const usersReducer = usersSlice.reducer;
 
 export const {
   selectIds: selectUserIds,
-  selectEntities: selectUserEntities,
   selectAll: selectAllUsers,
-  selectTotal: selectTotalUsers,
   selectById: selectUserById,
 } = usersAdapter.getSelectors((state) => state.users.dataSource);
 

@@ -1,7 +1,5 @@
-const LOADING_STATUSES = {
+export default {
   idle: "idle",
   loading: "loading",
   fail: "fail",
 };
-
-export default LOADING_STATUSES;

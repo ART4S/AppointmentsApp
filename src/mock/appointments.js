@@ -1,7 +1,6 @@
 import faker from "faker";
 import { matchSorter } from "match-sorter";
 
-import pickFrom from "utils/pickFrom";
 import getFullName from "utils/getFullName";
 import appointmentStatuses from "./dictionaries/appointmentStatuses";
 import users from "./users";
@@ -22,9 +21,9 @@ const diagnosis = ["Застужено правое ухо", "Ангина", "М
 function getAll(filter) {
   if (!appointments.length) {
     for (let i = 0; i < 100; i++) {
-      const status = pickFrom(appointmentStatuses.getAll());
-      const holder = pickFrom(users.getAll());
-      const client = pickFrom(clients.getAll());
+      const status = faker.random.arrayElement(appointmentStatuses.getAll());
+      const holder = faker.random.arrayElement(users.getAll());
+      const client = faker.random.arrayElement(clients.getAll());
 
       appointments.push({
         id: faker.datatype.uuid(),
@@ -35,8 +34,8 @@ function getAll(filter) {
         status: status.name,
         holderId: holder.id,
         holderName: getFullName(holder),
-        complaints: pickFrom(compliences),
-        diagnosis: pickFrom(diagnosis),
+        complaints: faker.random.arrayElement(compliences),
+        diagnosis: faker.random.arrayElement(diagnosis),
       });
     }
   }
@@ -45,12 +44,12 @@ function getAll(filter) {
     (item) =>
       (!filter.startDate || item.date >= filter.startDate) &&
       (!filter.finishDate || item.date <= filter.finishDate) &&
-      item.clientName.match(new RegExp(filter.clientName)) &&
+      (!filter.clientId || filter.clientId === item.clientId) &&
+      (!filter.statusId || filter.statusId === item.statusId) &&
+      (!filter.holderId || filter.holderId === item.holderId) &&
       (!filter.onlyMe ||
         filter.onlyMe === "false" ||
-        item.holderName === users[0]) &&
-      (!filter.statusId || +filter.statusId === item.statusId) &&
-      (!filter.holderId || +filter.holderId === item.holderId),
+        item.holderName === users[0]),
   );
 
   if (filter.complaints) {

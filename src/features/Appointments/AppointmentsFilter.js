@@ -11,7 +11,6 @@ import {
   makeStyles,
   MenuItem,
   Grid,
-  Paper,
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import ClearIcon from "@material-ui/icons/Clear";
@@ -22,18 +21,28 @@ import {
   setFilterValue,
   clearFilter,
   loadAppointments,
-} from "pages/Appointments/appointmentsSlice";
+} from "features/Appointments/appointmentsSlice";
+
 import { loadUsers, selectAllUsers } from "redux/slices/usersSlice";
+
 import {
   loadAppointmentStatuses,
   selectAllAppointmentStatuses,
 } from "redux/slices/appointmentStatusesSlice";
+
+import { loadClients, selectAllClients } from "redux/slices/clientsSlice";
 
 import useActions from "hooks/useActions";
 import getFullName from "utils/getFullName";
 import { matchSorter } from "match-sorter";
 
 const useStyle = makeStyles((theme) => ({
+  form: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+  },
+
   control: {
     width: 200,
   },
@@ -44,6 +53,7 @@ export default function AppointmentsFilter() {
     loadUsers,
     loadAppointments,
     loadAppointmentStatuses,
+    loadClients,
     setFilterValue,
     clearFilter,
   });
@@ -51,10 +61,12 @@ export default function AppointmentsFilter() {
   const filter = useSelector(selectFilter);
   const appointmentStatuses = useSelector(selectAllAppointmentStatuses);
   const users = useSelector(selectAllUsers);
+  const clients = useSelector(selectAllClients);
 
   useEffect(() => {
     actions.loadUsers();
     actions.loadAppointmentStatuses();
+    actions.loadClients();
   }, []);
 
   function handleFilterFieldChange(e) {
@@ -72,6 +84,10 @@ export default function AppointmentsFilter() {
     });
   }
 
+  function handleClientChange(_, client) {
+    actions.setFilterValue({ name: "clientId", value: client?.id ?? "" });
+  }
+
   function handleOnSearch() {
     actions.loadAppointments(filter);
   }
@@ -81,7 +97,22 @@ export default function AppointmentsFilter() {
     actions.loadAppointments();
   }
 
-  const rowSpacing = 3;
+  function filterOptions(options, { inputValue }) {
+    return matchSorter(options, inputValue, {
+      keys: [(item) => getFullName(item)],
+    }).sort((firstUser, secondUser) => {
+      const first =
+        firstUser.lastName && firstUser.lastName.charAt(0).toUpperCase();
+      const second =
+        secondUser.lastName && secondUser.lastName.charAt(0).toUpperCase();
+
+      if (first > second) return 1;
+      if (first < second) return -1;
+      return 0;
+    });
+  }
+
+  const rowSpacing = 5;
 
   return (
     <form className={classes.form} noValidate>
@@ -112,7 +143,9 @@ export default function AppointmentsFilter() {
                 value={filter.statusId}
                 onChange={handleFilterFieldChange}
               >
-                <MenuItem key={-1} value="" />
+                <MenuItem key={-1} value="">
+                  Нет
+                </MenuItem>
 
                 {appointmentStatuses.map((status) => (
                   <MenuItem key={status.id} value={status.id}>
@@ -160,26 +193,7 @@ export default function AppointmentsFilter() {
               id="holderId"
               onChange={handleHolderChange}
               value={users.find((x) => x.id === filter.holderId) ?? ""}
-              filterOptions={(options, { inputValue }) =>
-                matchSorter(options, inputValue, {
-                  keys: [
-                    (item) => item.firstName,
-                    (item) => item.middleName,
-                    (item) => item.lastName,
-                  ],
-                }).sort((firstUser, secondUser) => {
-                  const first =
-                    firstUser.lastName &&
-                    firstUser.lastName.charAt(0).toUpperCase();
-                  const second =
-                    secondUser.lastName &&
-                    secondUser.lastName.charAt(0).toUpperCase();
-
-                  if (first > second) return 1;
-                  if (first < second) return -1;
-                  return 0;
-                })
-              }
+              filterOptions={filterOptions}
               options={users}
               getOptionLabel={(option) => getFullName(option)}
               groupBy={(option) =>
@@ -197,7 +211,7 @@ export default function AppointmentsFilter() {
           </Grid>
         </Grid>
 
-        <Grid item container xs spacing={rowSpacing}>
+        <Grid item container xs direction="column" spacing={rowSpacing}>
           <Grid item container justify="center">
             <TextField
               className={classes.control}
@@ -209,12 +223,25 @@ export default function AppointmentsFilter() {
           </Grid>
 
           <Grid item container justify="center">
-            <TextField
+            <Autocomplete
               className={classes.control}
-              name="clientName"
-              label="Клиент"
-              value={filter.clientName}
-              onChange={handleFilterFieldChange}
+              id="clientId"
+              onChange={handleClientChange}
+              value={clients.find((x) => x.id === filter.clientId) ?? ""}
+              filterOptions={filterOptions}
+              options={clients}
+              getOptionLabel={(option) => getFullName(option)}
+              groupBy={(option) =>
+                option.lastName && option.lastName.charAt(0).toUpperCase()
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  name="clientId"
+                  label="Клиент"
+                  fullWidth
+                />
+              )}
             />
           </Grid>
 

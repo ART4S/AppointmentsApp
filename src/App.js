@@ -7,8 +7,8 @@ import {
 } from "react-router-dom";
 
 import store from "redux/store";
-import Home from "pages/Home/Home";
-import Appointments from "pages/Appointments/Appointments";
+import Home from "features/Home/Home";
+import Appointments from "features/Appointments/Appointments";
 
 export default function App() {
   return (

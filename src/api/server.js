@@ -3,6 +3,7 @@ import { createServer } from "miragejs";
 import mockAppointments from "mock/appointments";
 import mockAppointmetStatuses from "mock/dictionaries/appointmentStatuses";
 import mockUsers from "mock/users";
+import mockClients from "mock/clients";
 
 function server() {
   createServer({
@@ -16,6 +17,8 @@ function server() {
       );
 
       this.get("/api/users", () => mockUsers.getAll());
+
+      this.get("/api/clients", () => mockClients.getAll());
     },
   });
 }
