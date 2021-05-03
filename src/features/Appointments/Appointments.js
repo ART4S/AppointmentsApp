@@ -1,24 +1,23 @@
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { Box, Container, makeStyles } from "@material-ui/core";
-import moment from "moment";
+import {
+  Box,
+  Container,
+  Tooltip,
+  IconButton,
+  makeStyles,
+} from "@material-ui/core";
+import FilterListIcon from "@material-ui/icons/FilterList";
 
 import Header from "components/Header/Header";
-import AppointmentsFilter from "features/Appointments/AppointmentsFilter";
-import AppointmentsAccordion from "features/Appointments/AppointmentsAccordion";
-import Table from "components/Table/Table";
-import EnhancedTable from "components/Table/Demo";
 
 import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg";
 
-import useActions from "hooks/useActions";
-
-import { loadAppointments, selectAllAppointments } from "./appointmentsSlice";
-
-const TITLE = "Приемы";
+import Accordion from "./Accordion/Accordion";
+import Filters from "./Filters/Filters";
+import Table from "./Table/Table";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
+
   body: {
     display: "flex",
     flexDirection: "column",
@@ -29,42 +28,30 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const columns = [
-  {
-    field: "date",
-    header: "Дата",
-    formatter: (d) => moment(d).format("DD.MM.YYYY"),
-  },
-  { field: "clientName", header: "Клиент" },
-  { field: "status", header: "Статус" },
-  { field: "holderName", header: "Принимающий" },
-  { field: "complaints", header: "Жалобы" },
-  { field: "diagnosis", header: "Диагноз" },
-];
-
 export default function Appointments() {
-  const actions = useActions({ loadAppointments });
   const classes = useStyles();
-  const appointments = useSelector(selectAllAppointments);
-
-  useEffect(() => {
-    actions.loadAppointments();
-  }, []);
 
   return (
     <Box className={classes.root}>
-      <Header title={TITLE} Icon={AppointmentIcon} />
+      <Header title="Приемы" Icon={AppointmentIcon} />
 
       <Container maxWidth="md">
         <Box mt={5}>
-          <AppointmentsAccordion>
-            <AppointmentsFilter />
-          </AppointmentsAccordion>
+          <Accordion
+            header={
+              <Tooltip title="Filters">
+                <IconButton aria-label="filters">
+                  <FilterListIcon />
+                </IconButton>
+              </Tooltip>
+            }
+          >
+            <Filters />
+          </Accordion>
         </Box>
 
         <Box mt={5}>
-          {/* <Table columns={columns} rows={appointments} /> */}
-          <EnhancedTable />
+          <Table />
         </Box>
       </Container>
     </Box>

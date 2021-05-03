@@ -1,8 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
-
 import { Link } from "react-router-dom";
-
 import { Box, Grid, Typography, makeStyles } from "@material-ui/core";
 
 import Header from "components/Header/Header";
@@ -40,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
+    padding: theme.spacing(2),
   },
 
   icon: {
@@ -76,18 +74,31 @@ const navigationItems = [
 ];
 
 function NavigationPanel() {
-  const classes = useStyles();
+  const spacing = 2;
 
   return (
-    <Box className={classes.navigationPanel}>
-      <Grid container spacing={1} justify="center">
-        {navigationItems.map((item) => (
-          <Grid key={item.title} item>
-            <NavigationItem {...item} />
+    <Grid
+      container
+      direction="column"
+      spacing={spacing}
+      style={{ width: "fit-content" }}
+    >
+      <Grid item container spacing={spacing}>
+        {navigationItems.slice(0, 3).map((x) => (
+          <Grid key={x.title} item>
+            <NavigationItem {...x} />
           </Grid>
         ))}
       </Grid>
-    </Box>
+
+      <Grid item container spacing={spacing}>
+        {navigationItems.slice(3, 6).map((x) => (
+          <Grid key={x.title} item>
+            <NavigationItem {...x} />
+          </Grid>
+        ))}
+      </Grid>
+    </Grid>
   );
 }
 

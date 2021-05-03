@@ -1,9 +1,9 @@
 import client from "api/client";
 
 class AppointmentService {
-  getAll(filter) {
+  getAll(params) {
     return client
-      .get("/appointments", filter)
+      .get("/appointments", params)
       .then((response) => response.data);
   }
 }

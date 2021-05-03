@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
-import { Button, Box, Typography, makeStyles } from "@material-ui/core";
+import { Box, Typography, makeStyles, IconButton } from "@material-ui/core";
 import PropTypes from "prop-types";
+
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 
 const CURRENT_USER = "Чулец Вячеслав Анатольевич";
 
@@ -23,6 +25,16 @@ const useStyles = makeStyles((theme) => ({
   link: {
     color: "inherit",
     textDecoration: "inherit",
+    display: "flex",
+    justifyContent: "center",
+  },
+
+  accountButton: {
+    marginLeft: theme.spacing(3),
+  },
+
+  title: {
+    marginLeft: theme.spacing(3),
   },
 }));
 
@@ -30,22 +42,22 @@ export default function Header({ title, Icon }) {
   const classes = useStyles();
 
   return (
-    <div className={classes.header}>
+    <Box className={classes.header}>
       <Link to="/home" className={classes.link}>
-        <Box display="flex" justifyContent="center" alignItems="center">
-          <Icon className={classes.icon} />
-          <Typography variant="h3">{title}</Typography>
-        </Box>
+        <Icon className={classes.icon} />
+        <Typography className={classes.title} variant="h3">
+          {title}
+        </Typography>
       </Link>
 
       <Box display="flex" justifyContent="center" alignItems="center">
         <Typography variant="h5">{CURRENT_USER}</Typography>
 
-        <Button variant="contained" color="primary">
-          Выйти
-        </Button>
+        <IconButton>
+          <AccountCircleIcon className={classes.icon} />
+        </IconButton>
       </Box>
-    </div>
+    </Box>
   );
 }
 

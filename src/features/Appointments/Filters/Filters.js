@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   FormControl,
   InputLabel,
@@ -16,25 +16,23 @@ import SearchIcon from "@material-ui/icons/Search";
 import ClearIcon from "@material-ui/icons/Clear";
 import { Autocomplete } from "@material-ui/lab";
 
+import { matchSorter } from "match-sorter";
+
+import getFullName from "utils/getFullName";
+
+import { loadAppointments } from "../Table/tableSlice";
+
 import {
+  loadUsers,
+  loadClients,
+  loadAppointmentStatuses,
   selectFilter,
   setFilterValue,
   clearFilter,
-  loadAppointments,
-} from "features/Appointments/appointmentsSlice";
-
-import { loadUsers, selectAllUsers } from "redux/slices/usersSlice";
-
-import {
-  loadAppointmentStatuses,
-  selectAllAppointmentStatuses,
-} from "redux/slices/appointmentStatusesSlice";
-
-import { loadClients, selectAllClients } from "redux/slices/clientsSlice";
-
-import useActions from "hooks/useActions";
-import getFullName from "utils/getFullName";
-import { matchSorter } from "match-sorter";
+  selectUsers,
+  selectClients,
+  selectAppointmentStatuses,
+} from "./filtersSlice";
 
 const useStyle = makeStyles((theme) => ({
   form: {
@@ -48,25 +46,18 @@ const useStyle = makeStyles((theme) => ({
   },
 }));
 
-export default function AppointmentsFilter() {
-  const actions = useActions({
-    loadUsers,
-    loadAppointments,
-    loadAppointmentStatuses,
-    loadClients,
-    setFilterValue,
-    clearFilter,
-  });
+export default function Filters() {
+  const dispatch = useDispatch();
   const classes = useStyle();
   const filter = useSelector(selectFilter);
-  const appointmentStatuses = useSelector(selectAllAppointmentStatuses);
-  const users = useSelector(selectAllUsers);
-  const clients = useSelector(selectAllClients);
+  const users = useSelector(selectUsers);
+  const clients = useSelector(selectClients);
+  const appointmentStatuses = useSelector(selectAppointmentStatuses);
 
   useEffect(() => {
-    actions.loadUsers();
-    actions.loadAppointmentStatuses();
-    actions.loadClients();
+    dispatch(loadUsers());
+    dispatch(loadClients());
+    dispatch(loadAppointmentStatuses());
   }, []);
 
   function handleFilterFieldChange(e) {
@@ -74,27 +65,29 @@ export default function AppointmentsFilter() {
     const value =
       e.target.type === "checkbox" ? e.target.checked : e.target.value;
 
-    actions.setFilterValue({ name, value });
+    dispatch(setFilterValue({ name, value }));
   }
 
   function handleHolderChange(_, holder) {
-    actions.setFilterValue({
-      name: "holderId",
-      value: holder?.id ?? "",
-    });
+    dispatch(
+      setFilterValue({
+        name: "holderId",
+        value: holder?.id ?? "",
+      }),
+    );
   }
 
   function handleClientChange(_, client) {
-    actions.setFilterValue({ name: "clientId", value: client?.id ?? "" });
-  }
-
-  function handleOnSearch() {
-    actions.loadAppointments(filter);
+    dispatch(setFilterValue({ name: "clientId", value: client?.id ?? "" }));
   }
 
   function handleOnClear() {
-    actions.clearFilter();
-    actions.loadAppointments();
+    dispatch(clearFilter());
+    dispatch(loadAppointments());
+  }
+
+  function handleFilterRequest() {
+    dispatch(loadAppointments());
   }
 
   function filterOptions(options, { inputValue }) {
@@ -246,7 +239,7 @@ export default function AppointmentsFilter() {
           </Grid>
 
           <Grid item container justify="center">
-            <IconButton color="default" onClick={handleOnSearch}>
+            <IconButton color="default" onClick={handleFilterRequest}>
               <SearchIcon />
             </IconButton>
 
