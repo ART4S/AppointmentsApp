@@ -1,5 +1,5 @@
 import axios from "axios";
-import ClientError from "errors/clientError";
+import ClientError from "common/errors/clientError";
 
 const httpClient = axios.create({
   baseURL: process.env.REACT_APP_API_URL,

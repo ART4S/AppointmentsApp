@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { Box, Typography, makeStyles, IconButton } from "@material-ui/core";
-import PropTypes from "prop-types";
+import { AccountCircle as AccountCircleIcon } from "@material-ui/icons";
 
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import PropTypes from "prop-types";
 
 const CURRENT_USER = "Чулец Вячеслав Анатольевич";
 

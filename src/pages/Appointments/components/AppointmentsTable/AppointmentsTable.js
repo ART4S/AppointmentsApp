@@ -1,8 +1,10 @@
-import CustomTable from "components/Table/Table";
-
-import moment from "moment";
-import { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
+
+import { Box } from "@material-ui/core";
+
+import Table from "common/components/Table/Table";
 
 import {
   loadAppointments,
@@ -12,28 +14,29 @@ import {
   selectAllAppointments,
   selectSorting,
   selectPagination,
-} from "./tableSlice";
+} from "./appointmentsTableSlice";
 
 const columns = [
   {
     field: "date",
     header: "Дата",
+    enableSort: true,
     formatter: (d) => moment(d).format("DD.MM.YYYY"),
   },
-  { field: "clientName", header: "Клиент" },
-  { field: "status", header: "Статус" },
-  { field: "holderName", header: "Принимающий" },
+  { field: "clientName", header: "Клиент", enableSort: true },
+  { field: "status", header: "Статус", enableSort: true },
+  { field: "holderName", header: "Принимающий", enableSort: true },
   { field: "complaints", header: "Жалобы" },
   { field: "diagnosis", header: "Диагноз" },
 ];
 
-export default function Table() {
+export default function AppointmentsTable() {
   const dispatch = useDispatch();
   const appointments = useSelector(selectAllAppointments);
   const sorting = useSelector(selectSorting);
   const pagination = useSelector(selectPagination);
 
-  useEffect(() => {
+  React.useEffect(() => {
     dispatch(loadAppointments());
   }, []);
 
@@ -54,14 +57,16 @@ export default function Table() {
   }
 
   return (
-    <CustomTable
-      columns={columns}
-      rows={appointments}
-      pagination={pagination}
-      sorting={sorting}
-      onSortRequest={handleSortRequest}
-      onCurrentPageChange={handleCurrentPageChange}
-      onItemsPerPageChange={handleItemsPerPageChange}
-    />
+    <Box>
+      <Table
+        columns={columns}
+        rows={appointments}
+        pagination={pagination}
+        sorting={sorting}
+        onSortRequest={handleSortRequest}
+        onCurrentPageChange={handleCurrentPageChange}
+        onItemsPerPageChange={handleItemsPerPageChange}
+      />
+    </Box>
   );
 }

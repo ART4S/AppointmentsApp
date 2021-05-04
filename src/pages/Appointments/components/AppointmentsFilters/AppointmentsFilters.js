@@ -12,15 +12,14 @@ import {
   MenuItem,
   Grid,
 } from "@material-ui/core";
-import SearchIcon from "@material-ui/icons/Search";
-import ClearIcon from "@material-ui/icons/Clear";
+import { Search as SearchIcon, Clear as ClearIcon } from "@material-ui/icons";
 import { Autocomplete } from "@material-ui/lab";
 
 import { matchSorter } from "match-sorter";
 
 import getFullName from "utils/getFullName";
 
-import { loadAppointments } from "../Table/tableSlice";
+import { loadAppointments } from "../AppointmentsTable/appointmentsTableSlice";
 
 import {
   loadUsers,
@@ -32,7 +31,7 @@ import {
   selectUsers,
   selectClients,
   selectAppointmentStatuses,
-} from "./filtersSlice";
+} from "./AppointmentsFiltersSlice";
 
 const useStyle = makeStyles((theme) => ({
   form: {

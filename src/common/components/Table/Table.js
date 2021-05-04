@@ -20,8 +20,6 @@ import {
   KeyboardArrowRight,
 } from "@material-ui/icons";
 
-import PropTypes from "prop-types";
-
 const TableCell = withStyles((theme) => ({
   head: {
     backgroundColor: theme.palette.primary.light,
@@ -41,12 +39,24 @@ const TableRow = withStyles((theme) => ({
   },
 }))(MuiTableRow);
 
-function TableHead(props) {
-  const { columns, order, orderBy, onSortRequested } = props;
-
+function SortLabel({ order, orderBy, column, onSortRequested }) {
   function createSortHandler(property) {
     return () => onSortRequested(order === "asc" ? "desc" : "asc", property);
   }
+
+  return (
+    <MuiTableSortLabel
+      active={orderBy === column.field}
+      direction={orderBy === column.field ? order : "asc"}
+      onClick={createSortHandler(column.field)}
+    >
+      {column.header}
+    </MuiTableSortLabel>
+  );
+}
+
+function TableHead(props) {
+  const { columns, order, orderBy, onSortRequested } = props;
 
   return (
     <MuiTableHead>
@@ -56,13 +66,16 @@ function TableHead(props) {
             key={column.field}
             sortDirection={orderBy === column.field ? order : false}
           >
-            <MuiTableSortLabel
-              active={orderBy === column.field}
-              direction={orderBy === column.field ? order : "asc"}
-              onClick={createSortHandler(column.field)}
-            >
-              {column.header}
-            </MuiTableSortLabel>
+            {column.enableSort ? (
+              <SortLabel
+                column={column}
+                order={order}
+                orderBy={orderBy}
+                onSortRequested={onSortRequested}
+              />
+            ) : (
+              column.header
+            )}
           </TableCell>
         ))}
       </TableRow>
@@ -181,7 +194,7 @@ export default function Table({
       </MuiTableContainer>
 
       <MuiTablePagination
-        rowsPerPageOptions={pagination.avaliableItemsPerPage}
+        rowsPerPageOptions={pagination.availableItemsPerPage}
         component="div"
         count={pagination.totalItems}
         rowsPerPage={pagination.itemsPerPage}

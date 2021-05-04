@@ -13,19 +13,20 @@ const initialState = {
   data: appointmentsAdapter.getInitialState({
     isLoading: false,
     error: false,
+    shouldReload: false,
   }),
 
   pagination: {
     currentPage: 0,
     itemsPerPage: 5,
-    avaliableItemsPerPage: [5, 15, 25],
-    pageSize: null,
-    totalItems: null,
+    availableItemsPerPage: [5, 15, 25],
+    pageSize: 0,
+    totalItems: 0,
   },
 
   sorting: {
-    order: "asc",
     field: "",
+    order: "asc",
   },
 };
 
@@ -41,7 +42,7 @@ export const loadAppointments = createAsyncThunk(
 );
 
 const tableSlice = createSlice({
-  name: "table",
+  name: "appointments/table",
 
   initialState,
 
@@ -57,11 +58,19 @@ const tableSlice = createSlice({
     setItemsPerPage(state, action) {
       let itemsPerPage = action.payload;
 
-      if (!state.pagination.avaliableItemsPerPage.includes(itemsPerPage)) {
-        [itemsPerPage] = state.pagination.avaliableItemsPerPage;
+      if (!state.pagination.availableItemsPerPage.includes(itemsPerPage)) {
+        [itemsPerPage] = state.pagination.availableItemsPerPage;
       }
 
       state.pagination.itemsPerPage = itemsPerPage;
+    },
+
+    clearError(state) {
+      state.data.error = false;
+    },
+
+    setShouldReload(state, action) {
+      state.data.shouldReload = action.payload;
     },
   },
 
@@ -92,6 +101,8 @@ export const {
   setSorting,
   setCurrentPage,
   setItemsPerPage,
+  clearError,
+  setShouldReload,
 } = tableSlice.actions;
 
 export const {
@@ -106,5 +117,11 @@ export const selectPagination = (state) => state.appointments.table.pagination;
 
 export const selectAppointmentsIsLoading = (state) =>
   state.appointments.table.data.isLoading;
+
+export const selectAppointmentsError = (state) =>
+  state.appointments.table.data.error;
+
+export const selectShouldReload = (state) =>
+  state.appointments.table.data.shouldReload;
 
 export default tableSlice;

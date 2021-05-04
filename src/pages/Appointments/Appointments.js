@@ -5,15 +5,17 @@ import {
   IconButton,
   makeStyles,
 } from "@material-ui/core";
-import FilterListIcon from "@material-ui/icons/FilterList";
-
-import Header from "components/Header/Header";
+import { FilterList as FilterListIcon } from "@material-ui/icons";
 
 import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg";
 
-import Accordion from "./Accordion/Accordion";
-import Filters from "./Filters/Filters";
-import Table from "./Table/Table";
+import Header from "common/components/Header/Header";
+
+import AppointmentsAccordion from "./components/AppointmentsAccordion/AppointmentsAccordion";
+import AppointmentsFilters from "./components/AppointmentsFilters/AppointmentsFilters";
+import AppointmentsTable from "./components/AppointmentsTable/AppointmentsTable";
+
+import AppointmentsErrorDialog from "./components/AppointmentsErrorDialog/AppointmentsErrorDialog";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -37,7 +39,7 @@ export default function Appointments() {
 
       <Container maxWidth="md">
         <Box mt={5}>
-          <Accordion
+          <AppointmentsAccordion
             header={
               <Tooltip title="Filters">
                 <IconButton aria-label="filters">
@@ -46,14 +48,16 @@ export default function Appointments() {
               </Tooltip>
             }
           >
-            <Filters />
-          </Accordion>
+            <AppointmentsFilters />
+          </AppointmentsAccordion>
         </Box>
 
         <Box mt={5}>
-          <Table />
+          <AppointmentsTable />
         </Box>
       </Container>
+
+      <AppointmentsErrorDialog />
     </Box>
   );
 }

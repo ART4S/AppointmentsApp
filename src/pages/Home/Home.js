@@ -3,7 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Box, Grid, Typography, makeStyles } from "@material-ui/core";
 
-import Header from "components/Header/Header";
+import Header from "common/components/Header/Header";
 
 import { ReactComponent as StarIcon } from "assets/icons/star.svg";
 import { ReactComponent as HouseIcon } from "assets/icons/house.svg";
