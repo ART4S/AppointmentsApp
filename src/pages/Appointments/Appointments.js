@@ -1,10 +1,4 @@
-import {
-  Box,
-  Container,
-  Tooltip,
-  IconButton,
-  makeStyles,
-} from "@material-ui/core";
+import { Box, Container, Tooltip, IconButton } from "@material-ui/core";
 import { FilterList as FilterListIcon } from "@material-ui/icons";
 
 import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg";
@@ -17,32 +11,21 @@ import AppointmentsTable from "./components/AppointmentsTable/AppointmentsTable"
 
 import AppointmentsErrorDialog from "./components/AppointmentsErrorDialog/AppointmentsErrorDialog";
 
-const useStyles = makeStyles((theme) => ({
-  root: {},
+const HEADER_TITLE = "Приемы";
 
-  body: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    padding: 10,
-    maxWidth: 800,
-    margin: "auto",
-  },
-}));
+const FILTERS_TOOLTIP = "Фильтры";
 
 export default function Appointments() {
-  const classes = useStyles();
-
   return (
-    <Box className={classes.root}>
-      <Header title="Приемы" Icon={AppointmentIcon} />
+    <Box>
+      <Header title={HEADER_TITLE} Icon={AppointmentIcon} />
 
       <Container maxWidth="md">
         <Box mt={5}>
           <AppointmentsAccordion
             header={
-              <Tooltip title="Filters">
-                <IconButton aria-label="filters">
+              <Tooltip title={FILTERS_TOOLTIP}>
+                <IconButton>
                   <FilterListIcon />
                 </IconButton>
               </Tooltip>

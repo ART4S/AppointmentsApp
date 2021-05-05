@@ -9,4 +9,4 @@ const appointmentStatuses = [
   { id: faker.datatype.uuid(), name: "Активен" },
 ];
 
-export default { getAll: () => appointmentStatuses };
+export default appointmentStatuses;

@@ -1,8 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
-
-import { Box } from "@material-ui/core";
 
 import Table from "common/components/Table/Table";
 
@@ -57,16 +56,14 @@ export default function AppointmentsTable() {
   }
 
   return (
-    <Box>
-      <Table
-        columns={columns}
-        rows={appointments}
-        pagination={pagination}
-        sorting={sorting}
-        onSortRequest={handleSortRequest}
-        onCurrentPageChange={handleCurrentPageChange}
-        onItemsPerPageChange={handleItemsPerPageChange}
-      />
-    </Box>
+    <Table
+      columns={columns}
+      rows={appointments}
+      pagination={pagination}
+      sorting={sorting}
+      onSortRequest={handleSortRequest}
+      onCurrentPageChange={handleCurrentPageChange}
+      onItemsPerPageChange={handleItemsPerPageChange}
+    />
   );
 }

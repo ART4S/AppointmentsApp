@@ -1,4 +1,6 @@
-export default function getFullName(user) {
+/* eslint-disable import/prefer-default-export */
+
+export function getFullName(user) {
   let fullName = "";
   if (!user) return fullName;
   if (user.lastName) fullName += ` ${user.lastName}`;

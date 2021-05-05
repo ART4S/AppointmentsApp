@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -17,7 +18,7 @@ import { Autocomplete } from "@material-ui/lab";
 
 import { matchSorter } from "match-sorter";
 
-import getFullName from "utils/getFullName";
+import { getFullName } from "utils/userUtils";
 
 import { loadAppointments } from "../AppointmentsTable/appointmentsTableSlice";
 
@@ -45,7 +46,7 @@ const useStyle = makeStyles((theme) => ({
   },
 }));
 
-export default function Filters() {
+export default function AppointmentsFilters() {
   const dispatch = useDispatch();
   const classes = useStyle();
   const filter = useSelector(selectFilter);

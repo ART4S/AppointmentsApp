@@ -13,6 +13,8 @@ import { ReactComponent as BroadcastIcon } from "assets/icons/broadcast.svg";
 import { ReactComponent as EmployeesIcon } from "assets/icons/employees.svg";
 import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg";
 
+const HEADER_TITLE = "Домашняя";
+
 const useStyles = makeStyles((theme) => ({
   body: {
     display: "flex",
@@ -107,7 +109,7 @@ export default function Home() {
 
   return (
     <Box>
-      <Header Icon={HouseIcon} title="Домашняя" />
+      <Header Icon={HouseIcon} title={HEADER_TITLE} />
 
       <Box className={classes.body}>
         <NavigationPanel />

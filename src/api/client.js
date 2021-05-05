@@ -1,4 +1,8 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable dot-notation */
+/* eslint-disable no-param-reassign */
 import axios from "axios";
+
 import ClientError from "common/errors/clientError";
 
 const httpClient = axios.create({
@@ -6,10 +10,39 @@ const httpClient = axios.create({
   timeout: 1000,
 });
 
+let token = null;
+
+function useToken(headers = {}) {
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+  return headers;
+}
+
 class Client {
-  async get(url, params) {
+  setToken(newToken) {
+    token = newToken;
+  }
+
+  get(url, params) {
+    return this.handleError(() =>
+      httpClient.get(url, { params, headers: useToken() }),
+    );
+  }
+
+  post(url, body, headers = {}) {
+    useToken(headers);
+    return this.handleError(() => httpClient.post(url, body, { headers }));
+  }
+
+  put(url, body, headers = {}) {
+    useToken(headers);
+    return this.handleError(() => httpClient.put(url, body, { headers }));
+  }
+
+  async handleError(promiseGetter) {
     try {
-      return await httpClient.get(url, { params });
+      return await promiseGetter();
     } catch (e) {
       throw new ClientError(e.message);
     }

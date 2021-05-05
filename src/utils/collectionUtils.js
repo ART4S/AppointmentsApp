@@ -13,3 +13,11 @@ export function selectMany(arr, arrSelector) {
     return result;
   }, []);
 }
+
+export function repeat(n, valueGetter) {
+  const arr = [];
+  for (let i = 0; i < n; i++) {
+    arr.push(valueGetter());
+  }
+  return arr;
+}
