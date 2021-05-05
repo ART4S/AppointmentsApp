@@ -23,9 +23,9 @@ function server() {
 
       this.get("/api/clients", () => clients.getAll());
 
-      this.put("/api/auth", (schema, request) => {
-        const { login, password } = JSON.parse(request.requestBody);
-        return auth.login(login, password);
+      this.put("/api/auth/login", (schema, request) => {
+        const { email, password } = JSON.parse(request.requestBody);
+        return auth.login(email, password);
       });
     },
   });

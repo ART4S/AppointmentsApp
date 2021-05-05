@@ -30,10 +30,11 @@ const columns = [
 ];
 
 export default function AppointmentsTable() {
-  const dispatch = useDispatch();
   const appointments = useSelector(selectAllAppointments);
   const sorting = useSelector(selectSorting);
   const pagination = useSelector(selectPagination);
+
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
     dispatch(loadAppointments());

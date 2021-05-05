@@ -11,20 +11,19 @@ import AppointmentsTable from "./components/AppointmentsTable/AppointmentsTable"
 
 import AppointmentsErrorDialog from "./components/AppointmentsErrorDialog/AppointmentsErrorDialog";
 
-const HEADER_TITLE = "Приемы";
-
-const FILTERS_TOOLTIP = "Фильтры";
+const APPOINTMENTS = "Приемы";
+const FILTERS = "Фильтры";
 
 export default function Appointments() {
   return (
     <Box>
-      <Header title={HEADER_TITLE} Icon={AppointmentIcon} />
+      <Header title={APPOINTMENTS} Icon={AppointmentIcon} />
 
       <Container maxWidth="md">
         <Box mt={5}>
           <AppointmentsAccordion
             header={
-              <Tooltip title={FILTERS_TOOLTIP}>
+              <Tooltip title={FILTERS}>
                 <IconButton>
                   <FilterListIcon />
                 </IconButton>

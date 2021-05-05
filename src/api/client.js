@@ -3,6 +3,8 @@
 /* eslint-disable no-param-reassign */
 import axios from "axios";
 
+import Cookies from "js-cookie";
+
 import ClientError from "common/errors/clientError";
 
 const httpClient = axios.create({
@@ -10,7 +12,7 @@ const httpClient = axios.create({
   timeout: 1000,
 });
 
-let token = null;
+let token = Cookies.get("token");
 
 function useToken(headers = {}) {
   if (token) {
@@ -22,6 +24,7 @@ function useToken(headers = {}) {
 class Client {
   setToken(newToken) {
     token = newToken;
+    Cookies.set("token", newToken);
   }
 
   get(url, params) {

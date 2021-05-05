@@ -7,14 +7,15 @@ import {
   setShouldReload,
 } from "../AppointmentsTable/appointmentsTableSlice";
 
-const ERROR_TITLE = "Ошибка";
-const ERROR_MESSAGE =
+const ERROR = "Ошибка";
+const ERROR_LOAD_PAGE =
   "В процессе загрузки данных произошла ошибка, пожалуйста перезагрузите страницу";
 
 export default function AppointmentsErrorDialog() {
-  const dispatch = useDispatch();
   const hasError = useSelector(selectAppointmentsError);
   const shouldReload = useSelector(selectShouldReload);
+
+  const dispatch = useDispatch();
 
   function handleEnter() {
     setTimeout(() => {
@@ -24,8 +25,8 @@ export default function AppointmentsErrorDialog() {
 
   return (
     <ErrorDialog
-      title={ERROR_TITLE}
-      text={ERROR_MESSAGE}
+      title={ERROR}
+      text={ERROR_LOAD_PAGE}
       open={hasError && !shouldReload}
       onEnter={handleEnter}
     />

@@ -1,5 +1,9 @@
+import jwt from "jwt-simple";
+import moment from "moment";
+
 import users from "../data/users";
-import UserInfoDto from "../dto/userInfoDto";
+
+const secret = "1dsewr3";
 
 class AuthController {
   login(login, password) {
@@ -7,14 +11,21 @@ class AuthController {
       (x) => x.login === login && x.password === password,
     );
 
+    if (!user) {
+      throw new Error("Wrong login or password");
+    }
+
+    const { id, firstName, middleName, lastName } = user;
+
+    const expiresAt = moment().add(30, "minutes").toISOString();
+
     return {
-      token: "123",
-      user: new UserInfoDto(
-        user.id,
-        user.firstName,
-        user.middleName,
-        user.lastName,
-      ),
+      token: jwt.encode({ id, expiresAt }, secret),
+      user: {
+        firstName,
+        middleName,
+        lastName,
+      },
     };
   }
 }

@@ -47,12 +47,13 @@ const useStyle = makeStyles((theme) => ({
 }));
 
 export default function AppointmentsFilters() {
-  const dispatch = useDispatch();
-  const classes = useStyle();
   const filter = useSelector(selectFilter);
   const users = useSelector(selectUsers);
   const clients = useSelector(selectClients);
   const appointmentStatuses = useSelector(selectAppointmentStatuses);
+
+  const classes = useStyle();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(loadUsers());

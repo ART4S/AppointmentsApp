@@ -1,7 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable no-param-reassign */
-import React, { useReducer } from "react";
-import { createSlice } from "@reduxjs/toolkit";
+import React from "react";
+import { useHistory, useLocation } from "react-router-dom";
+
 import {
   Container,
   Box,
@@ -12,12 +13,18 @@ import {
   Checkbox,
   Button,
   Link,
+  InputAdornment,
+  IconButton,
   makeStyles,
 } from "@material-ui/core";
-import { pink } from "@material-ui/core/colors";
-import { LockOutlined as LockOutlinedIcon } from "@material-ui/icons";
 
-import authService from "services/authService";
+import {
+  LockOutlined as LockOutlinedIcon,
+  Visibility as VisibilityIcon,
+  VisibilityOff as VisibilityOffIcon,
+} from "@material-ui/icons";
+
+import useAuth from "common/hooks/useAuth";
 
 const EMAIL = "Электронная почта";
 const PASSWORD = "Пароль";
@@ -73,51 +80,44 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const initialState = {
-  login: "",
-  password: "",
-  remember: false,
-};
-
-const { reducer, actions } = createSlice({
-  name: "login",
-
-  initialState,
-
-  reducers: {
-    setLogin(state, action) {
-      state.login = action.payload;
-    },
-
-    setPassword(state, action) {
-      state.password = action.payload;
-    },
-
-    setRemember(state, action) {
-      state.remember = action.payload;
-    },
-  },
-});
-
-const { setLogin, setPassword, setRemember } = actions;
-
 export default function Login() {
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [remember, setRemember] = React.useState(false);
+  const [showPassword, setShowPassword] = React.useState(false);
+
   const classes = useStyles();
-  const [{ login, password, remember }, dispatch] = useReducer(
-    reducer,
-    initialState,
-  );
+  const auth = useAuth();
+  const location = useLocation();
+  const history = useHistory();
 
   function handleEmailChange(event) {
-    dispatch(setLogin(event.target.value));
+    setEmail(event.target.value);
   }
 
   function handlePasswordChange(event) {
-    dispatch(setPassword(event.target.value));
+    setPassword(event.target.value);
   }
 
   function handleRememberChecked(event) {
-    dispatch(setRemember(event.target.checked));
+    setRemember(event.target.checked);
+  }
+
+  function handleShowPassword() {
+    setShowPassword(!showPassword);
+  }
+
+  async function handleSignIn() {
+    await auth.login(email, password);
+
+    const from = location.state?.from?.pathname ?? "/";
+
+    history.replace(from);
+
+    setEmail("");
+    setPassword("");
+    setRemember(false);
+    setShowPassword(false);
   }
 
   return (
@@ -136,7 +136,7 @@ export default function Login() {
           id="email"
           variant="outlined"
           label={EMAIL}
-          value={login}
+          value={email}
           onChange={handleEmailChange}
           fullWidth
           required
@@ -146,10 +146,19 @@ export default function Login() {
           className={classes.control}
           id="password"
           variant="outlined"
-          type="password"
+          type={showPassword ? "text" : "password"}
           label={PASSWORD}
           value={password}
           onChange={handlePasswordChange}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={handleShowPassword} edge="end">
+                  {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
           fullWidth
           required
         />
@@ -166,7 +175,7 @@ export default function Login() {
           }
         />
 
-        <Button variant="contained" color="primary">
+        <Button variant="contained" color="primary" onClick={handleSignIn}>
           {LOGIN}
         </Button>
 
@@ -174,6 +183,7 @@ export default function Login() {
           <Link>
             <Typography>{FORGOT_PASSWORD}</Typography>
           </Link>
+
           <Link>
             <Typography>{SIGNUP}</Typography>
           </Link>

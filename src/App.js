@@ -1,27 +1,60 @@
-import { Provider } from "react-redux";
+/* eslint-disable no-confusing-arrow */
+import React from "react";
+import { Provider, useSelector } from "react-redux";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
 } from "react-router-dom";
+import { CssBaseline } from "@material-ui/core";
 
 import store from "redux/store";
+
+import Login from "pages/Login/Login";
 import Home from "pages/Home/Home";
 import Appointments from "pages/Appointments/Appointments";
-import Login from "pages/Login/Login";
+
+import useAuth, { ProvideAuth } from "common/hooks/useAuth";
+
+function AuthRoute({ children, ...rest }) {
+  const auth = useAuth();
+
+  function render({ location }) {
+    if (!auth.user) {
+      return (
+        <Redirect to={{ pathname: "/login", state: { from: location } }} />
+      );
+    }
+
+    return children;
+  }
+
+  return <Route {...rest} render={render} />;
+}
 
 export default function App() {
   return (
     <Provider store={store}>
-      <Router>
-        <Switch>
-          <Route path="/login" component={Login} />
-          <Route path="/home" component={Home} />
-          <Route path="/appointments" component={Appointments} />
-          <Redirect from="/" to="/login" />
-        </Switch>
-      </Router>
+      <CssBaseline />
+
+      <ProvideAuth>
+        <Router>
+          <Switch>
+            <Route path="/login" exact>
+              <Login />
+            </Route>
+
+            <AuthRoute path="/" exact>
+              <Home />
+            </AuthRoute>
+
+            <AuthRoute path="/appointments">
+              <Appointments />
+            </AuthRoute>
+          </Switch>
+        </Router>
+      </ProvideAuth>
     </Provider>
   );
 }

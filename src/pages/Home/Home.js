@@ -13,7 +13,13 @@ import { ReactComponent as BroadcastIcon } from "assets/icons/broadcast.svg";
 import { ReactComponent as EmployeesIcon } from "assets/icons/employees.svg";
 import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg";
 
-const HEADER_TITLE = "Домашняя";
+const HOME_PAGE = "Домашняя";
+const APPOINTMENTS = "Приемы";
+const EVENTS = "События";
+const NOTIFICATIONS = "Оповещения";
+const MESSAGES = "Сообщения";
+const CLIENTS = "Клиенты";
+const EMPLOYEES = "Сотрудники";
 
 const useStyles = makeStyles((theme) => ({
   body: {
@@ -34,8 +40,8 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 10,
     borderColor: theme.palette.primary.main,
     color: theme.palette.primary.main,
-    width: 130,
-    height: 130,
+    width: theme.spacing(22),
+    height: theme.spacing(22),
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
@@ -45,6 +51,8 @@ const useStyles = makeStyles((theme) => ({
 
   icon: {
     fill: theme.palette.primary.main,
+    width: theme.spacing(10),
+    height: theme.spacing(10),
   },
 
   link: {
@@ -67,12 +75,12 @@ function NavigationItem({ title, Icon, link }) {
 }
 
 const navigationItems = [
-  { title: "Приёмы", Icon: AppointmentIcon, link: "/appointments" },
-  { title: "События", Icon: StarIcon, link: "/" },
-  { title: "Оповещения", Icon: BroadcastIcon, link: "/" },
-  { title: "Сообщения", Icon: MessagesIcon, link: "/" },
-  { title: "Клиенты", Icon: ClientsIcon, link: "/" },
-  { title: "Сотрудники", Icon: EmployeesIcon, link: "/" },
+  { title: APPOINTMENTS, Icon: AppointmentIcon, link: "/appointments" },
+  { title: EVENTS, Icon: StarIcon, link: "/events" },
+  { title: NOTIFICATIONS, Icon: BroadcastIcon, link: "/notifications" },
+  { title: MESSAGES, Icon: MessagesIcon, link: "/messages" },
+  { title: CLIENTS, Icon: ClientsIcon, link: "/clients" },
+  { title: EMPLOYEES, Icon: EmployeesIcon, link: "/employees" },
 ];
 
 function NavigationPanel() {
@@ -109,7 +117,7 @@ export default function Home() {
 
   return (
     <Box>
-      <Header Icon={HouseIcon} title={HEADER_TITLE} />
+      <Header Icon={HouseIcon} title={HOME_PAGE} />
 
       <Box className={classes.body}>
         <NavigationPanel />

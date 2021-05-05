@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
-import { Box, Typography, makeStyles, IconButton } from "@material-ui/core";
+import { Box, Avatar, Typography, makeStyles } from "@material-ui/core";
 import { AccountCircle as AccountCircleIcon } from "@material-ui/icons";
 
 import PropTypes from "prop-types";
 
-const CURRENT_USER = "Чулец Вячеслав Анатольевич";
+import useAuth from "common/hooks/useAuth";
+
+import { getFullName } from "utils/userUtils";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -12,8 +14,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-around",
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.primary.contrastText,
-    paddingTop: 20,
-    paddingBottom: 20,
+    padding: theme.spacing(2, 0),
   },
 
   icon: {
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
 
-  accountButton: {
+  avatar: {
     marginLeft: theme.spacing(3),
   },
 
@@ -40,10 +41,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Header({ title, Icon }) {
   const classes = useStyles();
+  const auth = useAuth();
+
+  const user = getFullName(auth.user);
 
   return (
     <Box className={classes.header}>
-      <Link to="/home" className={classes.link}>
+      <Link to="/" className={classes.link}>
         <Icon className={classes.icon} />
         <Typography className={classes.title} variant="h3">
           {title}
@@ -51,11 +55,11 @@ export default function Header({ title, Icon }) {
       </Link>
 
       <Box display="flex" justifyContent="center" alignItems="center">
-        <Typography variant="h5">{CURRENT_USER}</Typography>
+        <Typography variant="h5">{user}</Typography>
 
-        <IconButton>
+        <Avatar className={classes.avatar}>
           <AccountCircleIcon className={classes.icon} />
-        </IconButton>
+        </Avatar>
       </Box>
     </Box>
   );
