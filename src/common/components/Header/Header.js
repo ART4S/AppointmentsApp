@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
-import { Box, Avatar, Typography, makeStyles } from "@material-ui/core";
-import { AccountCircle as AccountCircleIcon } from "@material-ui/icons";
+import { Box, Typography, IconButton, makeStyles } from "@material-ui/core";
+import {
+  AccountCircle as AccountCircleIcon,
+  ExitToApp as ExitToAppIcon,
+} from "@material-ui/icons";
 
 import PropTypes from "prop-types";
 
 import useAuth from "common/hooks/useAuth";
-
-import { getFullName } from "utils/userUtils";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -30,10 +31,6 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
 
-  avatar: {
-    marginLeft: theme.spacing(3),
-  },
-
   title: {
     marginLeft: theme.spacing(3),
   },
@@ -42,8 +39,11 @@ const useStyles = makeStyles((theme) => ({
 export default function Header({ title, Icon }) {
   const classes = useStyles();
   const auth = useAuth();
+  const userName = `${auth.user.firstName} ${auth.user.lastName}`;
 
-  const user = getFullName(auth.user);
+  function handleLogout() {
+    auth.logout();
+  }
 
   return (
     <Box className={classes.header}>
@@ -55,11 +55,15 @@ export default function Header({ title, Icon }) {
       </Link>
 
       <Box display="flex" justifyContent="center" alignItems="center">
-        <Typography variant="h5">{user}</Typography>
+        <Typography variant="h5">{userName}</Typography>
 
-        <Avatar className={classes.avatar}>
+        <IconButton>
           <AccountCircleIcon className={classes.icon} />
-        </Avatar>
+        </IconButton>
+
+        <IconButton onClick={handleLogout}>
+          <ExitToAppIcon className={classes.icon} />
+        </IconButton>
       </Box>
     </Box>
   );

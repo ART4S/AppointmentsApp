@@ -29,12 +29,6 @@ const useStyles = makeStyles((theme) => ({
     height: "100vh",
   },
 
-  navigationPanel: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
   navigationItem: {
     border: "5px solid",
     borderRadius: 10,
@@ -87,28 +81,25 @@ function NavigationPanel() {
   const spacing = 2;
 
   return (
-    <Grid
-      container
-      direction="column"
-      spacing={spacing}
-      style={{ width: "fit-content" }}
-    >
-      <Grid item container spacing={spacing}>
-        {navigationItems.slice(0, 3).map((x) => (
-          <Grid key={x.title} item>
-            <NavigationItem {...x} />
-          </Grid>
-        ))}
-      </Grid>
+    <Box>
+      <Grid container direction="column" spacing={spacing} wrap="nowrap">
+        <Grid item container spacing={spacing}>
+          {navigationItems.slice(0, 3).map((x) => (
+            <Grid key={x.title} item>
+              <NavigationItem {...x} />
+            </Grid>
+          ))}
+        </Grid>
 
-      <Grid item container spacing={spacing}>
-        {navigationItems.slice(3, 6).map((x) => (
-          <Grid key={x.title} item>
-            <NavigationItem {...x} />
-          </Grid>
-        ))}
+        <Grid item container spacing={spacing} wrap="nowrap">
+          {navigationItems.slice(3, 6).map((x) => (
+            <Grid key={x.title} item>
+              <NavigationItem {...x} />
+            </Grid>
+          ))}
+        </Grid>
       </Grid>
-    </Grid>
+    </Box>
   );
 }
 
@@ -116,7 +107,7 @@ export default function Home() {
   const classes = useStyles();
 
   return (
-    <Box>
+    <Box className={classes.page}>
       <Header Icon={HouseIcon} title={HOME_PAGE} />
 
       <Box className={classes.body}>

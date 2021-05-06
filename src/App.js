@@ -1,6 +1,6 @@
 /* eslint-disable no-confusing-arrow */
 import React from "react";
-import { Provider, useSelector } from "react-redux";
+import { Provider } from "react-redux";
 import {
   BrowserRouter as Router,
   Switch,
@@ -14,6 +14,7 @@ import store from "redux/store";
 import Login from "pages/Login/Login";
 import Home from "pages/Home/Home";
 import Appointments from "pages/Appointments/Appointments";
+import NotFound from "pages/NotFound/NotFound";
 
 import useAuth, { ProvideAuth } from "common/hooks/useAuth";
 
@@ -52,6 +53,10 @@ export default function App() {
             <AuthRoute path="/appointments">
               <Appointments />
             </AuthRoute>
+
+            <Route path="/">
+              <NotFound />
+            </Route>
           </Switch>
         </Router>
       </ProvideAuth>

@@ -2,7 +2,8 @@
 /* eslint-disable no-param-reassign */
 import React from "react";
 import { useHistory, useLocation } from "react-router-dom";
-
+import * as yup from "yup";
+import { useFormik } from "formik";
 import {
   Container,
   Box,
@@ -17,6 +18,8 @@ import {
   IconButton,
   makeStyles,
 } from "@material-ui/core";
+
+import { Alert } from "@material-ui/lab";
 
 import {
   LockOutlined as LockOutlinedIcon,
@@ -33,6 +36,9 @@ const LOGIN = "Войти";
 const FORGOT_PASSWORD = "Забыли пароль?";
 const SIGNIN = "Вход";
 const SIGNUP = "Регистрация";
+const WRITE_CORRECT_EMAIL = "Введите корректный адрес";
+const REQUIRED = "Обязательно для заполнения";
+const WORNG_LOGIN_OR_PASSWORD = "Неверный логин или пароль";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -80,24 +86,39 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const schema = yup.object({
+  email: yup.string().email(WRITE_CORRECT_EMAIL).required(REQUIRED),
+  password: yup.string().required(REQUIRED),
+});
+
 export default function Login() {
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
   const [remember, setRemember] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
+  const [serverError, setServerError] = React.useState("");
 
   const classes = useStyles();
   const auth = useAuth();
   const location = useLocation();
   const history = useHistory();
 
-  function handleEmailChange(event) {
-    setEmail(event.target.value);
+  async function handleSubmit({ email, password }) {
+    const { error } = await auth.login(email, password);
+
+    if (error) {
+      setServerError(WORNG_LOGIN_OR_PASSWORD);
+    } else {
+      history.replace(location.state?.from?.pathname ?? "/");
+    }
   }
 
-  function handlePasswordChange(event) {
-    setPassword(event.target.value);
-  }
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: schema,
+    onSubmit: handleSubmit,
+  });
 
   function handleRememberChecked(event) {
     setRemember(event.target.checked);
@@ -105,19 +126,6 @@ export default function Login() {
 
   function handleShowPassword() {
     setShowPassword(!showPassword);
-  }
-
-  async function handleSignIn() {
-    await auth.login(email, password);
-
-    const from = location.state?.from?.pathname ?? "/";
-
-    history.replace(from);
-
-    setEmail("");
-    setPassword("");
-    setRemember(false);
-    setShowPassword(false);
   }
 
   return (
@@ -130,26 +138,37 @@ export default function Login() {
         {SIGNIN}
       </Typography>
 
-      <form className={classes.form} noValidate>
+      {serverError && (
+        <Alert severity="error" style={{ width: "100%" }}>
+          {serverError}
+        </Alert>
+      )}
+
+      <form className={classes.form} onSubmit={formik.handleSubmit} noValidate>
         <TextField
           className={classes.control}
           id="email"
+          name="email"
           variant="outlined"
           label={EMAIL}
-          value={email}
-          onChange={handleEmailChange}
+          value={formik.values.email}
+          error={formik.touched.email && Boolean(formik.errors.email)}
+          helperText={formik.touched.email && formik.errors.email}
+          onChange={formik.handleChange}
           fullWidth
-          required
         />
 
         <TextField
           className={classes.control}
           id="password"
+          name="password"
           variant="outlined"
           type={showPassword ? "text" : "password"}
           label={PASSWORD}
-          value={password}
-          onChange={handlePasswordChange}
+          value={formik.values.password}
+          error={formik.touched.password && Boolean(formik.errors.password)}
+          helperText={formik.touched.password && formik.errors.password}
+          onChange={formik.handleChange}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -160,10 +179,11 @@ export default function Login() {
             ),
           }}
           fullWidth
-          required
         />
 
         <FormControlLabel
+          id="remember"
+          name="remember"
           className={classes.label}
           label={REMEMBER}
           control={
@@ -175,7 +195,7 @@ export default function Login() {
           }
         />
 
-        <Button variant="contained" color="primary" onClick={handleSignIn}>
+        <Button variant="contained" color="primary" type="submit">
           {LOGIN}
         </Button>
 
