@@ -13,7 +13,6 @@ const initialState = {
   data: appointmentsAdapter.getInitialState({
     isLoading: false,
     error: false,
-    shouldReload: false,
   }),
 
   pagination: {
@@ -32,13 +31,18 @@ const initialState = {
 
 export const loadAppointments = createAsyncThunk(
   "appointments/table/loadAppointments",
-  (_, { getState }) => {
-    const state = getState();
+  (_params, thunkApi) => {
+    const state = thunkApi.getState();
     const { sorting, pagination } = state.appointments.table;
     const { filter } = state.appointments.filters;
 
     return appointmentService.getAll({ ...filter, ...sorting, ...pagination });
   },
+);
+
+export const deleteAppointment = createAsyncThunk(
+  "appointments/table/deleteAppointment",
+  async (id, _thunkApi) => appointmentService.delete(id),
 );
 
 const tableSlice = createSlice({
@@ -68,10 +72,6 @@ const tableSlice = createSlice({
     clearError(state) {
       state.data.error = false;
     },
-
-    setShouldReload(state, action) {
-      state.data.shouldReload = action.payload;
-    },
   },
 
   extraReducers: {
@@ -80,12 +80,13 @@ const tableSlice = createSlice({
     },
 
     [loadAppointments.fulfilled](state, action) {
-      const { data, pageSize, totalItems } = action.payload;
+      const { data, currentPage, pageSize, totalItems } = action.payload;
       state.data.isLoading = false;
       state.data.error = false;
       state.data = appointmentsAdapter.setAll(state.data, data);
       state.pagination.pageSize = pageSize;
       state.pagination.totalItems = totalItems;
+      state.pagination.currentPage = currentPage;
     },
 
     [loadAppointments.rejected](state) {
@@ -102,7 +103,6 @@ export const {
   setCurrentPage,
   setItemsPerPage,
   clearError,
-  setShouldReload,
 } = tableSlice.actions;
 
 export const {
@@ -120,8 +120,5 @@ export const selectAppointmentsIsLoading = (state) =>
 
 export const selectAppointmentsError = (state) =>
   state.appointments.table.data.error;
-
-export const selectShouldReload = (state) =>
-  state.appointments.table.data.shouldReload;
 
 export default tableSlice;

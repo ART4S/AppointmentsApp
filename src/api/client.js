@@ -27,16 +27,22 @@ httpClient.interceptors.response.use(
   },
 );
 
-function get(url, params) {
-  return httpClient.get(url, { params });
+class Client {
+  get(url, params) {
+    return httpClient.get(url, { params });
+  }
+
+  post(url, body, headers = {}) {
+    return httpClient.post(url, body, { headers });
+  }
+
+  put(url, body, headers = {}) {
+    return httpClient.put(url, body, { headers });
+  }
+
+  delete(url, body = {}, headers = {}) {
+    return httpClient.delete(url, { data: body, headers });
+  }
 }
 
-function post(url, body, headers = {}) {
-  return httpClient.post(url, body, { headers });
-}
-
-function put(url, body, headers = {}) {
-  return httpClient.put(url, body, { headers });
-}
-
-export default { get, post, put };
+export default new Client();

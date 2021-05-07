@@ -22,20 +22,14 @@ import {
 
 const TableCell = withStyles((theme) => ({
   head: {
-    backgroundColor: theme.palette.primary.light,
+    backgroundColor: theme.palette.primary.main,
     color: theme.palette.common.white,
-  },
-
-  body: {
-    fontSize: 14,
   },
 }))(MuiTableCell);
 
 const TableRow = withStyles((theme) => ({
-  root: {
-    "&:nth-of-type(odd)": {
-      backgroundColor: theme.palette.action.hover,
-    },
+  hover: {
+    cursor: "pointer",
   },
 }))(MuiTableRow);
 
@@ -83,17 +77,26 @@ function TableHead(props) {
   );
 }
 
-function TableBody({ columns, rows }) {
+function TableBody({ columns, rows, selectedRow, onSelectChange }) {
   function formatData(row, column) {
     const data = row[column.field];
     const { formatter } = column;
     return formatter ? formatter(data) : data;
   }
 
+  function createClickHandler(row) {
+    return (_event) => onSelectChange(row);
+  }
+
   return (
     <MuiTableBody>
       {rows.map((row) => (
-        <TableRow key={row.id}>
+        <TableRow
+          hover
+          key={row.id}
+          selected={row === selectedRow}
+          onClick={createClickHandler(row)}
+        >
           {columns.map((column) => (
             <TableCell key={column.header}>{formatData(row, column)}</TableCell>
           ))}
@@ -103,15 +106,8 @@ function TableBody({ columns, rows }) {
   );
 }
 
-const useActionsStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-  },
-}));
-
 function TablePaginationActions(props) {
   const { count, page, rowsPerPage, onChangePage } = props;
-  const classes = useActionsStyles();
 
   function handleFirstPageButtonClick(event) {
     onChangePage(event, 0);
@@ -138,7 +134,7 @@ function TablePaginationActions(props) {
   }
 
   return (
-    <div className={classes.root}>
+    <div style={{ display: "flex" }}>
       <IconButton
         disabled={!canGotoPrev()}
         onClick={handleFirstPageButtonClick}
@@ -164,13 +160,15 @@ function TablePaginationActions(props) {
 export default function Table({
   columns,
   rows,
+  selectedRow,
   pagination,
   sorting,
   onCurrentPageChange,
   onItemsPerPageChange,
   onSortRequest,
+  onSelectChange,
 }) {
-  function handleChangePage(event, newPage) {
+  function handleChangePage(_event, newPage) {
     onCurrentPageChange(newPage);
   }
 
@@ -189,7 +187,12 @@ export default function Table({
             onSortRequested={onSortRequest}
           />
 
-          <TableBody columns={columns} rows={rows} />
+          <TableBody
+            columns={columns}
+            rows={rows}
+            selectedRow={selectedRow}
+            onSelectChange={onSelectChange}
+          />
         </MuiTable>
       </MuiTableContainer>
 

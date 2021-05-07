@@ -1,7 +1,7 @@
 import jwt from "jwt-simple";
 import moment from "moment";
 
-import ResponseError from "common/errors/responseError";
+import ServerError from "common/errors/responseError";
 
 import users from "../data/users";
 
@@ -14,7 +14,7 @@ class AuthController {
     );
 
     if (!user) {
-      throw new ResponseError("Неверный логин или пароль");
+      throw new ServerError("Неверный логин или пароль");
     }
 
     const { id, firstName, middleName, lastName } = user;

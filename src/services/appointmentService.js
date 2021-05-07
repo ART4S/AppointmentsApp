@@ -6,6 +6,10 @@ class AppointmentService {
       .get("/appointments", params)
       .then((response) => response.data);
   }
+
+  delete(id) {
+    return client.delete(`/appointments/${id}`);
+  }
 }
 
 export default new AppointmentService();

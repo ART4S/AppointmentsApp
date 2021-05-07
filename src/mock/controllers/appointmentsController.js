@@ -1,4 +1,6 @@
 /* eslint-disable no-nested-ternary */
+import { LeakAddTwoTone } from "@material-ui/icons";
+import ServerError from "common/errors/responseError";
 import { matchSorter } from "match-sorter";
 
 import appointments from "../data/appointments";
@@ -34,15 +36,29 @@ class AppointmentsController {
     }
 
     const totalItems = data.length;
+    const itemsPerPage = +params.itemsPerPage;
+    const currentPage = Math.min(
+      Math.ceil(totalItems / itemsPerPage) - 1,
+      +params.currentPage,
+    );
 
-    const start = params.currentPage * params.itemsPerPage;
-    const end = start + +params.itemsPerPage;
+    const start = currentPage * itemsPerPage;
+    const end = start + itemsPerPage;
 
     data = data.slice(start, end);
 
     const pageSize = data.length;
 
-    return { data, pageSize, totalItems };
+    return { data, currentPage, pageSize, totalItems };
+  }
+
+  delete(id) {
+    const index = appointments.findIndex((x) => x.id === id);
+    if (index > -1) {
+      appointments.splice(index, 1);
+    } else {
+      throw new ServerError("item not found");
+    }
   }
 }
 

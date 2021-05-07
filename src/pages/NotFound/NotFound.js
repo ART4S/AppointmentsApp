@@ -13,11 +13,9 @@ const useStyles = makeStyles((theme) => ({
     height: "100vh",
     textAlign: "center",
   },
-
   title: {
     fontSize: "5rem",
   },
-
   link: {
     textDecoration: "inherit",
     marginTop: theme.spacing(4),

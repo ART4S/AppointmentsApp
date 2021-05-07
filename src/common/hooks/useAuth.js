@@ -24,7 +24,6 @@ export function ProvideAuth({ children }) {
 
   function logout() {
     setUser(null);
-
     localStorage.removeItem("user");
     localStorage.removeItem("token");
   }

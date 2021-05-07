@@ -7,7 +7,7 @@ import dictionaries from "mock/controllers/dictionariesController";
 import users from "mock/controllers/usersController";
 import clients from "mock/controllers/clientsController";
 import auth from "mock/controllers/authController";
-import ResponseError from "common/errors/responseError";
+import ServerError from "common/errors/responseError";
 
 new Server({
   routes() {
@@ -30,11 +30,15 @@ new Server({
       try {
         return auth.login(email, password);
       } catch (e) {
-        if (e instanceof ResponseError) {
+        if (e instanceof ServerError) {
           return new Response(400, {}, { error: e.message });
         }
         throw e;
       }
+    });
+
+    this.delete("/api/appointments/:id", (_schema, request) => {
+      appointments.delete(request.params.id);
     });
   },
 });
