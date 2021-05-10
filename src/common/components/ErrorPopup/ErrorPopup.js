@@ -5,6 +5,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogContentText,
+  Typography,
   Grid,
   Slide,
   makeStyles,
@@ -13,7 +14,7 @@ import { Error as ErrorIcon } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   title: {
-    fontSize: "1.5rem",
+    padding: theme.spacing(1, 0),
   },
   content: {
     paddingBottom: theme.spacing(2),
@@ -32,7 +33,7 @@ const Transition = React.forwardRef((props, ref) => (
   <Slide direction="up" ref={ref} {...props} />
 ));
 
-export default function ErrorDialog({ title, text, delaySeconds, ...rest }) {
+export default function ErrorPopup({ title, text, closeDelay, ...rest }) {
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(true);
@@ -40,17 +41,21 @@ export default function ErrorDialog({ title, text, delaySeconds, ...rest }) {
   function handleErrorEnter() {
     setTimeout(() => {
       setOpen(false);
-    }, (delaySeconds ?? 3) * 1000);
+    }, closeDelay);
   }
 
   return (
     <Dialog
-      open={open}
-      onEnter={handleErrorEnter}
-      TransitionComponent={Transition}
       {...rest}
+      open={open}
+      TransitionComponent={Transition}
+      onEnter={handleErrorEnter}
     >
-      <DialogTitle className={classes.title}>{title}</DialogTitle>
+      <DialogTitle>
+        <Typography className={classes.title} variant="h5">
+          {title}
+        </Typography>
+      </DialogTitle>
 
       <DialogContent className={classes.content}>
         <Grid container>

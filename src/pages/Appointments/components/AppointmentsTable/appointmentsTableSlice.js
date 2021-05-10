@@ -27,6 +27,8 @@ const initialState = {
     field: "",
     order: "asc",
   },
+
+  selectedAppointmentId: null,
 };
 
 export const loadAppointments = createAsyncThunk(
@@ -42,14 +44,12 @@ export const loadAppointments = createAsyncThunk(
 
 export const deleteAppointment = createAsyncThunk(
   "appointments/table/deleteAppointment",
-  async (id, _thunkApi) => appointmentService.delete(id),
+  (id, _thunkApi) => appointmentService.delete(id),
 );
 
 const tableSlice = createSlice({
   name: "appointments/table",
-
   initialState,
-
   reducers: {
     setSorting(state, action) {
       state.sorting = action.payload;
@@ -72,8 +72,11 @@ const tableSlice = createSlice({
     clearError(state) {
       state.data.error = false;
     },
-  },
 
+    setSelectedAppointmentId(state, action) {
+      state.selectedAppointmentId = action.payload;
+    },
+  },
   extraReducers: {
     [loadAppointments.pending](state) {
       state.data.isLoading = true;
@@ -96,19 +99,16 @@ const tableSlice = createSlice({
   },
 });
 
-export const tableReducer = tableSlice.reducer;
-
 export const {
   setSorting,
   setCurrentPage,
   setItemsPerPage,
   clearError,
+  setSelectedAppointmentId,
 } = tableSlice.actions;
 
 export const {
-  selectIds: selectAppointmentIds,
   selectAll: selectAllAppointments,
-  selectById: selectAppointmentById,
 } = appointmentsAdapter.getSelectors((state) => state.appointments.table.data);
 
 export const selectSorting = (state) => state.appointments.table.sorting;
@@ -121,4 +121,7 @@ export const selectAppointmentsIsLoading = (state) =>
 export const selectAppointmentsError = (state) =>
   state.appointments.table.data.error;
 
-export default tableSlice;
+export const selectSelectedAppointmentId = (state) =>
+  state.appointments.table.selectedAppointmentId;
+
+export default tableSlice.reducer;

@@ -28,7 +28,6 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     height: "100vh",
   },
-
   navigationItem: {
     border: "5px solid",
     borderRadius: 10,
@@ -42,13 +41,11 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     padding: theme.spacing(2),
   },
-
   icon: {
     fill: theme.palette.primary.main,
     width: theme.spacing(10),
     height: theme.spacing(10),
   },
-
   link: {
     color: "inherit",
     textDecoration: "inherit",
@@ -59,7 +56,7 @@ function NavigationItem({ title, Icon, link }) {
   const classes = useStyles();
 
   return (
-    <Link to={link} className={classes.link}>
+    <Link className={classes.link} to={link}>
       <Box className={classes.navigationItem}>
         <Icon className={classes.icon} />
         <Typography variant="h5">{title}</Typography>

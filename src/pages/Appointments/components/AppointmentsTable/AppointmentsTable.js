@@ -11,12 +11,10 @@ import {
   makeStyles,
 } from "@material-ui/core";
 
-import {
-  Edit as EditIcon,
-  Add as AddIcon,
-  Delete as DeleteIcon,
-  Search as SearchIcon,
-} from "@material-ui/icons";
+import EditIcon from "@material-ui/icons/Edit";
+import AddIcon from "@material-ui/icons/Add";
+import DeleteIcon from "@material-ui/icons/Delete";
+import VisibilityIcon from "@material-ui/icons/Visibility";
 
 import Table from "common/components/Table/Table";
 
@@ -25,15 +23,18 @@ import {
   setSorting,
   setCurrentPage,
   setItemsPerPage,
+  setSelectedAppointmentId,
   deleteAppointment,
   selectAllAppointments,
   selectSorting,
   selectPagination,
+  selectSelectedAppointmentId,
 } from "./appointmentsTableSlice";
 
-import AppointmentView from "../AppointmentView/AppointmentView";
+import AppointmentViewer from "../AppointmentViewer/AppointmentViewer";
+import AppointmentEditor from "../AppointmentEditor/AppointmentEditor";
 
-const useToolBarStyles = makeStyles((theme) => ({
+const useToolBarStyles = makeStyles((_theme) => ({
   root: {
     display: "flex",
     justifyContent: "start",
@@ -41,35 +42,78 @@ const useToolBarStyles = makeStyles((theme) => ({
   },
 }));
 
-function ToolBar({ selectedElement, onView, onDelete }) {
+function ToolBar() {
+  const dispatch = useDispatch();
   const classes = useToolBarStyles();
+  const selectedAppointmentId = useSelector(selectSelectedAppointmentId);
 
-  function handleOnDelete() {
-    onDelete(selectedElement);
+  const [viewerOpen, setViewerOpen] = React.useState(false);
+  const [editorOpen, setEditorOpen] = React.useState(false);
+
+  function handleViewerOpen() {
+    setViewerOpen(true);
   }
 
-  function handleOnView() {
-    onView(selectedElement);
+  function handleViewerClose() {
+    setViewerOpen(false);
+  }
+
+  function handleEditorOpen() {
+    setEditorOpen(true);
+  }
+
+  function handleEditorClose() {
+    setEditorOpen(false);
+  }
+
+  async function handleDelete() {
+    await dispatch(deleteAppointment(selectedAppointmentId));
+    await dispatch(loadAppointments());
+    dispatch(setSelectedAppointmentId(null));
   }
 
   return (
-    <MuiToolBar className={classes.root}>
-      <IconButton>
-        <AddIcon />
-      </IconButton>
+    <>
+      <MuiToolBar className={classes.root}>
+        <IconButton>
+          <AddIcon />
+        </IconButton>
 
-      <IconButton disabled={!selectedElement} onClick={handleOnView}>
-        <SearchIcon />
-      </IconButton>
+        <IconButton
+          disabled={!selectedAppointmentId}
+          onClick={handleViewerOpen}
+        >
+          <VisibilityIcon />
+        </IconButton>
 
-      <IconButton disabled={!selectedElement}>
-        <EditIcon />
-      </IconButton>
+        <IconButton
+          disabled={!selectedAppointmentId}
+          onClick={handleEditorOpen}
+        >
+          <EditIcon />
+        </IconButton>
 
-      <IconButton disabled={!selectedElement} onClick={handleOnDelete}>
-        <DeleteIcon />
-      </IconButton>
-    </MuiToolBar>
+        <IconButton disabled={!selectedAppointmentId} onClick={handleDelete}>
+          <DeleteIcon />
+        </IconButton>
+      </MuiToolBar>
+
+      {selectedAppointmentId && viewerOpen && (
+        <AppointmentViewer
+          appointmentId={selectedAppointmentId}
+          open={viewerOpen}
+          onClose={handleViewerClose}
+        />
+      )}
+
+      {selectedAppointmentId && editorOpen && (
+        <AppointmentEditor
+          appointmentId={selectedAppointmentId}
+          open={editorOpen}
+          onClose={handleEditorClose}
+        />
+      )}
+    </>
   );
 }
 
@@ -88,21 +132,15 @@ const columns = [
 ];
 
 export default function AppointmentsTable() {
+  const dispatch = useDispatch();
   const appointments = useSelector(selectAllAppointments);
   const sorting = useSelector(selectSorting);
   const pagination = useSelector(selectPagination);
-
-  const [selectedAppointment, setSelectedAppointment] = React.useState(null);
-
-  const dispatch = useDispatch();
+  const selectedAppointmentId = useSelector(selectSelectedAppointmentId);
 
   React.useEffect(() => {
     dispatch(loadAppointments());
   }, []);
-
-  function handleSelectChange(newSelected) {
-    setSelectedAppointment(newSelected);
-  }
 
   function handleSortRequest(order, field) {
     dispatch(setSorting({ order, field }));
@@ -120,56 +158,30 @@ export default function AppointmentsTable() {
     dispatch(loadAppointments());
   }
 
+  function handleSelectChange(appointment) {
+    dispatch(setSelectedAppointmentId(appointment.id));
+  }
+
   function handleClickAway() {
-    setSelectedAppointment(null);
-  }
-
-  async function handleDeleteAppointment(appointment) {
-    await dispatch(deleteAppointment(appointment.id));
-    await dispatch(loadAppointments());
-    setSelectedAppointment(null);
-  }
-
-  const [openAppointmentView, setOpenAppointmentView] = React.useState(false);
-
-  function handleViewAppointment(appointment) {
-    setOpenAppointmentView(true);
-  }
-
-  function handleCloseAppointmentView() {
-    setOpenAppointmentView(false);
+    dispatch(setSelectedAppointmentId(null));
   }
 
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
       <Paper>
-        <ToolBar
-          selectedElement={selectedAppointment}
-          onView={handleViewAppointment}
-          onDelete={handleDeleteAppointment}
-        />
+        <ToolBar />
 
         <Table
           columns={columns}
           rows={appointments}
           pagination={pagination}
           sorting={sorting}
-          selectedRow={selectedAppointment}
+          selectedRow={appointments.find((x) => x.id === selectedAppointmentId)}
           onSelectChange={handleSelectChange}
           onSortRequest={handleSortRequest}
           onCurrentPageChange={handleCurrentPageChange}
           onItemsPerPageChange={handleItemsPerPageChange}
         />
-
-        {selectedAppointment && (
-          <AppointmentView
-            disableBackdropClick
-            disableEscapeKeyDown
-            open={openAppointmentView}
-            onClose={handleCloseAppointmentView}
-            appointment={selectedAppointment}
-          />
-        )}
       </Paper>
     </ClickAwayListener>
   );

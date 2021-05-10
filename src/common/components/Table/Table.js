@@ -10,15 +10,12 @@ import {
   Paper,
   IconButton,
   withStyles,
-  makeStyles,
 } from "@material-ui/core";
 
-import {
-  FirstPage as FirstPageIcon,
-  LastPage as LastPageIcon,
-  KeyboardArrowLeft,
-  KeyboardArrowRight,
-} from "@material-ui/icons";
+import FirstPageIcon from "@material-ui/icons/FirstPage";
+import LastPageIcon from "@material-ui/icons/LastPage";
+import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
+import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 
 const TableCell = withStyles((theme) => ({
   head: {
@@ -49,9 +46,7 @@ function SortLabel({ order, orderBy, column, onSortRequested }) {
   );
 }
 
-function TableHead(props) {
-  const { columns, order, orderBy, onSortRequested } = props;
-
+function TableHead({ columns, order, orderBy, onSortRequested }) {
   return (
     <MuiTableHead>
       <TableRow>
@@ -85,7 +80,7 @@ function TableBody({ columns, rows, selectedRow, onSelectChange }) {
   }
 
   function createClickHandler(row) {
-    return (_event) => onSelectChange(row);
+    return () => onSelectChange(row);
   }
 
   return (
@@ -150,7 +145,7 @@ function TablePaginationActions(props) {
         <KeyboardArrowRight />
       </IconButton>
 
-      <IconButton onClick={handleLastPageButtonClick} disabled={!canGotoNext()}>
+      <IconButton disabled={!canGotoNext()} onClick={handleLastPageButtonClick}>
         <LastPageIcon />
       </IconButton>
     </div>
@@ -197,14 +192,14 @@ export default function Table({
       </MuiTableContainer>
 
       <MuiTablePagination
-        rowsPerPageOptions={pagination.availableItemsPerPage}
         component="div"
+        rowsPerPageOptions={pagination.availableItemsPerPage}
         count={pagination.totalItems}
         rowsPerPage={pagination.itemsPerPage}
         page={pagination.currentPage}
+        ActionsComponent={TablePaginationActions}
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
-        ActionsComponent={TablePaginationActions}
       />
     </Paper>
   );

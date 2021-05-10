@@ -47,7 +47,7 @@ export default function Header({ title, Icon }) {
 
   return (
     <Box className={classes.header}>
-      <Link to="/" className={classes.link}>
+      <Link className={classes.link} to="/">
         <Icon className={classes.icon} />
         <Typography className={classes.title} variant="h3">
           {title}

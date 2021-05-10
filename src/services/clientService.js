@@ -1,8 +1,9 @@
 import client from "api/client";
 
 class ClientService {
-  getAll() {
-    return client.get("/clients").then((response) => response.data);
+  async getAll() {
+    const { data } = await client.get("/clients");
+    return data;
   }
 }
 

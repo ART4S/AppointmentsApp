@@ -1,10 +1,9 @@
-/* eslint-disable import/prefer-default-export */
 import { combineReducers } from "@reduxjs/toolkit";
 
-import { tableReducer } from "./components/AppointmentsTable/appointmentsTableSlice";
-import { filtersReducer } from "./components/AppointmentsFilters/AppointmentsFiltersSlice";
+import tableReducer from "./components/AppointmentsTable/appointmentsTableSlice";
+import filtersReducer from "./components/AppointmentsFilters/appointmentsFiltersSlice";
 
-export const appointmentsReducer = combineReducers({
+export default combineReducers({
   filters: filtersReducer,
   table: tableReducer,
 });

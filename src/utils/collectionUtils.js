@@ -14,9 +14,9 @@ export function selectMany(arr, arrSelector) {
   }, []);
 }
 
-export function repeat(n, valueGetter) {
+export function repeat(times, valueGetter) {
   const arr = [];
-  for (let i = 0; i < n; i++) {
+  for (let i = 0; i < times; i++) {
     arr.push(valueGetter());
   }
   return arr;

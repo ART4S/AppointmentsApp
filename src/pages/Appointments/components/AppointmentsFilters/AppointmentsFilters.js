@@ -13,12 +13,10 @@ import {
   MenuItem,
   Grid,
 } from "@material-ui/core";
-import { Search as SearchIcon, Clear as ClearIcon } from "@material-ui/icons";
-import { Autocomplete } from "@material-ui/lab";
+import SearchIcon from "@material-ui/icons/Search";
+import ClearIcon from "@material-ui/icons/Clear";
 
-import { matchSorter } from "match-sorter";
-
-import { getFullName } from "utils/userUtils";
+import UserSelector from "common/components/UserSelector/UserSelector";
 
 import { loadAppointments } from "../AppointmentsTable/appointmentsTableSlice";
 
@@ -32,28 +30,35 @@ import {
   selectUsers,
   selectClients,
   selectAppointmentStatuses,
-} from "./AppointmentsFiltersSlice";
+} from "./appointmentsFiltersSlice";
 
-const useStyle = makeStyles((theme) => ({
+const CLIENT = "Клиент";
+const COMPLAINTS = "Жалобы";
+const HOLDER = "Принимающий";
+const START_DATE = "C";
+const FINISH_DATE = "По";
+const NONE = "Нет";
+const STATUS = "Статус";
+const ONLY_ME = "Только я";
+
+const useStyle = makeStyles((_theme) => ({
   form: {
     width: "100%",
     display: "flex",
     justifyContent: "center",
   },
-
   control: {
     width: 200,
   },
 }));
 
 export default function AppointmentsFilters() {
+  const classes = useStyle();
+  const dispatch = useDispatch();
   const filter = useSelector(selectFilter);
   const users = useSelector(selectUsers);
   const clients = useSelector(selectClients);
   const appointmentStatuses = useSelector(selectAppointmentStatuses);
-
-  const classes = useStyle();
-  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(loadUsers());
@@ -61,15 +66,19 @@ export default function AppointmentsFilters() {
     dispatch(loadAppointmentStatuses());
   }, []);
 
-  function handleFilterFieldChange(e) {
-    const { name } = e.target;
-    const value =
-      e.target.type === "checkbox" ? e.target.checked : e.target.value;
-
-    dispatch(setFilterValue({ name, value }));
+  function handleFilterFieldChange(event) {
+    dispatch(
+      setFilterValue({
+        name: event.target.name,
+        value:
+          event.target.type === "checkbox"
+            ? event.target.checked
+            : event.target.value,
+      }),
+    );
   }
 
-  function handleHolderChange(_, holder) {
+  function handleHolderChange(holder) {
     dispatch(
       setFilterValue({
         name: "holderId",
@@ -78,7 +87,7 @@ export default function AppointmentsFilters() {
     );
   }
 
-  function handleClientChange(_, client) {
+  function handleClientChange(client) {
     dispatch(setFilterValue({ name: "clientId", value: client?.id ?? "" }));
   }
 
@@ -91,32 +100,17 @@ export default function AppointmentsFilters() {
     dispatch(loadAppointments());
   }
 
-  function filterOptions(options, { inputValue }) {
-    return matchSorter(options, inputValue, {
-      keys: [(item) => getFullName(item)],
-    }).sort((firstUser, secondUser) => {
-      const first =
-        firstUser.lastName && firstUser.lastName.charAt(0).toUpperCase();
-      const second =
-        secondUser.lastName && secondUser.lastName.charAt(0).toUpperCase();
-
-      if (first > second) return 1;
-      if (first < second) return -1;
-      return 0;
-    });
-  }
-
-  const rowSpacing = 5;
+  const spacing = 5;
 
   return (
     <form className={classes.form} noValidate>
       <Grid container>
-        <Grid item container xs direction="column" spacing={rowSpacing}>
+        <Grid item container xs direction="column" spacing={spacing}>
           <Grid item container justify="center">
             <TextField
               className={classes.control}
               name="startDate"
-              label="С"
+              label={START_DATE}
               type="date"
               value={filter.startDate}
               onChange={handleFilterFieldChange}
@@ -128,7 +122,7 @@ export default function AppointmentsFilters() {
 
           <Grid item container justify="center">
             <FormControl className={classes.control}>
-              <InputLabel id="statusId-label">Статус</InputLabel>
+              <InputLabel id="statusId-label">{STATUS}</InputLabel>
 
               <Select
                 id="statusId-select"
@@ -138,7 +132,7 @@ export default function AppointmentsFilters() {
                 onChange={handleFilterFieldChange}
               >
                 <MenuItem key={-1} value="">
-                  Нет
+                  {NONE}
                 </MenuItem>
 
                 {appointmentStatuses.map((status) => (
@@ -161,17 +155,17 @@ export default function AppointmentsFilters() {
                   color="primary"
                 />
               }
-              label="Только я"
+              label={ONLY_ME}
             />
           </Grid>
         </Grid>
 
-        <Grid item container xs direction="column" spacing={rowSpacing}>
+        <Grid item container xs direction="column" spacing={spacing}>
           <Grid item container justify="center">
             <TextField
               className={classes.control}
               name="finishDate"
-              label="По"
+              label={FINISH_DATE}
               type="date"
               value={filter.finishDate}
               onChange={handleFilterFieldChange}
@@ -182,60 +176,38 @@ export default function AppointmentsFilters() {
           </Grid>
 
           <Grid item container justify="center">
-            <Autocomplete
+            <UserSelector
               className={classes.control}
               id="holderId"
-              onChange={handleHolderChange}
+              name="holderId"
+              label={HOLDER}
+              users={users}
               value={users.find((x) => x.id === filter.holderId) ?? ""}
-              filterOptions={filterOptions}
-              options={users}
-              getOptionLabel={(option) => getFullName(option)}
-              groupBy={(option) =>
-                option.lastName && option.lastName.charAt(0).toUpperCase()
-              }
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  name="holderId"
-                  label="Принимающий"
-                  fullWidth
-                />
-              )}
+              onChange={handleHolderChange}
             />
           </Grid>
         </Grid>
 
-        <Grid item container xs direction="column" spacing={rowSpacing}>
+        <Grid item container xs direction="column" spacing={spacing}>
           <Grid item container justify="center">
             <TextField
               className={classes.control}
               name="complaints"
-              label="Жалобы"
+              label={COMPLAINTS}
               value={filter.complaints}
               onChange={handleFilterFieldChange}
             />
           </Grid>
 
           <Grid item container justify="center">
-            <Autocomplete
+            <UserSelector
               className={classes.control}
               id="clientId"
-              onChange={handleClientChange}
+              name="clientId"
+              label={CLIENT}
+              users={clients}
               value={clients.find((x) => x.id === filter.clientId) ?? ""}
-              filterOptions={filterOptions}
-              options={clients}
-              getOptionLabel={(option) => getFullName(option)}
-              groupBy={(option) =>
-                option.lastName && option.lastName.charAt(0).toUpperCase()
-              }
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  name="clientId"
-                  label="Клиент"
-                  fullWidth
-                />
-              )}
+              onChange={handleClientChange}
             />
           </Grid>
 

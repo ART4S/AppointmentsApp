@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
-import { LeakAddTwoTone } from "@material-ui/icons";
-import ServerError from "common/errors/responseError";
 import { matchSorter } from "match-sorter";
+
+import ServerError from "common/errors/serverError";
 
 import appointments from "../data/appointments";
 
@@ -50,6 +50,14 @@ class AppointmentsController {
     const pageSize = data.length;
 
     return { data, currentPage, pageSize, totalItems };
+  }
+
+  getById(id) {
+    const appointment = appointments.find((x) => x.id === id);
+    if (!appointment) {
+      throw new ServerError("item not found");
+    }
+    return appointment;
   }
 
   delete(id) {

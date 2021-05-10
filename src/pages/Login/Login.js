@@ -21,11 +21,9 @@ import {
 
 import { Alert } from "@material-ui/lab";
 
-import {
-  LockOutlined as LockOutlinedIcon,
-  Visibility as VisibilityIcon,
-  VisibilityOff as VisibilityOffIcon,
-} from "@material-ui/icons";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 
 import useAuth from "common/hooks/useAuth";
 
@@ -144,8 +142,9 @@ export default function Login() {
         </Alert>
       )}
 
-      <form className={classes.form} onSubmit={formik.handleSubmit} noValidate>
+      <form noValidate className={classes.form} onSubmit={formik.handleSubmit}>
         <TextField
+          fullWidth
           className={classes.control}
           id="email"
           name="email"
@@ -155,10 +154,10 @@ export default function Login() {
           error={formik.touched.email && Boolean(formik.errors.email)}
           helperText={formik.touched.email && formik.errors.email}
           onChange={formik.handleChange}
-          fullWidth
         />
 
         <TextField
+          fullWidth
           className={classes.control}
           id="password"
           name="password"
@@ -168,7 +167,6 @@ export default function Login() {
           value={formik.values.password}
           error={formik.touched.password && Boolean(formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
-          onChange={formik.handleChange}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -178,7 +176,7 @@ export default function Login() {
               </InputAdornment>
             ),
           }}
-          fullWidth
+          onChange={formik.handleChange}
         />
 
         <FormControlLabel

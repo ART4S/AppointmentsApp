@@ -7,7 +7,7 @@ import dictionaries from "mock/controllers/dictionariesController";
 import users from "mock/controllers/usersController";
 import clients from "mock/controllers/clientsController";
 import auth from "mock/controllers/authController";
-import ServerError from "common/errors/responseError";
+import ServerError from "common/errors/serverError";
 
 new Server({
   routes() {
@@ -15,6 +15,12 @@ new Server({
       // return new Response(500, {}, { error: "server unavaliable" });
       // return new Response(401, {}, { error: "unauthorized" });
       return appointments.getAll(request.queryParams);
+    });
+    this.get("/api/appointments/:id", (_schema, request) => {
+      return appointments.getById(request.params.id);
+    });
+    this.delete("/api/appointments/:id", (_schema, request) => {
+      appointments.delete(request.params.id);
     });
 
     this.get("/api/dictionaries/appointmentStatuses", () =>
@@ -35,10 +41,6 @@ new Server({
         }
         throw e;
       }
-    });
-
-    this.delete("/api/appointments/:id", (_schema, request) => {
-      appointments.delete(request.params.id);
     });
   },
 });
