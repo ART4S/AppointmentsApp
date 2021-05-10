@@ -46,7 +46,9 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1, 0),
     },
   },
-  control: {},
+  control: {
+    cursor: "pointer",
+  },
 }));
 
 const spacing = 2;
@@ -57,13 +59,15 @@ const schema = yup.object().shape({
   diagnosis: yup.string().trim().required(REQUIRED),
 });
 
+const dateFormat = "YYYY-MM-DDTHH:mm";
+
 function EditForm({ data, onSubmit }) {
   const { appointment, clients, users, statuses } = data;
 
   const classes = useStyles();
 
   const initialValues = {
-    date: appointment.date,
+    date: moment(appointment.date).format(dateFormat),
     holder: users.find((x) => x.id === appointment.holderId),
     client: clients.find((x) => x.id === appointment.clientId),
     status: statuses.find((x) => x.id === appointment.statusId),
@@ -81,41 +85,56 @@ function EditForm({ data, onSubmit }) {
       validationSchema={schema}
       onSubmit={handleSubmit}
     >
-      {({ values, touched, errors, handleChange, setFieldValue }) => (
+      {({
+        values,
+        touched,
+        errors,
+        isSubmitting,
+        handleChange,
+        handleBlur,
+        setFieldValue,
+      }) => (
         <Form>
           <Grid container direction="column" spacing={spacing}>
             <Grid item container spacing={spacing}>
               <Grid item xs>
                 <UserSelector
                   className={classes.control}
-                  users={clients}
                   name="client"
+                  users={clients}
                   label={CLIENT}
                   value={values.client}
                   error={touched.client && Boolean(errors.client)}
-                  helperText={errors.client}
+                  helperText={touched.client && errors.client}
+                  disabled={isSubmitting}
                   onChange={(client) => setFieldValue("client", client)}
+                  onBlur={handleBlur}
                 />
               </Grid>
 
               <Grid item xs>
                 <UserSelector
                   className={classes.control}
-                  id="holder"
                   name="holder"
                   users={users}
                   label={HOLDER}
                   value={values.holder}
                   error={touched.holder && Boolean(errors.holder)}
-                  helperText={errors.holder}
+                  helperText={touched.holder && errors.holder}
+                  disabled={isSubmitting}
                   onChange={(holder) => setFieldValue("holder", holder)}
+                  onBlur={handleBlur}
                 />
               </Grid>
             </Grid>
 
             <Grid item container spacing={spacing}>
               <Grid item xs>
-                <FormControl className={classes.control} fullWidth>
+                <FormControl
+                  fullWidth
+                  className={classes.control}
+                  disabled={isSubmitting}
+                >
                   <InputLabel shrink id="statusId-inputlabel">
                     {STATUS}
                   </InputLabel>
@@ -143,8 +162,11 @@ function EditForm({ data, onSubmit }) {
                   id="date"
                   name="date"
                   label={DATE}
-                  type="date"
+                  type="datetime-local"
                   value={values.date}
+                  disabled={isSubmitting}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                   InputLabelProps={{ shrink: true }}
                 />
               </Grid>
@@ -152,21 +174,25 @@ function EditForm({ data, onSubmit }) {
 
             <Grid item>
               <TextField
-                className={classes.control}
+                fullWidth
                 multiline
+                className={classes.control}
                 id="diagnosis"
                 label={DIAGNOSIS}
                 placeholder={DIAGNOSIS}
                 value={values.diagnosis}
                 error={touched.diagnosis && Boolean(errors.diagnosis)}
-                helperText={errors.diagnosis}
+                helperText={touched.diagnosis && errors.diagnosis}
+                disabled={isSubmitting}
                 onChange={handleChange}
-                fullWidth
+                onBlur={handleBlur}
               />
             </Grid>
 
             <Grid item>
               <TextField
+                fullWidth
+                multiline
                 className={classes.control}
                 id="complaints"
                 label={COMPLAINTS}
@@ -174,14 +200,18 @@ function EditForm({ data, onSubmit }) {
                 value={values.complaints}
                 error={touched.complaints && Boolean(errors.complaints)}
                 helperText={errors.complaints}
+                disabled={isSubmitting}
                 onChange={handleChange}
-                fullWidth
-                multiline
               />
             </Grid>
 
             <Grid item container justify="flex-end">
-              <Button type="sumbit" variant="contained" color="primary">
+              <Button
+                type="sumbit"
+                variant="contained"
+                color="primary"
+                disabled={isSubmitting}
+              >
                 {SAVE}
               </Button>
             </Grid>
@@ -202,6 +232,7 @@ function Progress() {
 
 export default function AppointmentEditor({ appointmentId, open, onClose }) {
   const [loading, setLoading] = React.useState(true);
+  const [submitting, setSubmitting] = React.useState(false);
   const [formData, setFormData] = React.useState({
     appointment: null,
     clients: [],
@@ -210,7 +241,11 @@ export default function AppointmentEditor({ appointmentId, open, onClose }) {
   });
 
   function handleSubmit() {
-    onClose();
+    setSubmitting(true);
+    setTimeout(() => {
+      onClose();
+      setSubmitting(false);
+    }, 2000);
   }
 
   React.useEffect(() => {
@@ -238,7 +273,12 @@ export default function AppointmentEditor({ appointmentId, open, onClose }) {
   }, [appointmentId]);
 
   return (
-    <Popup title={APPOINTMENT_EDIT} open={open} onClose={onClose}>
+    <Popup
+      title={APPOINTMENT_EDIT}
+      open={open}
+      closeDisabled={submitting}
+      onClose={onClose}
+    >
       {loading ? (
         <Progress />
       ) : (

@@ -72,7 +72,7 @@ function TableHead({ columns, order, orderBy, onSortRequested }) {
   );
 }
 
-function TableBody({ columns, rows, selectedRow, onSelectChange }) {
+function TableBody({ columns, rows, selectedRow, onSelectedRowChange }) {
   function formatData(row, column) {
     const data = row[column.field];
     const { formatter } = column;
@@ -80,7 +80,7 @@ function TableBody({ columns, rows, selectedRow, onSelectChange }) {
   }
 
   function createClickHandler(row) {
-    return () => onSelectChange(row);
+    return () => onSelectedRowChange(row);
   }
 
   return (
@@ -101,9 +101,7 @@ function TableBody({ columns, rows, selectedRow, onSelectChange }) {
   );
 }
 
-function TablePaginationActions(props) {
-  const { count, page, rowsPerPage, onChangePage } = props;
-
+function TablePaginationActions({ count, page, rowsPerPage, onChangePage }) {
   function handleFirstPageButtonClick(event) {
     onChangePage(event, 0);
   }
@@ -161,7 +159,7 @@ export default function Table({
   onCurrentPageChange,
   onItemsPerPageChange,
   onSortRequest,
-  onSelectChange,
+  onSelectedRowChange,
 }) {
   function handleChangePage(_event, newPage) {
     onCurrentPageChange(newPage);
@@ -186,7 +184,7 @@ export default function Table({
             columns={columns}
             rows={rows}
             selectedRow={selectedRow}
-            onSelectChange={onSelectChange}
+            onSelectedRowChange={onSelectedRowChange}
           />
         </MuiTable>
       </MuiTableContainer>

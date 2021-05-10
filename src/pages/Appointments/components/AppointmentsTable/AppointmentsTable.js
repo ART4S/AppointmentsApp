@@ -158,7 +158,7 @@ export default function AppointmentsTable() {
     dispatch(loadAppointments());
   }
 
-  function handleSelectChange(appointment) {
+  function handleSelectedRowChange(appointment) {
     dispatch(setSelectedAppointmentId(appointment.id));
   }
 
@@ -177,7 +177,7 @@ export default function AppointmentsTable() {
           pagination={pagination}
           sorting={sorting}
           selectedRow={appointments.find((x) => x.id === selectedAppointmentId)}
-          onSelectChange={handleSelectChange}
+          onSelectedRowChange={handleSelectedRowChange}
           onSortRequest={handleSortRequest}
           onCurrentPageChange={handleCurrentPageChange}
           onItemsPerPageChange={handleItemsPerPageChange}

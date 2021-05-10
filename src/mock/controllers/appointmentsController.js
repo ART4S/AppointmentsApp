@@ -37,9 +37,12 @@ class AppointmentsController {
 
     const totalItems = data.length;
     const itemsPerPage = +params.itemsPerPage;
-    const currentPage = Math.min(
-      Math.ceil(totalItems / itemsPerPage) - 1,
-      +params.currentPage,
+    const currentPage = Math.max(
+      0,
+      Math.min(
+        Math.ceil(itemsPerPage ? totalItems / itemsPerPage : 0) - 1,
+        +params.currentPage,
+      ),
     );
 
     const start = currentPage * itemsPerPage;

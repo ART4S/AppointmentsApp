@@ -38,7 +38,7 @@ export default function ErrorPopup({ title, text, closeDelay, ...rest }) {
 
   const [open, setOpen] = React.useState(true);
 
-  function handleErrorEnter() {
+  function handleEnter() {
     setTimeout(() => {
       setOpen(false);
     }, closeDelay);
@@ -49,7 +49,7 @@ export default function ErrorPopup({ title, text, closeDelay, ...rest }) {
       {...rest}
       open={open}
       TransitionComponent={Transition}
-      onEnter={handleErrorEnter}
+      onEnter={handleEnter}
     >
       <DialogTitle>
         <Typography className={classes.title} variant="h5">

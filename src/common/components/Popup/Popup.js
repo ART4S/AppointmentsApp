@@ -1,5 +1,4 @@
 import React from "react";
-
 import {
   Dialog,
   DialogTitle,
@@ -8,7 +7,6 @@ import {
   IconButton,
   makeStyles,
 } from "@material-ui/core";
-
 import CloseIcon from "@material-ui/icons/Close";
 
 const useStyles = makeStyles((theme) => ({
@@ -19,10 +17,18 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     padding: theme.spacing(1, 0),
+    pointerEvents: "none",
   },
 }));
 
-export default function Popup({ title, open, onClose, maxWidth, children }) {
+export default function Popup({
+  title,
+  open,
+  maxWidth,
+  closeDisabled,
+  children,
+  onClose,
+}) {
   const classes = useStyles();
 
   return (
@@ -32,7 +38,7 @@ export default function Popup({ title, open, onClose, maxWidth, children }) {
           {title}
         </Typography>
 
-        <IconButton onClick={onClose}>
+        <IconButton onClick={onClose} disabled={closeDisabled}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -44,4 +50,5 @@ export default function Popup({ title, open, onClose, maxWidth, children }) {
 
 Popup.defaultProps = {
   maxWidth: "sm",
+  closeDisabled: false,
 };

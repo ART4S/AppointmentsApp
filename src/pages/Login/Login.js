@@ -35,7 +35,7 @@ const FORGOT_PASSWORD = "Забыли пароль?";
 const SIGNIN = "Вход";
 const SIGNUP = "Регистрация";
 const WRITE_CORRECT_EMAIL = "Введите корректный адрес";
-const REQUIRED = "Обязательно для заполнения";
+const REQUIRED = "необходимо заполнить";
 const WORNG_LOGIN_OR_PASSWORD = "Неверный логин или пароль";
 
 const useStyles = makeStyles((theme) => ({
@@ -131,11 +131,9 @@ export default function Login() {
       <Avatar className={classes.avatar}>
         <LockOutlinedIcon className={classes.icon} />
       </Avatar>
-
       <Typography className={classes.title} variant="h5">
         {SIGNIN}
       </Typography>
-
       {serverError && (
         <Alert severity="error" style={{ width: "100%" }}>
           {serverError}
@@ -154,6 +152,7 @@ export default function Login() {
           error={formik.touched.email && Boolean(formik.errors.email)}
           helperText={formik.touched.email && formik.errors.email}
           onChange={formik.handleChange}
+          InputProps={{ onBlur: formik.handleBlur }}
         />
 
         <TextField
@@ -207,7 +206,6 @@ export default function Login() {
           </Link>
         </Box>
       </form>
-
       <Box className={classes.copyright}>
         <Typography variant="body2" color="textSecondary">
           {"Copyright © "}
