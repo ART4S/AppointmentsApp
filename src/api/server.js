@@ -13,8 +13,8 @@ new Server({
   routes() {
     this.get("/api/appointments", (_schema, request) => {
       // return new Response(500, {}, { error: "server unavaliable" });
-      // return new Response(401, {}, { error: "unauthorized" });
-      return appointments.getAll(request.queryParams);
+      return new Response(401, {}, { error: "unauthorized" });
+      // return appointments.getAll(request.queryParams);
     });
     this.get("/api/appointments/:id", (_schema, request) => {
       return appointments.getById(request.params.id);

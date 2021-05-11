@@ -20,7 +20,7 @@ httpClient.interceptors.request.use((config) => {
 httpClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response.status === 400) {
+    if (error.response.status === 401) {
       tokenExpiredEvent.publish();
     }
     return Promise.reject(error);

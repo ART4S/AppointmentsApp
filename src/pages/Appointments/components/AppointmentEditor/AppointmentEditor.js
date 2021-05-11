@@ -5,7 +5,6 @@ import moment from "moment";
 import * as yup from "yup";
 import { Formik, Form } from "formik";
 import {
-  Box,
   Grid,
   Button,
   Select,
@@ -13,11 +12,11 @@ import {
   TextField,
   FormControl,
   InputLabel,
-  CircularProgress,
   makeStyles,
 } from "@material-ui/core";
 
 import Popup from "common/components/Popup/Popup";
+import Progress from "common/components/Progress/Progress";
 import UserSelector from "common/components/UserSelector/UserSelector";
 
 import {
@@ -219,14 +218,6 @@ function EditForm({ data, onSubmit }) {
         </Form>
       )}
     </Formik>
-  );
-}
-
-function Progress() {
-  return (
-    <Box width="100%" display="flex" justifyContent="center">
-      <CircularProgress />
-    </Box>
   );
 }
 

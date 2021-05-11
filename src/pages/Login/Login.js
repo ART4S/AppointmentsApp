@@ -151,6 +151,7 @@ export default function Login() {
           value={formik.values.email}
           error={formik.touched.email && Boolean(formik.errors.email)}
           helperText={formik.touched.email && formik.errors.email}
+          onBlur={formik.handleBlur}
           onChange={formik.handleChange}
           InputProps={{ onBlur: formik.handleBlur }}
         />
@@ -166,6 +167,7 @@ export default function Login() {
           value={formik.values.password}
           error={formik.touched.password && Boolean(formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
+          onBlur={formik.handleBlur}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">

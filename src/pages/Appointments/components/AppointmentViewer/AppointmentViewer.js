@@ -1,16 +1,10 @@
 import React from "react";
 import moment from "moment";
 
-import {
-  Typography,
-  Button,
-  Box,
-  Grid,
-  CircularProgress,
-  makeStyles,
-} from "@material-ui/core";
+import { Typography, Button, Box, Grid, makeStyles } from "@material-ui/core";
 
 import Popup from "common/components/Popup/Popup";
+import Progress from "common/components/Progress/Progress";
 
 import { appointmentService } from "services";
 
@@ -67,14 +61,6 @@ function Fields({ appointment }) {
       <Field name={`${COMPLAINTS}:`} value={appointment.complaints} />
       <Field name={`${DIAGNOSIS}:`} value={appointment.diagnosis} />
     </>
-  );
-}
-
-function Progress() {
-  return (
-    <Box width="100%" display="flex" justifyContent="center">
-      <CircularProgress />
-    </Box>
   );
 }
 
