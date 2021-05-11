@@ -26,6 +26,8 @@ import {
   dictionaryService,
 } from "services";
 
+import appointmentStatuses from "model/constants/appointmentStatuses";
+
 const APPOINTMENT_EDIT = "Редактирование приема";
 const CLIENT = "Клиент";
 const HOLDER = "Принимающий";
@@ -60,8 +62,11 @@ const schema = yup.object().shape({
 
 const dateFormat = "YYYY-MM-DDTHH:mm";
 
-function EditForm({ data, onSubmit }) {
-  const { appointment, clients, users, statuses } = data;
+function EditForm(props) {
+  const {
+    data: { appointment, clients, users, statuses },
+    onSubmit,
+  } = props;
 
   const classes = useStyles();
 
@@ -134,15 +139,16 @@ function EditForm({ data, onSubmit }) {
                   className={classes.control}
                   disabled={isSubmitting}
                 >
-                  <InputLabel shrink id="statusId-inputlabel">
+                  <InputLabel shrink id="status-input">
                     {STATUS}
                   </InputLabel>
 
                   <Select
-                    id="statusId"
-                    name="statusId"
-                    labelId="statusId-label"
+                    id="status"
+                    name="status"
+                    labelId="status-label"
                     value={values.status}
+                    onChange={handleChange}
                     MenuProps={{ disablePortal: true }}
                   >
                     {statuses.map((x) => (

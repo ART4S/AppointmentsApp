@@ -52,11 +52,6 @@ function Accordion({ header, children }) {
   );
 }
 
-function Block() {
-  const classes = useAccodtionStyles();
-  return <Box className={classes.box} />;
-}
-
 const spacing = 2;
 
 const useStyles = makeStyles((theme) => ({
