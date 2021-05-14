@@ -1,9 +1,20 @@
 import React from "react";
-import { Box, CircularProgress } from "@material-ui/core";
+import { Box, CircularProgress, makeStyles } from "@material-ui/core";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
+  },
+}));
 
 export default function Progress() {
+  const classes = useStyles();
   return (
-    <Box width="100%" display="flex" justifyContent="center">
+    <Box className={classes.root}>
       <CircularProgress />
     </Box>
   );

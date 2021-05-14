@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 import React from "react";
 
 import authService from "services/authService";
@@ -13,10 +14,11 @@ export function ProvideAuth({ children }) {
   async function login(email, password) {
     const response = await authService.login(email, password);
 
-    if (!response.error) {
-      setUser(response.user);
-      localStorage.setItem("user", JSON.stringify(response.user));
-      localStorage.setItem("token", response.token);
+    if (response.isSuccess) {
+      const { user, token } = response.data;
+      setUser(user);
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", token);
     }
 
     return response;

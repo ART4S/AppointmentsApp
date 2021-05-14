@@ -2,8 +2,13 @@
 import { matchSorter } from "match-sorter";
 
 import ServerError from "common/errors/serverError";
+import ValidationError from "common/errors/validationError";
+
+import { getFullName } from "utils/userUtils";
 
 import appointments from "../data/appointments";
+import clients from "../data/clients";
+import users from "../data/users";
 
 function createSorter(order, field) {
   const orderModifier = order === "asc" ? 1 : -1;
@@ -13,14 +18,14 @@ function createSorter(order, field) {
 
 class AppointmentsController {
   getAll(params) {
-    let data = appointments;
+    let data = Object.values(appointments);
 
     data = data.filter(
       (item) =>
         (!params.startDate || item.date >= params.startDate) &&
         (!params.finishDate || item.date <= params.finishDate) &&
         (!params.clientId || params.clientId === item.clientId) &&
-        (!params.statusId || params.statusId === item.statusId) &&
+        (!params.status || params.status === item.status) &&
         (!params.holderId || params.holderId === item.holderId) &&
         (!params.onlyMe || params.onlyMe === "false"),
     );
@@ -52,24 +57,46 @@ class AppointmentsController {
 
     const pageSize = data.length;
 
+    data = data.map((x) => ({
+      ...x,
+      clientName: getFullName(clients[x.clientId]),
+      holderName: getFullName(users[x.holderId]),
+    }));
+
     return { data, currentPage, pageSize, totalItems };
   }
 
   getById(id) {
-    const appointment = appointments.find((x) => x.id === id);
-    if (!appointment) {
+    if (!appointments[id]) {
       throw new ServerError("item not found");
     }
-    return appointment;
+
+    return {
+      ...appointments[id],
+      clientName: getFullName(clients[appointments[id].clientId]),
+      holderName: getFullName(users[appointments[id].holderId]),
+    };
+  }
+
+  update(id, dto) {
+    if (!appointments[id]) {
+      throw new ServerError("item not found");
+    }
+
+    // throw new ValidationError({
+    //   common: ["Test common error 1", "Test common error 2"],
+    //   fields: { status: ["Test status error 1", "Test status error 2"] },
+    // });
+
+    appointments[id] = { ...appointments[id], ...dto };
   }
 
   delete(id) {
-    const index = appointments.findIndex((x) => x.id === id);
-    if (index > -1) {
-      appointments.splice(index, 1);
-    } else {
+    if (!appointments[id]) {
       throw new ServerError("item not found");
     }
+
+    delete appointments[id];
   }
 }
 

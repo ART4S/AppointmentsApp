@@ -2,7 +2,7 @@ import clients from "../data/clients";
 
 class ClientsController {
   getAll() {
-    return clients;
+    return Object.values(clients);
   }
 }
 

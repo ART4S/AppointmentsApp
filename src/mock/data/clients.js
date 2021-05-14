@@ -1,6 +1,6 @@
 import faker from "faker";
 
-import { repeat } from "utils/collectionUtils";
+import { repeat, normalize } from "utils/collectionUtils";
 
 function createClient() {
   return {
@@ -11,6 +11,6 @@ function createClient() {
   };
 }
 
-const clients = repeat(100, createClient);
+const clients = normalize(repeat(100, createClient));
 
 export default clients;

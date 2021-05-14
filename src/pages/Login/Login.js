@@ -34,9 +34,8 @@ const LOGIN = "Войти";
 const FORGOT_PASSWORD = "Забыли пароль?";
 const SIGNIN = "Вход";
 const SIGNUP = "Регистрация";
-const WRITE_CORRECT_EMAIL = "Введите корректный адрес";
+const WRITE_CORRECT_EMAIL = "введите корректный адрес";
 const REQUIRED = "необходимо заполнить";
-const WORNG_LOGIN_OR_PASSWORD = "Неверный логин или пароль";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -100,12 +99,12 @@ export default function Login() {
   const history = useHistory();
 
   async function handleSubmit({ email, password }) {
-    const { error } = await auth.login(email, password);
+    const { isSuccess, data } = await auth.login(email, password);
 
-    if (error) {
-      setServerError(WORNG_LOGIN_OR_PASSWORD);
-    } else {
+    if (isSuccess) {
       history.replace(location.state?.from?.pathname ?? "/");
+    } else {
+      setServerError(data.error);
     }
   }
 
@@ -131,9 +130,11 @@ export default function Login() {
       <Avatar className={classes.avatar}>
         <LockOutlinedIcon className={classes.icon} />
       </Avatar>
+
       <Typography className={classes.title} variant="h5">
         {SIGNIN}
       </Typography>
+
       {serverError && (
         <Alert severity="error" style={{ width: "100%" }}>
           {serverError}

@@ -20,7 +20,7 @@ import ErrorPopup from "common/components/ErrorPopup/ErrorPopup";
 import AppointmentsFilters from "./components/AppointmentsFilters/AppointmentsFilters";
 import AppointmentsTable from "./components/AppointmentsTable/AppointmentsTable";
 
-import { selectAppointmentsError } from "./components/AppointmentsTable/appointmentsTableSlice";
+import { selectError } from "./components/AppointmentsTable/appointmentsTableSlice";
 
 const APPOINTMENTS = "Приемы";
 const FILTERS = "Фильтры";
@@ -58,11 +58,24 @@ const useStyles = makeStyles((theme) => ({
   body: {
     marginTop: theme.spacing(spacing),
   },
+  icon: {
+    color: theme.palette.common.white,
+  },
 }));
 
 export default function Appointments() {
   const classes = useStyles();
-  const hasError = useSelector(selectAppointmentsError);
+  const error = useSelector(selectError);
+
+  function renderFilterButton() {
+    return (
+      <Tooltip title={FILTERS}>
+        <IconButton className={classes.icon}>
+          <FilterListIcon />
+        </IconButton>
+      </Tooltip>
+    );
+  }
 
   return (
     <Box>
@@ -71,15 +84,7 @@ export default function Appointments() {
       <Container className={classes.body} maxWidth="md">
         <Grid item container direction="column" spacing={spacing}>
           <Grid item>
-            <Accordion
-              header={
-                <Tooltip title={FILTERS}>
-                  <IconButton>
-                    <FilterListIcon />
-                  </IconButton>
-                </Tooltip>
-              }
-            >
+            <Accordion header={renderFilterButton()}>
               <AppointmentsFilters />
             </Accordion>
           </Grid>
@@ -90,7 +95,7 @@ export default function Appointments() {
         </Grid>
       </Container>
 
-      {hasError && (
+      {error && (
         <ErrorPopup title={ERROR} text={ERROR_LOAD_DATA} closeDelay={3000} />
       )}
     </Box>

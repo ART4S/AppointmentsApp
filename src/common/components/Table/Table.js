@@ -1,4 +1,5 @@
 import {
+  Box,
   TableContainer as MuiTableContainer,
   Table as MuiTable,
   TableHead as MuiTableHead,
@@ -10,6 +11,7 @@ import {
   Paper,
   IconButton,
   withStyles,
+  makeStyles,
 } from "@material-ui/core";
 
 import FirstPageIcon from "@material-ui/icons/FirstPage";
@@ -102,22 +104,6 @@ function TableBody({ columns, rows, selectedRow, onSelectedRowChange }) {
 }
 
 function TablePaginationActions({ count, page, rowsPerPage, onChangePage }) {
-  function handleFirstPageButtonClick(event) {
-    onChangePage(event, 0);
-  }
-
-  function handleBackButtonClick(event) {
-    onChangePage(event, page - 1);
-  }
-
-  function handleNextButtonClick(event) {
-    onChangePage(event, page + 1);
-  }
-
-  function handleLastPageButtonClick(event) {
-    onChangePage(event, Math.ceil(count / rowsPerPage) - 1);
-  }
-
   function canGotoPrev() {
     return page > 0;
   }
@@ -128,22 +114,28 @@ function TablePaginationActions({ count, page, rowsPerPage, onChangePage }) {
 
   return (
     <div style={{ display: "flex" }}>
-      <IconButton
-        disabled={!canGotoPrev()}
-        onClick={handleFirstPageButtonClick}
-      >
+      <IconButton disabled={!canGotoPrev()} onClick={(e) => onChangePage(e, 0)}>
         <FirstPageIcon />
       </IconButton>
 
-      <IconButton disabled={!canGotoPrev()} onClick={handleBackButtonClick}>
+      <IconButton
+        disabled={!canGotoPrev()}
+        onClick={(e) => onChangePage(e, page - 1)}
+      >
         <KeyboardArrowLeft />
       </IconButton>
 
-      <IconButton disabled={!canGotoNext()} onClick={handleNextButtonClick}>
+      <IconButton
+        disabled={!canGotoNext()}
+        onClick={(e) => onChangePage(e, page + 1)}
+      >
         <KeyboardArrowRight />
       </IconButton>
 
-      <IconButton disabled={!canGotoNext()} onClick={handleLastPageButtonClick}>
+      <IconButton
+        disabled={!canGotoNext()}
+        onClick={(e) => onChangePage(e, Math.ceil(count / rowsPerPage) - 1)}
+      >
         <LastPageIcon />
       </IconButton>
     </div>
@@ -161,14 +153,6 @@ export default function Table({
   onSortRequest,
   onSelectedRowChange,
 }) {
-  function handleChangePage(_event, newPage) {
-    onCurrentPageChange(newPage);
-  }
-
-  function handleChangeRowsPerPage(event) {
-    onItemsPerPageChange(parseInt(event.target.value, 10));
-  }
-
   return (
     <Paper>
       <MuiTableContainer style={{ overflowX: "auto" }}>
@@ -196,8 +180,10 @@ export default function Table({
         rowsPerPage={pagination.itemsPerPage}
         page={pagination.currentPage}
         ActionsComponent={TablePaginationActions}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
+        onChangePage={(_, newPage) => onCurrentPageChange(newPage)}
+        onChangeRowsPerPage={(e) =>
+          onItemsPerPageChange(parseInt(e.target.value, 10))
+        }
       />
     </Paper>
   );

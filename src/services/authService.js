@@ -1,16 +1,9 @@
 import client from "api/client";
+import { handleResponse } from "utils/responseUtils";
 
 class AuthService {
-  async login(email, password) {
-    try {
-      const { data } = await client.put("/auth/login", { email, password });
-      return data;
-    } catch (e) {
-      if (e.response.status === 400) {
-        return e.response.data;
-      }
-      throw e;
-    }
+  login(email, password) {
+    return handleResponse(() => client.put("/auth/login", { email, password }));
   }
 }
 

@@ -9,7 +9,7 @@ const secret = "1dsewr3";
 
 class AuthController {
   login(login, password) {
-    const user = users.find(
+    const user = Object.values(users).find(
       (x) => x.login === login && x.password === password,
     );
 
@@ -19,10 +19,11 @@ class AuthController {
 
     const { id, firstName, middleName, lastName } = user;
 
-    const expiresAt = moment().add(30, "minutes").toISOString();
+    const expiresAt = moment().add(30, "minutes").format("DD.MM.YYYYThh:mm:ss");
 
     return {
       token: jwt.encode({ id, expiresAt }, secret),
+      expiresAt,
       user: {
         firstName,
         middleName,

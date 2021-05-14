@@ -41,6 +41,7 @@ function Field({ name, value }) {
       <Grid item xs={4}>
         <Typography style={{ fontWeight: "bold" }}>{name}</Typography>
       </Grid>
+
       <Grid item xs={8}>
         <Typography>{value}</Typography>
       </Grid>
@@ -64,32 +65,68 @@ function Fields({ appointment }) {
   );
 }
 
-export default function AppointmentViewer({ appointmentId, open, onClose }) {
+function reducer(state, action) {
+  switch (action.type) {
+    case "loadStarted": {
+      return { ...state, loading: true, error: false };
+    }
+    case "loadSucceed": {
+      return { ...state, loading: false, appointment: action.payload };
+    }
+    case "loadFailed": {
+      return { ...state, loading: false, error: true };
+    }
+    default:
+      return state;
+  }
+}
+
+export default function AppointmentViewer({ appointmentId, onClose }) {
   const classes = useStyles();
 
-  const [loading, setLoading] = React.useState(true);
-  const [appointment, setAppointment] = React.useState(null);
+  const [state, dispatch] = React.useReducer(reducer, {
+    loading: false,
+    error: false,
+    appointment: null,
+  });
 
   React.useEffect(() => {
     async function loadData() {
-      setLoading(true);
-      setAppointment(await appointmentService.getById(appointmentId));
-      setLoading(false);
+      dispatch({ type: "loadStarted" });
+      try {
+        const appointment = await appointmentService.getById(appointmentId);
+        dispatch({ type: "loadSucceed", payload: appointment });
+      } catch {
+        dispatch({ type: "loadFailed" });
+      }
     }
 
     loadData();
   }, [appointmentId]);
 
   return (
-    <Popup title={APPOINTMENT_DETAILS} open={open} onClose={onClose}>
-      <Box className={classes.content}>
-        {loading ? <Progress /> : <Fields appointment={appointment} />}
-      </Box>
+    <Popup open title={APPOINTMENT_DETAILS} onClose={onClose}>
+      <Box pb={2}>
+        {state.loading ? (
+          <Progress />
+        ) : (
+          <>
+            <Box className={classes.content}>
+              <Fields appointment={state.appointment} />
+            </Box>
 
-      <Box display="flex" justifyContent="flex-end">
-        <Button autoFocus variant="contained" color="primary" onClick={onClose}>
-          {OK}
-        </Button>
+            <Box display="flex" justifyContent="flex-end">
+              <Button
+                autoFocus
+                variant="contained"
+                color="primary"
+                onClick={onClose}
+              >
+                {OK}
+              </Button>
+            </Box>
+          </>
+        )}
       </Box>
     </Popup>
   );

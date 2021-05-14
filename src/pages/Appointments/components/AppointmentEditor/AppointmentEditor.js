@@ -2,9 +2,9 @@
 /* eslint-disable no-shadow */
 import React from "react";
 import moment from "moment";
-import * as yup from "yup";
 import { Formik, Form } from "formik";
 import {
+  Box,
   Grid,
   Button,
   Select,
@@ -13,20 +13,15 @@ import {
   FormControl,
   InputLabel,
   makeStyles,
+  FormHelperText,
 } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
 
 import Popup from "common/components/Popup/Popup";
 import Progress from "common/components/Progress/Progress";
 import UserSelector from "common/components/UserSelector/UserSelector";
-
-import {
-  appointmentService,
-  userService,
-  clientService,
-  dictionaryService,
-} from "services";
-
-import appointmentStatuses from "model/constants/appointmentStatuses";
+import { appointmentService, userService, clientService } from "services";
+import appointmentStatuses from "model/enums/appointmentStatuses";
 
 const APPOINTMENT_EDIT = "Редактирование приема";
 const CLIENT = "Клиент";
@@ -36,7 +31,9 @@ const DIAGNOSIS = "Диагноз";
 const COMPLAINTS = "Жалобы";
 const STATUS = "Статус";
 const SAVE = "Сохранить";
-const REQUIRED = "необходимо указать";
+const REQUIRED = "Необходимо указать";
+const LOAD_ERROR =
+  "Произошла ошибка в процессе загрузки данных.\nПопробуйте обновить страницу";
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -53,40 +50,121 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const spacing = 2;
-
-const schema = yup.object().shape({
-  holder: yup.object().nullable().required(REQUIRED),
-  client: yup.object().nullable().required(REQUIRED),
-  diagnosis: yup.string().trim().required(REQUIRED),
-});
-
 const dateFormat = "YYYY-MM-DDTHH:mm";
 
 function EditForm(props) {
   const {
-    data: { appointment, clients, users, statuses },
-    onSubmit,
+    data: { appointment, clients, users },
+    onSubmitted,
   } = props;
 
   const classes = useStyles();
 
+  const [serverErrors, setServerErrors] = React.useState([]);
+
   const initialValues = {
     date: moment(appointment.date).format(dateFormat),
+    status: appointment.status,
     holder: users.find((x) => x.id === appointment.holderId),
     client: clients.find((x) => x.id === appointment.clientId),
-    status: statuses.find((x) => x.id === appointment.statusId),
     diagnosis: appointment.diagnosis,
     complaints: appointment.complaints,
   };
 
-  function handleSubmit(values) {
-    onSubmit();
+  function checkStatus(status, allowedStatuses) {
+    if (!allowedStatuses.some((s) => s === status)) {
+      return `Допустимые значения: ${Object.values(allowedStatuses)
+        .map((x) => `'${x}'`)
+        .join(", ")}`;
+    }
+    return undefined;
+  }
+
+  function validate(values) {
+    const errors = {};
+
+    if (!values.date) {
+      errors.date = REQUIRED;
+    } else if (moment(values.date).isBefore(moment(), "day")) {
+      errors.status = checkStatus(values.status, [
+        appointmentStatuses.canceled,
+        appointmentStatuses.missed,
+        appointmentStatuses.completed,
+      ]);
+    } else if (moment(values.date).isAfter(moment(), "day")) {
+      errors.status = checkStatus(values.status, [
+        appointmentStatuses.pending,
+        appointmentStatuses.canceled,
+        appointmentStatuses.postponed,
+      ]);
+    } else {
+      errors.status = checkStatus(values.status, [
+        appointmentStatuses.active,
+        appointmentStatuses.completed,
+        appointmentStatuses.canceled,
+      ]);
+    }
+
+    if (!values.client) {
+      errors.client = REQUIRED;
+    }
+
+    if (!values.holder) {
+      errors.holder = REQUIRED;
+    }
+
+    if (
+      values.status === appointmentStatuses.pending &&
+      (!values.diagnosis || !values.diagnosis.trim())
+    ) {
+      errors.diagnosis = REQUIRED;
+    }
+
+    Object.keys(errors).forEach((key) => {
+      if (!errors[key]) {
+        delete errors[key];
+      }
+    });
+
+    return errors;
+  }
+
+  async function handleSubmit(values, { setSubmitting, setFieldError }) {
+    const editedAppointment = {
+      data: values.date,
+      status: values.status,
+      holderId: values.holder.id,
+      clientId: values.client.id,
+      diagnosis: values.diagnosis,
+      complaints: values.complaints,
+    };
+
+    const { isSuccess, data } = await appointmentService.update(
+      appointment.id,
+      editedAppointment,
+    );
+
+    if (isSuccess) {
+      onSubmitted();
+    } else {
+      const {
+        error: { common, fields },
+      } = data;
+
+      setServerErrors(common);
+
+      Object.entries(fields).forEach(([field, errors]) => {
+        setFieldError(field, errors.join("; "));
+      });
+
+      setSubmitting(false);
+    }
   }
 
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={schema}
+      validate={validate}
       onSubmit={handleSubmit}
     >
       {({
@@ -100,6 +178,12 @@ function EditForm(props) {
       }) => (
         <Form>
           <Grid container direction="column" spacing={spacing}>
+            {serverErrors.map((error) => (
+              <Grid item key={error}>
+                <Alert severity="error">{error}</Alert>
+              </Grid>
+            ))}
+
             <Grid item container spacing={spacing}>
               <Grid item xs>
                 <UserSelector
@@ -137,6 +221,7 @@ function EditForm(props) {
                 <FormControl
                   fullWidth
                   className={classes.control}
+                  error={Boolean(errors.status)}
                   disabled={isSubmitting}
                 >
                   <InputLabel shrink id="status-input">
@@ -151,12 +236,16 @@ function EditForm(props) {
                     onChange={handleChange}
                     MenuProps={{ disablePortal: true }}
                   >
-                    {statuses.map((x) => (
-                      <MenuItem key={x.id} value={x}>
-                        {x.name}
+                    {Object.keys(appointmentStatuses).map((status) => (
+                      <MenuItem key={status} value={status}>
+                        {status}
                       </MenuItem>
                     ))}
                   </Select>
+
+                  <FormHelperText disabled={!errors.status}>
+                    {errors.status}
+                  </FormHelperText>
                 </FormControl>
               </Grid>
 
@@ -169,6 +258,8 @@ function EditForm(props) {
                   label={DATE}
                   type="datetime-local"
                   value={values.date}
+                  error={touched.date && Boolean(errors.date)}
+                  helperText={touched.date && errors.date}
                   disabled={isSubmitting}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -204,7 +295,7 @@ function EditForm(props) {
                 placeholder={COMPLAINTS}
                 value={values.complaints}
                 error={touched.complaints && Boolean(errors.complaints)}
-                helperText={errors.complaints}
+                helperText={touched.complaints && errors.complaints}
                 disabled={isSubmitting}
                 onChange={handleChange}
               />
@@ -227,60 +318,95 @@ function EditForm(props) {
   );
 }
 
-export default function AppointmentEditor({ appointmentId, open, onClose }) {
-  const [loading, setLoading] = React.useState(true);
-  const [submitting, setSubmitting] = React.useState(false);
-  const [formData, setFormData] = React.useState({
-    appointment: null,
-    clients: [],
-    users: [],
-    statuses: [],
+function reducer(state, action) {
+  switch (action.type) {
+    case "loadStarted": {
+      return { ...state, loading: true, error: false };
+    }
+    case "loadSucceed": {
+      return { ...state, loading: false, data: action.payload };
+    }
+    case "loadFailed": {
+      return { ...state, loading: false, error: true };
+    }
+    default:
+      return state;
+  }
+}
+
+function ErrorAlert() {
+  return <Alert severity="error">{LOAD_ERROR}</Alert>;
+}
+
+export default function AppointmentEditor({
+  appointmentId,
+  onClose,
+  onSubmitted,
+}) {
+  const [state, dispatch] = React.useReducer(reducer, {
+    loading: true,
+    error: false,
+    data: {
+      appointment: null,
+      clients: [],
+      users: [],
+    },
   });
 
-  function handleSubmit() {
-    setSubmitting(true);
-    setTimeout(() => {
-      onClose();
-      setSubmitting(false);
-    }, 2000);
-  }
-
   React.useEffect(() => {
+    let mounted = true;
+
     async function loadData() {
-      setLoading(true);
+      if (mounted) {
+        dispatch({ type: "loadStarted" });
+      }
 
-      const [appointment, clients, users, statuses] = await Promise.all([
-        appointmentService.getById(appointmentId),
-        clientService.getAll(),
-        userService.getAll(),
-        dictionaryService.getAppointmentStatuses(),
-      ]);
+      try {
+        const [appointment, clients, users] = await Promise.all([
+          appointmentService.getById(appointmentId),
+          clientService.getAll(),
+          userService.getAll(),
+        ]);
 
-      setFormData({
-        appointment,
-        users,
-        clients,
-        statuses,
-      });
-
-      setLoading(false);
+        if (mounted) {
+          dispatch({
+            type: "loadSucceed",
+            payload: {
+              appointment,
+              clients,
+              users,
+            },
+          });
+        }
+      } catch {
+        if (mounted) {
+          dispatch({ type: "loadFailed" });
+        }
+      }
     }
 
     loadData();
+
+    return () => {
+      mounted = false;
+    };
   }, [appointmentId]);
 
+  function renderForm() {
+    if (state.error) {
+      return <ErrorAlert />;
+    }
+
+    if (state.loading) {
+      return <Progress />;
+    }
+
+    return <EditForm data={state.data} onSubmitted={onSubmitted} />;
+  }
+
   return (
-    <Popup
-      title={APPOINTMENT_EDIT}
-      open={open}
-      closeDisabled={submitting}
-      onClose={onClose}
-    >
-      {loading ? (
-        <Progress />
-      ) : (
-        <EditForm data={formData} onSubmit={handleSubmit} />
-      )}
+    <Popup open title={APPOINTMENT_EDIT} onClose={onClose}>
+      <Box pb={2}>{renderForm()}</Box>
     </Popup>
   );
 }

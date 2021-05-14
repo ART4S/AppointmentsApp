@@ -2,7 +2,7 @@ import users from "../data/users";
 
 class UsersController {
   getAll() {
-    return users;
+    return Object.values(users);
   }
 }
 

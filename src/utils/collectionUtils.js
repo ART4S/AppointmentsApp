@@ -29,3 +29,7 @@ export function remove(arr, item) {
   }
   return arr;
 }
+
+export function normalize(arr) {
+  return arr.reduce((prev, cur) => ({ ...prev, [cur.id]: cur }), {});
+}

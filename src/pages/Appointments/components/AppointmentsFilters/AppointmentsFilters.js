@@ -17,19 +17,22 @@ import SearchIcon from "@material-ui/icons/Search";
 import ClearIcon from "@material-ui/icons/Clear";
 
 import UserSelector from "common/components/UserSelector/UserSelector";
+import BusyScreen from "common/components/BusyScreen/BusyScreen";
+
+import appointmentStatuses from "model/enums/appointmentStatuses";
 
 import { loadAppointments } from "../AppointmentsTable/appointmentsTableSlice";
 
 import {
   loadUsers,
   loadClients,
-  loadAppointmentStatuses,
   selectFilter,
   setFilterValue,
+  setBusy,
   clearFilter,
   selectUsers,
   selectClients,
-  selectAppointmentStatuses,
+  selectBusy,
 } from "./appointmentsFiltersSlice";
 
 const CLIENT = "Клиент";
@@ -46,6 +49,7 @@ const useStyle = makeStyles((_theme) => ({
     width: "100%",
     display: "flex",
     justifyContent: "center",
+    position: "relative",
   },
   control: {
     width: 200,
@@ -58,12 +62,19 @@ export default function AppointmentsFilters() {
   const filter = useSelector(selectFilter);
   const users = useSelector(selectUsers);
   const clients = useSelector(selectClients);
-  const appointmentStatuses = useSelector(selectAppointmentStatuses);
+  const busy = useSelector(selectBusy);
 
   useEffect(() => {
-    dispatch(loadUsers());
-    dispatch(loadClients());
-    dispatch(loadAppointmentStatuses());
+    async function loadData() {
+      setBusy(true);
+      try {
+        await Promise.all([dispatch(loadUsers()), dispatch(loadClients())]);
+      } catch {
+        //
+      }
+    }
+
+    loadData();
   }, []);
 
   function handleFilterFieldChange(event) {
@@ -104,6 +115,8 @@ export default function AppointmentsFilters() {
 
   return (
     <form className={classes.form} noValidate>
+      <BusyScreen isBusy={busy} />
+
       <Grid container>
         <Grid item container xs direction="column" spacing={spacing}>
           <Grid item container justify="center">
@@ -122,22 +135,22 @@ export default function AppointmentsFilters() {
 
           <Grid item container justify="center">
             <FormControl className={classes.control}>
-              <InputLabel id="statusId-label">{STATUS}</InputLabel>
+              <InputLabel id="status-label">{STATUS}</InputLabel>
 
               <Select
-                id="statusId-select"
-                name="statusId"
-                labelId="statusId-label"
-                value={filter.statusId}
+                id="status-select"
+                name="status"
+                labelId="status-label"
+                value={filter.status}
                 onChange={handleFilterFieldChange}
               >
                 <MenuItem key={-1} value="">
                   {NONE}
                 </MenuItem>
 
-                {appointmentStatuses.map((status) => (
-                  <MenuItem key={status.id} value={status.id}>
-                    {status.name}
+                {Object.keys(appointmentStatuses).map((status) => (
+                  <MenuItem key={status} value={status}>
+                    {status}
                   </MenuItem>
                 ))}
               </Select>

@@ -1,10 +1,9 @@
 /* eslint-disable no-nested-ternary */
 import faker from "faker";
 
-import { repeat } from "utils/collectionUtils";
-import { getFullName } from "utils/userUtils";
+import { repeat, normalize } from "utils/collectionUtils";
 
-import appointmentStatuses from "./dictionaries/appointmentStatuses";
+import appointmentStatuses from "./enums/appointmentStatuses";
 import users from "./users";
 import clients from "./clients";
 
@@ -19,24 +18,21 @@ const compliences = [
 const diagnosis = ["Застужено правое ухо", "Ангина", "Мигрень"];
 
 function createAppointment() {
-  const status = faker.random.arrayElement(appointmentStatuses);
-  const holder = faker.random.arrayElement(users);
-  const client = faker.random.arrayElement(clients);
+  const status = faker.random.arrayElement(Object.values(appointmentStatuses));
+  const client = faker.random.arrayElement(Object.values(clients));
+  const holder = faker.random.arrayElement(Object.values(users));
 
   return {
     id: faker.datatype.uuid(),
     date: faker.date.recent(),
+    status,
     clientId: client.id,
-    clientName: getFullName(client),
-    statusId: status.id,
-    status: status.name,
     holderId: holder.id,
-    holderName: getFullName(holder),
     complaints: faker.random.arrayElement(compliences),
     diagnosis: faker.random.arrayElement(diagnosis),
   };
 }
 
-const appointments = repeat(100, createAppointment);
+const appointments = normalize(repeat(100, createAppointment));
 
 export default appointments;

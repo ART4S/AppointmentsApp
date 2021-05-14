@@ -74,15 +74,15 @@ const navigationItems = [
   { title: EMPLOYEES, Icon: EmployeesIcon, link: "/employees" },
 ];
 
-function NavigationPanel() {
-  const spacing = 2;
+const spacing = 2;
 
+function NavigationPanel() {
   return (
     <Box>
       <Grid container direction="column" spacing={spacing} wrap="nowrap">
         <Grid item container spacing={spacing}>
           {navigationItems.slice(0, 3).map((x) => (
-            <Grid key={x.title} item>
+            <Grid item key={x.title}>
               <NavigationItem {...x} />
             </Grid>
           ))}
@@ -90,7 +90,7 @@ function NavigationPanel() {
 
         <Grid item container spacing={spacing} wrap="nowrap">
           {navigationItems.slice(3, 6).map((x) => (
-            <Grid key={x.title} item>
+            <Grid item key={x.title}>
               <NavigationItem {...x} />
             </Grid>
           ))}

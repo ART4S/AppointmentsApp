@@ -1,12 +1,12 @@
 import faker from "faker";
 
-import { repeat } from "utils/collectionUtils";
+import { repeat, normalize } from "utils/collectionUtils";
 
 faker.locale = "ru";
 
 export const defaultUsers = [
   {
-    id: "5edf2686-1539-4412-8753-e802229e546c",
+    id: "b7bd063a-836f-4f93-9128-348c2efe84f4",
     firstName: "Иван",
     middleName: "Иванович",
     lastName: "Иванов",
@@ -34,6 +34,6 @@ function createUser() {
   };
 }
 
-const users = [...defaultUsers, ...repeat(100, createUser)];
+const users = normalize([...defaultUsers, ...repeat(100, createUser)]);
 
 export default users;

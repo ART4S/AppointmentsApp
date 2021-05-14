@@ -1,4 +1,5 @@
 import client from "api/client";
+import { handleResponse } from "utils/responseUtils";
 
 class AppointmentService {
   async getAll(params) {
@@ -9,6 +10,10 @@ class AppointmentService {
   async getById(id) {
     const { data } = await client.get(`/appointments/${id}`);
     return data;
+  }
+
+  update(id, appointment) {
+    return handleResponse(() => client.put(`/appointments/${id}`, appointment));
   }
 
   async delete(id) {
