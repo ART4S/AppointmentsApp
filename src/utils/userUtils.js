@@ -1,10 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 
 export function getFullName(user) {
-  let fullName = "";
-  if (!user) return fullName;
-  if (user.lastName) fullName += ` ${user.lastName}`;
-  if (user.firstName) fullName += ` ${user.firstName}`;
-  if (user.middleName) fullName += ` ${user.middleName}`;
-  return fullName.trim();
+  return [user.lastName, user.firstName, user.middleName]
+    .filter((x) => x)
+    .join(" ");
 }

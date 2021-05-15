@@ -4,6 +4,7 @@ import {
   Box,
   Grid,
   Container,
+  Paper,
   Tooltip,
   IconButton,
   Accordion as MuiAccordion,
@@ -15,6 +16,7 @@ import { FilterList as FilterListIcon } from "@material-ui/icons";
 
 import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg";
 
+import BusyScreen from "common/components/BusyScreen/BusyScreen";
 import Header from "common/components/Header/Header";
 import ErrorPopup from "common/components/ErrorPopup/ErrorPopup";
 import AppointmentsFilters from "./components/AppointmentsFilters/AppointmentsFilters";
@@ -29,25 +31,23 @@ const ERROR_LOAD_DATA =
   "В процессе загрузки данных произошла ошибка, пожалуйста перезагрузите страницу";
 
 const useAccodtionStyles = makeStyles((theme) => ({
-  header: {
+  summary: {
     backgroundColor: theme.palette.primary.main,
     height: 10,
   },
-  box: {
-    minWidth: 50,
-    minHeight: 50,
-    backgroundColor: theme.palette.primary.main,
-    border: "2px dotted",
+  details: {
+    padding: 0,
   },
 }));
 
 function Accordion({ header, children }) {
   const classes = useAccodtionStyles();
-
   return (
     <MuiAccordion defaultExpanded>
-      <AccordionSummary className={classes.header}>{header}</AccordionSummary>
-      <AccordionDetails>{children}</AccordionDetails>
+      <AccordionSummary className={classes.summary}>{header}</AccordionSummary>
+      <AccordionDetails className={classes.details}>
+        {children}
+      </AccordionDetails>
     </MuiAccordion>
   );
 }

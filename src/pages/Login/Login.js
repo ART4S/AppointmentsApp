@@ -3,7 +3,7 @@
 import React from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import * as yup from "yup";
-import { useFormik } from "formik";
+import { Formik, Form } from "formik";
 import {
   Container,
   Box,
@@ -34,8 +34,8 @@ const LOGIN = "Войти";
 const FORGOT_PASSWORD = "Забыли пароль?";
 const SIGNIN = "Вход";
 const SIGNUP = "Регистрация";
-const WRITE_CORRECT_EMAIL = "введите корректный адрес";
-const REQUIRED = "необходимо заполнить";
+const WRITE_CORRECT_EMAIL = "Укажите корректный адрес";
+const REQUIRED = "Необходимо заполнить";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,7 +43,6 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     flexDirection: "column",
   },
-
   avatar: {
     color: theme.palette.common.white,
     backgroundColor: theme.palette.secondary,
@@ -51,31 +50,25 @@ const useStyles = makeStyles((theme) => ({
     height: theme.spacing(5),
     marginTop: theme.spacing(10),
   },
-
   title: {
     marginTop: theme.spacing(2),
   },
-
   icon: {
     width: theme.spacing(3),
     height: theme.spacing(3),
   },
-
   form: {
     display: "flex",
     flexDirection: "column",
     width: "100%",
-
     "& > *": {
       marginTop: theme.spacing(2),
     },
   },
-
   links: {
     display: "flex",
     justifyContent: "space-between",
   },
-
   copyright: {
     display: "flex",
     justifyContent: "center",
@@ -98,6 +91,11 @@ export default function Login() {
   const location = useLocation();
   const history = useHistory();
 
+  const initialValues = {
+    email: "",
+    password: "",
+  };
+
   async function handleSubmit({ email, password }) {
     const { isSuccess, data } = await auth.login(email, password);
 
@@ -106,23 +104,6 @@ export default function Login() {
     } else {
       setServerError(data.error);
     }
-  }
-
-  const formik = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-    },
-    validationSchema: schema,
-    onSubmit: handleSubmit,
-  });
-
-  function handleRememberChecked(event) {
-    setRemember(event.target.checked);
-  }
-
-  function handleShowPassword() {
-    setShowPassword(!showPassword);
   }
 
   return (
@@ -141,74 +122,106 @@ export default function Login() {
         </Alert>
       )}
 
-      <form noValidate className={classes.form} onSubmit={formik.handleSubmit}>
-        <TextField
-          fullWidth
-          className={classes.control}
-          id="email"
-          name="email"
-          variant="outlined"
-          label={EMAIL}
-          value={formik.values.email}
-          error={formik.touched.email && Boolean(formik.errors.email)}
-          helperText={formik.touched.email && formik.errors.email}
-          onBlur={formik.handleBlur}
-          onChange={formik.handleChange}
-          InputProps={{ onBlur: formik.handleBlur }}
-        />
-
-        <TextField
-          fullWidth
-          className={classes.control}
-          id="password"
-          name="password"
-          variant="outlined"
-          type={showPassword ? "text" : "password"}
-          label={PASSWORD}
-          value={formik.values.password}
-          error={formik.touched.password && Boolean(formik.errors.password)}
-          helperText={formik.touched.password && formik.errors.password}
-          onBlur={formik.handleBlur}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={handleShowPassword} edge="end">
-                  {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-          onChange={formik.handleChange}
-        />
-
-        <FormControlLabel
-          id="remember"
-          name="remember"
-          className={classes.label}
-          label={REMEMBER}
-          control={
-            <Checkbox
-              color="primary"
-              checked={remember}
-              onChange={handleRememberChecked}
+      <Formik
+        initialValues={initialValues}
+        validationSchema={schema}
+        onSubmit={handleSubmit}
+      >
+        {({
+          values,
+          errors,
+          touched,
+          isSubmitting,
+          handleChange,
+          handleBlur,
+        }) => (
+          <Form className={classes.form}>
+            <TextField
+              fullWidth
+              className={classes.control}
+              id="email"
+              name="email"
+              variant="outlined"
+              label={EMAIL}
+              value={values.email}
+              error={touched.email && Boolean(errors.email)}
+              helperText={touched.email && errors.email}
+              disabled={isSubmitting}
+              onBlur={handleBlur}
+              onChange={handleChange}
+              InputProps={{ onBlur: handleBlur }}
             />
-          }
-        />
 
-        <Button variant="contained" color="primary" type="submit">
-          {LOGIN}
-        </Button>
+            <TextField
+              fullWidth
+              className={classes.control}
+              id="password"
+              name="password"
+              variant="outlined"
+              type={showPassword ? "text" : "password"}
+              label={PASSWORD}
+              value={values.password}
+              error={touched.password && Boolean(errors.password)}
+              helperText={touched.password && errors.password}
+              disabled={isSubmitting}
+              onBlur={handleBlur}
+              onChange={handleChange}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      edge="end"
+                      disabled={isSubmitting}
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
 
-        <Box className={classes.links}>
-          <Link>
-            <Typography>{FORGOT_PASSWORD}</Typography>
-          </Link>
+            <FormControlLabel
+              id="remember"
+              name="remember"
+              className={classes.label}
+              label={REMEMBER}
+              disabled={isSubmitting}
+              control={
+                <Checkbox
+                  color="primary"
+                  checked={remember}
+                  onChange={(e) => setRemember(e.target.checked)}
+                />
+              }
+            />
 
-          <Link>
-            <Typography>{SIGNUP}</Typography>
-          </Link>
-        </Box>
-      </form>
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {LOGIN}
+            </Button>
+
+            <Box className={classes.links}>
+              <Link>
+                <Typography>{FORGOT_PASSWORD}</Typography>
+              </Link>
+
+              <Link>
+                <Typography>{SIGNUP}</Typography>
+              </Link>
+            </Box>
+          </Form>
+        )}
+      </Formik>
+
       <Box className={classes.copyright}>
         <Typography variant="body2" color="textSecondary">
           {"Copyright © "}

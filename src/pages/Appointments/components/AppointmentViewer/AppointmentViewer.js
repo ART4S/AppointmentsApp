@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   title: {
     padding: theme.spacing(1, 0),
   },
-  content: {
+  fields: {
     display: "flex",
     flexDirection: "column",
     "& > *": {
@@ -111,7 +111,7 @@ export default function AppointmentViewer({ appointmentId, onClose }) {
           <Progress />
         ) : (
           <>
-            <Box className={classes.content}>
+            <Box className={classes.fields}>
               <Fields appointment={state.appointment} />
             </Box>
 

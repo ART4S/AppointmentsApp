@@ -15,11 +15,7 @@ export function selectMany(arr, arrSelector) {
 }
 
 export function repeat(times, valueGetter) {
-  const arr = [];
-  for (let i = 0; i < times; i++) {
-    arr.push(valueGetter());
-  }
-  return arr;
+  return Array.from(Array(times)).map(() => valueGetter());
 }
 
 export function remove(arr, item) {

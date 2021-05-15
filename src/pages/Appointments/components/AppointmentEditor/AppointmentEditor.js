@@ -49,8 +49,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const spacing = 2;
-const dateFormat = "YYYY-MM-DDTHH:mm";
+const SPACING = 2;
+const DATE_FORMAT = "YYYY-MM-DDTHH:mm";
 
 function EditForm(props) {
   const {
@@ -63,7 +63,7 @@ function EditForm(props) {
   const [serverErrors, setServerErrors] = React.useState([]);
 
   const initialValues = {
-    date: moment(appointment.date).format(dateFormat),
+    date: moment(appointment.date).format(DATE_FORMAT),
     status: appointment.status,
     holder: users.find((x) => x.id === appointment.holderId),
     client: clients.find((x) => x.id === appointment.clientId),
@@ -177,14 +177,14 @@ function EditForm(props) {
         setFieldValue,
       }) => (
         <Form>
-          <Grid container direction="column" spacing={spacing}>
+          <Grid container direction="column" spacing={SPACING}>
             {serverErrors.map((error) => (
               <Grid item key={error}>
                 <Alert severity="error">{error}</Alert>
               </Grid>
             ))}
 
-            <Grid item container spacing={spacing}>
+            <Grid item container spacing={SPACING}>
               <Grid item xs>
                 <UserSelector
                   className={classes.control}
@@ -216,7 +216,7 @@ function EditForm(props) {
               </Grid>
             </Grid>
 
-            <Grid item container spacing={spacing}>
+            <Grid item container spacing={SPACING}>
               <Grid item xs>
                 <FormControl
                   fullWidth
@@ -354,10 +354,10 @@ export default function AppointmentEditor({
   });
 
   React.useEffect(() => {
-    let mounted = true;
+    let active = true;
 
     async function loadData() {
-      if (mounted) {
+      if (active) {
         dispatch({ type: "loadStarted" });
       }
 
@@ -368,7 +368,7 @@ export default function AppointmentEditor({
           userService.getAll(),
         ]);
 
-        if (mounted) {
+        if (active) {
           dispatch({
             type: "loadSucceed",
             payload: {
@@ -379,7 +379,7 @@ export default function AppointmentEditor({
           });
         }
       } catch {
-        if (mounted) {
+        if (active) {
           dispatch({ type: "loadFailed" });
         }
       }
@@ -388,7 +388,7 @@ export default function AppointmentEditor({
     loadData();
 
     return () => {
-      mounted = false;
+      active = false;
     };
   }, [appointmentId]);
 

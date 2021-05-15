@@ -112,7 +112,12 @@ export default function AppointmentsTable() {
   const [editorOpen, setEditorOpen] = React.useState(false);
 
   React.useEffect(() => {
-    dispatch(loadAppointments());
+    async function loadData() {
+      await dispatch(loadAppointments());
+      dispatch(setFirstAppointmentSelected());
+    }
+
+    loadData();
   }, []);
 
   function handleSortRequest(order, field) {

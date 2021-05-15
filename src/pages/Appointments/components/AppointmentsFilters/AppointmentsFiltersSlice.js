@@ -8,7 +8,6 @@ import {
 import userService from "services/userService";
 import clientService from "services/clientService";
 
-const appointmentStatusesAdapter = createEntityAdapter();
 const usersAdapter = createEntityAdapter();
 const clientsAdapter = createEntityAdapter();
 
@@ -52,6 +51,7 @@ const filtersSlice = createSlice({
 
     clearFilter(state) {
       state.filter = initialState.filter;
+      state.applyed = false;
     },
   },
   extraReducers: {
