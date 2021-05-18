@@ -91,7 +91,7 @@ export default function AppointmentViewer({ appointmentId, onClose }) {
   });
 
   React.useEffect(() => {
-    async function loadData() {
+    (async () => {
       dispatch({ type: "loadStarted" });
       try {
         const appointment = await appointmentService.getById(appointmentId);
@@ -99,9 +99,7 @@ export default function AppointmentViewer({ appointmentId, onClose }) {
       } catch {
         dispatch({ type: "loadFailed" });
       }
-    }
-
-    loadData();
+    })();
   }, [appointmentId]);
 
   return (

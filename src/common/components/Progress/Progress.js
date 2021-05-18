@@ -6,16 +6,15 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    width: "100%",
-    height: "100%",
   },
 }));
 
-export default function Progress() {
+export default function Progress(props) {
   const classes = useStyles();
+
   return (
     <Box className={classes.root}>
-      <CircularProgress />
+      <CircularProgress {...props} />
     </Box>
   );
 }

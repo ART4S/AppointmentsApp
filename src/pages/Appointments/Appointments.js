@@ -4,7 +4,6 @@ import {
   Box,
   Grid,
   Container,
-  Paper,
   Tooltip,
   IconButton,
   Accordion as MuiAccordion,
@@ -16,9 +15,10 @@ import { FilterList as FilterListIcon } from "@material-ui/icons";
 
 import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg";
 
-import BusyScreen from "common/components/BusyScreen/BusyScreen";
+import ClientSelector from "common/components/ClientSelector/ClientSelector";
 import Header from "common/components/Header/Header";
 import ErrorPopup from "common/components/ErrorPopup/ErrorPopup";
+
 import AppointmentsFilters from "./components/AppointmentsFilters/AppointmentsFilters";
 import AppointmentsTable from "./components/AppointmentsTable/AppointmentsTable";
 
@@ -30,7 +30,7 @@ const ERROR = "Ошибка";
 const ERROR_LOAD_DATA =
   "В процессе загрузки данных произошла ошибка, пожалуйста перезагрузите страницу";
 
-const useAccodtionStyles = makeStyles((theme) => ({
+const useAccordionStyles = makeStyles((theme) => ({
   summary: {
     backgroundColor: theme.palette.primary.main,
     height: 10,
@@ -41,7 +41,8 @@ const useAccodtionStyles = makeStyles((theme) => ({
 }));
 
 function Accordion({ header, children }) {
-  const classes = useAccodtionStyles();
+  const classes = useAccordionStyles();
+
   return (
     <MuiAccordion defaultExpanded>
       <AccordionSummary className={classes.summary}>{header}</AccordionSummary>
@@ -52,11 +53,11 @@ function Accordion({ header, children }) {
   );
 }
 
-const spacing = 2;
+const SPACING = 2;
 
 const useStyles = makeStyles((theme) => ({
   body: {
-    marginTop: theme.spacing(spacing),
+    marginTop: theme.spacing(SPACING),
   },
   icon: {
     color: theme.palette.common.white,
@@ -82,11 +83,15 @@ export default function Appointments() {
       <Header title={APPOINTMENTS} Icon={AppointmentIcon} />
 
       <Container className={classes.body} maxWidth="md">
-        <Grid item container direction="column" spacing={spacing}>
+        <Grid item container direction="column" spacing={SPACING}>
           <Grid item>
             <Accordion header={renderFilterButton()}>
               <AppointmentsFilters />
             </Accordion>
+          </Grid>
+
+          <Grid item>
+            <ClientSelector />
           </Grid>
 
           <Grid item>

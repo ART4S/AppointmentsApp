@@ -4,21 +4,34 @@ import Progress from "../Progress/Progress";
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    position: "relative",
+  },
+  screen: {
     backgroundColor: theme.palette.action.disabledBackground,
-    zIndex: theme.zIndex.tooltip,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1,
     position: "absolute",
     width: "100%",
     height: "100%",
   },
+  content: {
+    zIndex: 0,
+  },
 }));
 
-export default function BusyScreen({ isBusy }) {
+export default function BusyScreen({ isBusy, children }) {
   const classes = useStyles();
+
   return (
-    isBusy && (
-      <Box className={classes.root}>
-        <Progress />
-      </Box>
-    )
+    <Box className={classes.root}>
+      {isBusy && (
+        <Box className={classes.screen}>
+          <Progress />
+        </Box>
+      )}
+      <Box className={classes.content}>{children}</Box>
+    </Box>
   );
 }

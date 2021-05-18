@@ -18,7 +18,11 @@ function createSorter(order, field) {
 
 class AppointmentsController {
   getAll(params) {
-    let data = Object.values(appointments);
+    let data = Object.values(appointments).map((x) => ({
+      ...x,
+      clientName: getFullName(clients[x.clientId]),
+      holderName: getFullName(users[x.holderId]),
+    }));
 
     data = data.filter(
       (item) =>
@@ -56,12 +60,6 @@ class AppointmentsController {
     data = data.slice(start, end);
 
     const pageSize = data.length;
-
-    data = data.map((x) => ({
-      ...x,
-      clientName: getFullName(clients[x.clientId]),
-      holderName: getFullName(users[x.holderId]),
-    }));
 
     return { data, currentPage, pageSize, totalItems };
   }

@@ -1,7 +1,5 @@
 import React from "react";
-
 import { TextField } from "@material-ui/core";
-
 import { Autocomplete } from "@material-ui/lab";
 import { matchSorter } from "match-sorter";
 import { getFullName } from "utils/userUtils";
@@ -15,12 +13,8 @@ export default function UserSelector({
   onChange,
   ...rest
 }) {
-  function handleChange(_event, user) {
-    onChange(user);
-  }
-
   function getFirstLetter(word) {
-    return word && word.charAt(0).toUpperCase();
+    return word?.charAt(0)?.toUpperCase();
   }
 
   function filterOptions(options, { inputValue }) {
@@ -53,7 +47,7 @@ export default function UserSelector({
           helperText={helperText}
         />
       )}
-      onChange={handleChange}
+      onChange={(_, user) => onChange(user)}
     />
   );
 }

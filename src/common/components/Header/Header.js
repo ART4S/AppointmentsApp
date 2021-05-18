@@ -17,20 +17,17 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.contrastText,
     padding: theme.spacing(2, 0),
   },
-
   icon: {
     fill: theme.palette.primary.contrastText,
     width: 50,
     height: 50,
   },
-
   link: {
     color: "inherit",
     textDecoration: "inherit",
     display: "flex",
     justifyContent: "center",
   },
-
   title: {
     marginLeft: theme.spacing(3),
   },
@@ -40,10 +37,6 @@ export default function Header({ title, Icon }) {
   const classes = useStyles();
   const auth = useAuth();
   const userName = `${auth.user.firstName} ${auth.user.lastName}`;
-
-  function handleLogout() {
-    auth.logout();
-  }
 
   return (
     <Box className={classes.header}>
@@ -61,7 +54,7 @@ export default function Header({ title, Icon }) {
           <AccountCircleIcon className={classes.icon} />
         </IconButton>
 
-        <IconButton onClick={handleLogout}>
+        <IconButton onClick={() => auth.logout()}>
           <ExitToAppIcon className={classes.icon} />
         </IconButton>
       </Box>

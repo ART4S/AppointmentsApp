@@ -195,7 +195,7 @@ function EditForm(props) {
                   error={touched.client && Boolean(errors.client)}
                   helperText={touched.client && errors.client}
                   disabled={isSubmitting}
-                  onChange={(client) => setFieldValue("client", client)}
+                  onChange={(client) => setFieldValue("clientId", client)}
                   onBlur={handleBlur}
                 />
               </Grid>
@@ -356,7 +356,7 @@ export default function AppointmentEditor({
   React.useEffect(() => {
     let active = true;
 
-    async function loadData() {
+    (async () => {
       if (active) {
         dispatch({ type: "loadStarted" });
       }
@@ -383,9 +383,7 @@ export default function AppointmentEditor({
           dispatch({ type: "loadFailed" });
         }
       }
-    }
-
-    loadData();
+    })();
 
     return () => {
       active = false;

@@ -153,44 +153,46 @@ export default function AppointmentsTable() {
     <ClickAwayListener
       onClickAway={() => dispatch(setSelectedAppointmentId(null))}
     >
-      <Paper style={{ position: "relative" }}>
-        <BusyScreen isBusy={busy} />
-
-        <ToolBar
-          isAppointmentSelected={Boolean(selectedAppointmentId)}
-          onViewOpenClick={() => setViewerOpen(true)}
-          onEditOpenClick={() => setEditorOpen(true)}
-          onDeleteClick={handleDelete}
-        />
-
-        <Table
-          columns={columns}
-          rows={appointments}
-          pagination={pagination}
-          sorting={sorting}
-          selectedRow={appointments.find((x) => x.id === selectedAppointmentId)}
-          onSelectedRowChange={(appointment) =>
-            dispatch(setSelectedAppointmentId(appointment.id))
-          }
-          onSortRequest={handleSortRequest}
-          onCurrentPageChange={handleCurrentPageChange}
-          onItemsPerPageChange={handleItemsPerPageChange}
-        />
-
-        {selectedAppointmentId && viewerOpen && (
-          <AppointmentViewer
-            appointmentId={selectedAppointmentId}
-            onClose={() => setViewerOpen(false)}
+      <Paper>
+        <BusyScreen isBusy={busy}>
+          <ToolBar
+            isAppointmentSelected={Boolean(selectedAppointmentId)}
+            onViewOpenClick={() => setViewerOpen(true)}
+            onEditOpenClick={() => setEditorOpen(true)}
+            onDeleteClick={handleDelete}
           />
-        )}
 
-        {selectedAppointmentId && editorOpen && (
-          <AppointmentEditor
-            appointmentId={selectedAppointmentId}
-            onSubmitted={handleEditSubmitted}
-            onClose={() => setEditorOpen(false)}
+          <Table
+            columns={columns}
+            rows={appointments}
+            pagination={pagination}
+            sorting={sorting}
+            selectedRow={appointments.find(
+              (x) => x.id === selectedAppointmentId,
+            )}
+            onSelectedRowChange={(appointment) =>
+              dispatch(setSelectedAppointmentId(appointment.id))
+            }
+            onSortRequest={handleSortRequest}
+            onCurrentPageChange={handleCurrentPageChange}
+            onItemsPerPageChange={handleItemsPerPageChange}
           />
-        )}
+
+          {selectedAppointmentId && viewerOpen && (
+            <AppointmentViewer
+              appointmentId={selectedAppointmentId}
+              onClose={() => setViewerOpen(false)}
+            />
+          )}
+
+          {selectedAppointmentId && editorOpen && (
+            <AppointmentEditor
+              appointmentId={selectedAppointmentId}
+              onSubmitted={handleEditSubmitted}
+              onClose={() => setEditorOpen(false)}
+            />
+          )}
+        </BusyScreen>
       </Paper>
     </ClickAwayListener>
   );
