@@ -11,7 +11,7 @@ import ValidationError from "common/errors/validationError";
 
 new Server({
   routes() {
-    this.timing = 3000;
+    // this.timing = 3000;
 
     this.get("/api/appointments", (_schema, request) => {
       // return new Response(500, {}, { message: "server unavaliable" });
@@ -43,6 +43,9 @@ new Server({
     this.get("/api/users", () => users.getAll());
 
     this.get("/api/clients", () => clients.getAll());
+    this.get("/api/clients/search", (_schema, request) =>
+      clients.search(request.queryParams.searchText),
+    );
 
     this.put("/api/auth/login", (_schema, request) => {
       const { email, password } = JSON.parse(request.requestBody);

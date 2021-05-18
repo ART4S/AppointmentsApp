@@ -5,6 +5,11 @@ class ClientService {
     const { data } = await client.get("/clients");
     return data;
   }
+
+  async search(searchText) {
+    const { data } = await client.get("/clients/search", { searchText });
+    return data;
+  }
 }
 
 export default new ClientService();

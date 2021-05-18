@@ -68,13 +68,11 @@ export default function AppointmentsFilters() {
   const busy = useSelector(selectBusy);
 
   useEffect(() => {
-    async function loadData() {
+    (async () => {
       dispatch(setBusy(true));
       await Promise.all([dispatch(loadUsers()), dispatch(loadClients())]);
       dispatch(setBusy(false));
-    }
-
-    loadData();
+    })();
   }, []);
 
   function handleFilterFieldChange(event) {

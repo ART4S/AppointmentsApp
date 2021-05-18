@@ -1,26 +1,28 @@
-/* eslint-disable no-else-return */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable no-shadow */
 /* eslint-disable react/no-array-index-key */
+/* eslint-disable no-shadow */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { Box, TextField, Typography } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
-import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
 import { debounce } from "lodash";
 
-import { repeat } from "utils/collectionUtils";
-import faker from "faker";
+import clientService from "services/clientService";
 
 import Progress from "../Progress/Progress";
 
-function sleep(delay = 0) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, delay);
-  });
+function reducer(state, action) {
+  switch (action.type) {
+    case "setOpen": {
+      return { ...state, open: action.playload };
+    }
+    case "clearOptions": {
+      return { ...state, options: [] };
+    }
+    default:
+      return state;
+  }
 }
-
-const COUNTRIES = [...new Set(repeat(100, () => faker.address.country()))];
 
 export default function ClientSelector(props) {
   const [open, setOpen] = React.useState(false);
@@ -44,15 +46,11 @@ export default function ClientSelector(props) {
     if (searchText) {
       (async () => {
         setLoading(true);
-        await sleep(200);
 
-        const countries = COUNTRIES.map((x) => ({
-          name: x,
-          matches: match(x, searchText),
-        })).filter((x) => x.matches.length);
+        const clients = await clientService.search(searchText);
 
         if (active) {
-          setOptions(countries);
+          setOptions(clients);
           setLoading(false);
         }
       })();
@@ -101,7 +99,6 @@ export default function ClientSelector(props) {
       )}
       renderOption={(option) => {
         const parts = parse(option.name, option.matches);
-
         return (
           <Typography>
             {parts.map(({ text, highlight }, index) => (
