@@ -61,7 +61,7 @@ class AppointmentsController {
 
     const pageSize = data.length;
 
-    return { data, currentPage, pageSize, totalItems };
+    return { currentPage, pageSize, totalItems, data };
   }
 
   getById(id) {

@@ -15,10 +15,10 @@ const initialState = {
   data: appointmentsAdapter.getInitialState({}),
   pagination: {
     currentPage: 0,
-    itemsPerPage: 5,
-    availableItemsPerPage: [5, 15, 25],
     pageSize: 0,
     totalItems: 0,
+    itemsPerPage: 5,
+    availableItemsPerPage: [5, 15, 25],
   },
   sorting: {
     field: "",

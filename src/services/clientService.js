@@ -6,8 +6,11 @@ class ClientService {
     return data;
   }
 
-  async search(searchText) {
-    const { data } = await client.get("/clients/search", { searchText });
+  async search(searchText, pagination) {
+    const { data } = await client.get("/clients/search", {
+      searchText,
+      ...pagination,
+    });
     return data;
   }
 }

@@ -7,15 +7,31 @@ class ClientsController {
     return Object.values(clients);
   }
 
-  search(searchText) {
-    if (!searchText) {
-      return [];
+  search(params) {
+    if (!params.searchText) {
+      return {
+        currentPage: 0,
+        totalItems: 0,
+        data: [],
+      };
     }
 
-    return Object.values(clients)
+    let data = Object.values(clients)
       .map((x) => ({ id: x.id, name: getFullName(x) }))
-      .map((x) => ({ ...x, matches: match(x.name, searchText) }))
+      .map((x) => ({ ...x, matches: match(x.name, params.searchText) }))
       .filter((x) => x.matches.length);
+
+    const itemsPerPage = +params.itemsPerPage;
+    const totalPages =
+      Math.ceil(itemsPerPage ? data.length / itemsPerPage : 0) - 1;
+    const currentPage = Math.max(0, Math.min(totalPages, +params.currentPage));
+
+    const start = currentPage * itemsPerPage;
+    const end = start + itemsPerPage;
+
+    data = data.slice(start, end);
+
+    return { currentPage, totalPages, data };
   }
 }
 

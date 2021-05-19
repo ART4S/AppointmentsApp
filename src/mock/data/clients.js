@@ -11,6 +11,6 @@ function createClient() {
   };
 }
 
-const clients = normalize(repeat(100, createClient));
+const clients = normalize(repeat(1000, createClient));
 
 export default clients;

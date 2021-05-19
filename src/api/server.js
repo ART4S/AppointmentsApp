@@ -44,7 +44,7 @@ new Server({
 
     this.get("/api/clients", () => clients.getAll());
     this.get("/api/clients/search", (_schema, request) =>
-      clients.search(request.queryParams.searchText),
+      clients.search(request.queryParams),
     );
 
     this.put("/api/auth/login", (_schema, request) => {
