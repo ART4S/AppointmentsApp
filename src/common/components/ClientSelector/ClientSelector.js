@@ -1,9 +1,12 @@
+/* eslint-disable react/display-name */
+/* eslint-disable arrow-body-style */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-shadow */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import {
   Box,
+  List,
   ListItem,
   makeStyles,
   TextField,
@@ -12,13 +15,13 @@ import {
 import { Autocomplete } from "@material-ui/lab";
 import parse from "autosuggest-highlight/parse";
 import { debounce } from "lodash";
-import { FixedSizeList as List } from "react-window";
+import { FixedSizeList } from "react-window";
 
 import clientService from "services/clientService";
 
 import Progress from "../Progress/Progress";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((_theme) => ({
   listBox: {
     maxHeight: 180,
     overflow: "auto",
@@ -26,21 +29,43 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ListBoxComponent({ children, ...rest }) {
+const OutherElementContext = React.createContext({});
+
+const OutherElementType = React.forwardRef((props, ref) => {
+  return <div ref={ref} {...props} />;
+});
+
+const InnerElementType = React.forwardRef((props, ref) => {
+  const { style, children } = props;
+  const outherProps = React.useContext(OutherElementContext);
+  return (
+    <div ref={ref} style={style}>
+      <List {...outherProps}>{children}</List>
+    </div>
+  );
+});
+
+const ListBoxComponent = React.forwardRef(({ children, ...rest }, ref) => {
   const itemData = React.Children.toArray(children);
 
   return (
-    <List
-      {...rest}
-      height={250}
-      itemCount={itemData.length}
-      itemSize={50}
-      itemData={itemData}
-    >
-      {(data, index, style) => <ListItem style={style}>{data[index]}</ListItem>}
-    </List>
+    <div ref={ref}>
+      <OutherElementContext.Provider value={rest}>
+        <FixedSizeList
+          height={300}
+          itemSize={50}
+          itemData={itemData}
+          itemCount={itemData.length}
+          overscanCount={5}
+          innerElementType={InnerElementType}
+          outerElementType={OutherElementType}
+        >
+          {({ data, index, style }) => <div style={style}>{data[index]}</div>}
+        </FixedSizeList>
+      </OutherElementContext.Provider>
+    </div>
   );
-}
+});
 
 function reducer(state, action) {
   switch (action.type) {
@@ -101,8 +126,6 @@ const ITEMS_PER_PAGE = 10;
 
 export default function ClientSelector(props) {
   const classes = useStyles();
-
-  const listRef = React.useRef();
 
   const [state, dispatch] = React.useReducer(reducer, {
     loading: false,
@@ -211,9 +234,6 @@ export default function ClientSelector(props) {
       }}
       onOpen={() => dispatch({ type: "setOpen", payload: true })}
       onClose={() => dispatch({ type: "setOpen", payload: false })}
-      onChange={(_event, value) =>
-        dispatch({ type: "setValue", payload: value })
-      }
       onInputChange={(_event, value) => setSearchTextDebounced(value)}
       renderInput={(params) => (
         <TextField
