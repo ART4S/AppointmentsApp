@@ -1,68 +1,73 @@
 /* eslint-disable react/display-name */
-/* eslint-disable arrow-body-style */
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable no-shadow */
-/* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
-import {
-  Box,
-  List,
-  ListItem,
-  makeStyles,
-  TextField,
-  Typography,
-} from "@material-ui/core";
+import { Box, TextField, Typography } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
+import { FixedSizeList } from "react-window";
 import parse from "autosuggest-highlight/parse";
 import { debounce } from "lodash";
-import { FixedSizeList } from "react-window";
 
 import clientService from "services/clientService";
 
 import Progress from "../Progress/Progress";
 
-const useStyles = makeStyles((_theme) => ({
-  listBox: {
-    maxHeight: 180,
-    overflow: "auto",
-    padding: 0,
-  },
-}));
+const ITEMS_PER_PAGE = 10;
 
-const OutherElementContext = React.createContext({});
-
-const OutherElementType = React.forwardRef((props, ref) => {
-  return <div ref={ref} {...props} />;
-});
+const ListBoxComponentContext = React.createContext();
 
 const InnerElementType = React.forwardRef((props, ref) => {
   const { style, children } = props;
-  const outherProps = React.useContext(OutherElementContext);
+  const { onScroll, ...rest } = React.useContext(ListBoxComponentContext);
+
   return (
-    <div ref={ref} style={style}>
-      <List {...outherProps}>{children}</List>
-    </div>
+    <ul
+      ref={ref}
+      {...rest}
+      style={{ ...style, padding: 0, maxHeight: "inherit" }}
+    >
+      {children}
+    </ul>
   );
 });
 
-const ListBoxComponent = React.forwardRef(({ children, ...rest }, ref) => {
+const OutherElementType = React.forwardRef((props, ref) => {
+  const { onScroll: listOnScroll } = React.useContext(ListBoxComponentContext);
+  const { onScroll: defaultOnScroll } = props;
+
+  function handleScroll(event) {
+    listOnScroll(event);
+    defaultOnScroll(event);
+  }
+
+  return <div ref={ref} {...props} onScroll={handleScroll} />;
+});
+
+function renderRow({ data, index, style }) {
+  return React.cloneElement(data[index], {
+    style,
+  });
+}
+
+const ListBoxComponent = React.forwardRef((props, ref) => {
+  const { children, ...rest } = props;
+  const itemSize = 35;
   const itemData = React.Children.toArray(children);
+  const height = Math.min(ITEMS_PER_PAGE - 1, itemData.length) * itemSize;
 
   return (
     <div ref={ref}>
-      <OutherElementContext.Provider value={rest}>
+      <ListBoxComponentContext.Provider value={rest}>
         <FixedSizeList
-          height={300}
-          itemSize={50}
+          height={height}
+          itemSize={itemSize}
           itemData={itemData}
           itemCount={itemData.length}
           overscanCount={5}
           innerElementType={InnerElementType}
           outerElementType={OutherElementType}
         >
-          {({ data, index, style }) => <div style={style}>{data[index]}</div>}
+          {renderRow}
         </FixedSizeList>
-      </OutherElementContext.Provider>
+      </ListBoxComponentContext.Provider>
     </div>
   );
 });
@@ -122,11 +127,7 @@ function reducer(state, action) {
   }
 }
 
-const ITEMS_PER_PAGE = 10;
-
 export default function ClientSelector(props) {
-  const classes = useStyles();
-
   const [state, dispatch] = React.useReducer(reducer, {
     loading: false,
     loadMore: false,
@@ -139,11 +140,12 @@ export default function ClientSelector(props) {
     },
   });
 
-  const setSearchTextDebounced = React.useCallback(
-    debounce(
-      (value) => dispatch({ type: "setSearchText", payload: value }),
-      200,
-    ),
+  const setSearchTextDebounced = React.useMemo(
+    () =>
+      debounce(
+        (value) => dispatch({ type: "setSearchText", payload: value }),
+        200,
+      ),
     [],
   );
 
@@ -172,7 +174,7 @@ export default function ClientSelector(props) {
     return () => {
       active = false;
     };
-  }, [state.searchText]);
+  }, [state.searchText, state.open]);
 
   React.useEffect(() => {
     if (!state.loadMore) {
@@ -217,7 +219,7 @@ export default function ClientSelector(props) {
   }
 
   function handleScroll(event) {
-    dispatch({ type: "setLoadMore", payload: isNearTheBottom(event.target) });
+    dispatch({ type: "setLoadMore", payload: isNearTheBottom(event.target) }); // TODO: causes multiple re-render
   }
 
   return (
@@ -229,7 +231,6 @@ export default function ClientSelector(props) {
       getOptionLabel={(option) => option.name ?? ""}
       ListboxComponent={ListBoxComponent}
       ListboxProps={{
-        className: classes.listBox,
         onScroll: handleScroll,
       }}
       onOpen={() => dispatch({ type: "setOpen", payload: true })}
@@ -256,6 +257,7 @@ export default function ClientSelector(props) {
           <Typography>
             {parts.map(({ text, highlight }, index) => (
               <Box
+                // eslint-disable-next-line react/no-array-index-key
                 key={index}
                 fontWeight={highlight ? "fontWeightBold" : "fontWeightRegular"}
                 component="span"
