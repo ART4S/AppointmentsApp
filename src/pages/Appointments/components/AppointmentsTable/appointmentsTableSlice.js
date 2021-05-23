@@ -24,7 +24,7 @@ const initialState = {
     field: "",
     order: "asc",
   },
-  selectedAppointmentId: null,
+  selectedAppointment: null,
 };
 
 export const loadAppointments = createAsyncThunk(
@@ -73,13 +73,8 @@ const tableSlice = createSlice({
       state.data.error = false;
     },
 
-    setSelectedAppointmentId(state, action) {
-      state.selectedAppointmentId = action.payload;
-    },
-
-    setFirstAppointmentSelected(state) {
-      const [first] = state.data.ids;
-      state.selectedAppointmentId = first;
+    setSelectedAppointment(state, action) {
+      state.selectedAppointment = action.payload;
     },
 
     setBusy(state, action) {
@@ -99,23 +94,14 @@ const tableSlice = createSlice({
       state.pagination.pageSize = pageSize;
       state.pagination.totalItems = totalItems;
       state.pagination.currentPage = currentPage;
+
+      const [first] = data;
+      state.selectedAppointment = first;
     },
 
     [loadAppointments.rejected](state) {
       state.busy = false;
       state.error = true;
-    },
-
-    [deleteAppointment.pending](state) {
-      state.busy = true;
-    },
-
-    [deleteAppointment.fulfilled](state) {
-      state.busy = false;
-    },
-
-    [loadAppointments.rejected](state) {
-      state.busy = false;
     },
   },
 });
@@ -125,8 +111,7 @@ export const {
   setCurrentPage,
   setItemsPerPage,
   clearError,
-  setSelectedAppointmentId,
-  setFirstAppointmentSelected,
+  setSelectedAppointment,
 } = tableSlice.actions;
 
 export const {
@@ -139,8 +124,8 @@ export const selectPagination = (state) => state.appointments.table.pagination;
 
 export const selectError = (state) => state.appointments.table.data.error;
 
-export const selectAppointmentId = (state) =>
-  state.appointments.table.selectedAppointmentId;
+export const selectAppointment = (state) =>
+  state.appointments.table.selectedAppointment;
 
 export const selectBusy = (state) => state.appointments.table.busy;
 

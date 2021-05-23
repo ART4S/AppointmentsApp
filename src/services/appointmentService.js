@@ -12,6 +12,10 @@ class AppointmentService {
     return data;
   }
 
+  create(appointment) {
+    return handleResponse(() => client.post("/appointments", appointment));
+  }
+
   update(id, appointment) {
     return handleResponse(() => client.put(`/appointments/${id}`, appointment));
   }

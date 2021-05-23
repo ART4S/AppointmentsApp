@@ -1,10 +1,19 @@
 import match from "autosuggest-highlight/match";
+import ServerError from "common/errors/serverError";
 import { getFullName } from "utils/userUtils";
 import clients from "../data/clients";
 
 class ClientsController {
   getAll() {
     return Object.values(clients);
+  }
+
+  getById(id) {
+    if (!clients[id]) {
+      throw new ServerError("item not found");
+    }
+
+    return clients[id];
   }
 
   search(params) {
@@ -17,8 +26,14 @@ class ClientsController {
     }
 
     let data = Object.values(clients)
-      .map((x) => ({ id: x.id, name: getFullName(x) }))
-      .map((x) => ({ ...x, matches: match(x.name, params.searchText) }))
+      .map((x) => ({
+        id: x.id,
+        fullName: getFullName(x),
+      }))
+      .map((x) => ({
+        ...x,
+        matches: match(x.fullName, params.searchText),
+      }))
       .filter((x) => x.matches.length);
 
     const itemsPerPage = +params.itemsPerPage;

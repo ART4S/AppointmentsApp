@@ -6,6 +6,11 @@ class ClientService {
     return data;
   }
 
+  async getById(id) {
+    const { data } = await client.get(`/clients/${id}`);
+    return data;
+  }
+
   async search(searchText, pagination) {
     const { data } = await client.get("/clients/search", {
       searchText,

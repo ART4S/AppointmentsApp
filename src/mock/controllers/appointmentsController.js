@@ -1,5 +1,8 @@
+/* eslint-disable no-unreachable */
 /* eslint-disable no-nested-ternary */
+import faker from "faker";
 import { matchSorter } from "match-sorter";
+import moment from "moment";
 
 import ServerError from "common/errors/serverError";
 import ValidationError from "common/errors/validationError";
@@ -8,7 +11,8 @@ import { getFullName } from "utils/userUtils";
 
 import appointments from "../data/appointments";
 import clients from "../data/clients";
-import users from "../data/users";
+import employees from "../data/employees";
+import appointmentStatuses from "../data/enums/appointmentStatuses";
 
 function createSorter(order, field) {
   const orderModifier = order === "asc" ? 1 : -1;
@@ -21,7 +25,7 @@ class AppointmentsController {
     let data = Object.values(appointments).map((x) => ({
       ...x,
       clientName: getFullName(clients[x.clientId]),
-      holderName: getFullName(users[x.holderId]),
+      holderName: getFullName(employees[x.holderId]),
     }));
 
     data = data.filter(
@@ -72,8 +76,21 @@ class AppointmentsController {
     return {
       ...appointments[id],
       clientName: getFullName(clients[appointments[id].clientId]),
-      holderName: getFullName(users[appointments[id].holderId]),
+      holderName: getFullName(employees[appointments[id].holderId]),
     };
+  }
+
+  create(dto) {
+    // throw new ValidationError({
+    //   common: ["Test common error 1", "Test common error 2"],
+    //   fields: { date: ["Test status error 1", "Test status error 2"] },
+    // });
+
+    const id = faker.datatype.uuid();
+
+    appointments[id] = { ...dto, id, status: appointmentStatuses.pending };
+
+    return id;
   }
 
   update(id, dto) {

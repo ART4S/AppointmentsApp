@@ -3,16 +3,47 @@ import { TextField } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { matchSorter } from "match-sorter";
 import { getFullName } from "utils/userUtils";
+import { employeeService } from "services";
 
-export default function UserSelector({
+import Progress from "common/components/Progress/Progress";
+
+export default function EmployeeSelector({
   name,
-  users,
   label,
   error,
   helperText,
   onChange,
   ...rest
 }) {
+  const [employees, setEmployees] = React.useState([]);
+  const [open, setOpen] = React.useState(false);
+  const loading = open && !employees.length;
+
+  React.useEffect(() => {
+    if (!loading) {
+      return undefined;
+    }
+
+    let active = true;
+
+    (async () => {
+      const data = await employeeService.getAll();
+      if (active) {
+        setEmployees(data);
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [loading]);
+
+  React.useEffect(() => {
+    if (!open) {
+      setEmployees([]);
+    }
+  }, [open]);
+
   function getFirstLetter(word) {
     return word?.charAt(0)?.toUpperCase();
   }
@@ -33,10 +64,13 @@ export default function UserSelector({
   return (
     <Autocomplete
       {...rest}
+      options={employees}
       filterOptions={filterOptions}
-      options={users}
       getOptionLabel={(user) => getFullName(user)}
       groupBy={(user) => getFirstLetter(user.lastName)}
+      onOpen={(_event) => setOpen(true)}
+      onClose={(_event) => setOpen(false)}
+      onChange={(_event, user) => onChange(user)}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -45,14 +79,22 @@ export default function UserSelector({
           label={label}
           error={error}
           helperText={helperText}
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: (
+              <>
+                {loading && <Progress size={20} />}
+                {params.InputProps.endAdornment}
+              </>
+            ),
+          }}
         />
       )}
-      onChange={(_, user) => onChange(user)}
     />
   );
 }
 
-UserSelector.defaultProps = {
+EmployeeSelector.defaultProps = {
   error: false,
   helperText: "",
 };

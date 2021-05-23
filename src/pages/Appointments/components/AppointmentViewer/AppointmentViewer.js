@@ -67,7 +67,7 @@ function Fields({ appointment }) {
 
 function reducer(state, action) {
   switch (action.type) {
-    case "loadStarted": {
+    case "load": {
       return { ...state, loading: true, error: false };
     }
     case "loadSucceed": {
@@ -92,7 +92,7 @@ export default function AppointmentViewer({ appointmentId, onClose }) {
 
   React.useEffect(() => {
     (async () => {
-      dispatch({ type: "loadStarted" });
+      dispatch({ type: "load" });
       try {
         const appointment = await appointmentService.getById(appointmentId);
         dispatch({ type: "loadSucceed", payload: appointment });

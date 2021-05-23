@@ -1,19 +1,20 @@
+import { repeat, normalize } from "utils/collectionUtils";
 import faker from "faker";
 
-import { repeat, normalize } from "utils/collectionUtils";
+faker.locale = "ru";
 
-function createClient() {
+function createEmployee() {
   return {
     id: faker.datatype.uuid(),
     firstName: faker.name.firstName(),
     middleName: faker.name.middleName(),
     lastName: faker.name.lastName(),
-    address: faker.address.streetAddress(true),
+    dateOfBirth: faker.date.past(20),
     phoneNumber: faker.phone.phoneNumber(),
     email: faker.internet.email(),
   };
 }
 
-const clients = normalize(repeat(1000, createClient));
+const employees = normalize(repeat(40, createEmployee));
 
-export default clients;
+export default employees;

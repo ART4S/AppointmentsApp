@@ -15,7 +15,6 @@ import { FilterList as FilterListIcon } from "@material-ui/icons";
 
 import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg";
 
-import ClientSelector from "common/components/ClientSelector/ClientSelector";
 import Header from "common/components/Header/Header";
 import ErrorPopup from "common/components/ErrorPopup/ErrorPopup";
 
@@ -79,7 +78,7 @@ export default function Appointments() {
   }
 
   return (
-    <Box>
+    <Box minWidth="md">
       <Header title={APPOINTMENTS} Icon={AppointmentIcon} />
 
       <Container className={classes.body} maxWidth="md">
@@ -90,11 +89,7 @@ export default function Appointments() {
             </Accordion>
           </Grid>
 
-          <Grid item>
-            <ClientSelector />
-          </Grid>
-
-          <Grid item>
+          <Grid item xs>
             <AppointmentsTable />
           </Grid>
         </Grid>

@@ -5,24 +5,14 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 
-import userService from "services/userService";
-import clientService from "services/clientService";
-
-const usersAdapter = createEntityAdapter();
-const clientsAdapter = createEntityAdapter();
+import userService from "services/employeeService";
 
 export const loadUsers = createAsyncThunk(
   "appointments/filters/loadUsers",
   () => userService.getAll(),
 );
 
-export const loadClients = createAsyncThunk(
-  "appointments/filters/loadClients",
-  () => clientService.getAll(),
-);
-
 const initialState = {
-  busy: false,
   filter: {
     startDate: "",
     finishDate: "",
@@ -32,18 +22,14 @@ const initialState = {
     complaints: "",
     onlyMe: false,
   },
-  users: usersAdapter.getInitialState(),
-  clients: clientsAdapter.getInitialState(),
+  client: null,
+  holder: null,
 };
 
 const filtersSlice = createSlice({
   name: "appointments/filters",
   initialState,
   reducers: {
-    setBusy(state, action) {
-      state.busy = action.payload;
-    },
-
     setFilterValue(state, action) {
       const { name, value } = action.payload;
       state.filter[name] = value;
@@ -51,32 +37,35 @@ const filtersSlice = createSlice({
 
     clearFilter(state) {
       state.filter = initialState.filter;
-      state.applyed = false;
-    },
-  },
-  extraReducers: {
-    [loadUsers.fulfilled](state, action) {
-      state.users = usersAdapter.setAll(state.users, action.payload);
+      state.client = null;
+      state.holder = null;
     },
 
-    [loadClients.fulfilled](state, action) {
-      state.clients = clientsAdapter.setAll(state.clients, action.payload);
+    setClient(state, action) {
+      const client = action.payload;
+      state.client = client;
+      state.filter.clientId = client?.id ?? "";
+    },
+
+    setHolder(state, action) {
+      const holder = action.payload;
+      state.holder = holder;
+      state.filter.holderId = holder?.id ?? "";
     },
   },
 });
 
-export const { setBusy, setFilterValue, clearFilter } = filtersSlice.actions;
-
-export const selectBusy = (state) => state.appointments.filters.busy;
+export const {
+  setFilterValue,
+  clearFilter,
+  setClient,
+  setHolder,
+} = filtersSlice.actions;
 
 export const selectFilter = (state) => state.appointments.filters.filter;
 
-export const { selectAll: selectUsers } = usersAdapter.getSelectors(
-  (state) => state.appointments.filters.users,
-);
+export const selectClient = (state) => state.appointments.filters.client;
 
-export const { selectAll: selectClients } = clientsAdapter.getSelectors(
-  (state) => state.appointments.filters.clients,
-);
+export const selectHolder = (state) => state.appointments.filters.holder;
 
 export default filtersSlice.reducer;

@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable default-case */
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable no-shadow */
 import React from "react";
@@ -19,9 +21,11 @@ import { Alert } from "@material-ui/lab";
 
 import Popup from "common/components/Popup/Popup";
 import Progress from "common/components/Progress/Progress";
-import UserSelector from "common/components/UserSelector/UserSelector";
-import { appointmentService, userService, clientService } from "services";
+import EmployeeSelector from "common/components/EmployeeSelector/EmployeeSelector";
+import ClientSelector from "common/components/ClientSelector/ClientSelector";
+import { appointmentService, employeeService, clientService } from "services";
 import appointmentStatuses from "model/enums/appointmentStatuses";
+import { getFullName } from "utils/userUtils";
 
 const APPOINTMENT_EDIT = "Редактирование приема";
 const CLIENT = "Клиент";
@@ -54,7 +58,7 @@ const DATE_FORMAT = "YYYY-MM-DDTHH:mm";
 
 function EditForm(props) {
   const {
-    data: { appointment, clients, users },
+    data: { appointment, client, holder },
     onSubmitted,
   } = props;
 
@@ -65,10 +69,13 @@ function EditForm(props) {
   const initialValues = {
     date: moment(appointment.date).format(DATE_FORMAT),
     status: appointment.status,
-    holder: users.find((x) => x.id === appointment.holderId),
-    client: clients.find((x) => x.id === appointment.clientId),
     diagnosis: appointment.diagnosis,
     complaints: appointment.complaints,
+    holder,
+    client: {
+      id: client.id,
+      fullName: getFullName(client),
+    },
   };
 
   function checkStatus(status, allowedStatuses) {
@@ -154,6 +161,17 @@ function EditForm(props) {
       setServerErrors(common);
 
       Object.entries(fields).forEach(([field, errors]) => {
+        switch (field) {
+          case "clientId": {
+            field = "client";
+            break;
+          }
+          case "holderId": {
+            field = "holder";
+            break;
+          }
+        }
+
         setFieldError(field, errors.join("; "));
       });
 
@@ -186,25 +204,23 @@ function EditForm(props) {
 
             <Grid item container spacing={SPACING}>
               <Grid item xs>
-                <UserSelector
+                <ClientSelector
                   className={classes.control}
                   name="client"
-                  users={clients}
                   label={CLIENT}
                   value={values.client}
                   error={touched.client && Boolean(errors.client)}
                   helperText={touched.client && errors.client}
                   disabled={isSubmitting}
-                  onChange={(client) => setFieldValue("clientId", client)}
+                  onChange={(client) => setFieldValue("client", client)}
                   onBlur={handleBlur}
                 />
               </Grid>
 
               <Grid item xs>
-                <UserSelector
+                <EmployeeSelector
                   className={classes.control}
                   name="holder"
-                  users={users}
                   label={HOLDER}
                   value={values.holder}
                   error={touched.holder && Boolean(errors.holder)}
@@ -320,7 +336,7 @@ function EditForm(props) {
 
 function reducer(state, action) {
   switch (action.type) {
-    case "loadStarted": {
+    case "load": {
       return { ...state, loading: true, error: false };
     }
     case "loadSucceed": {
@@ -348,8 +364,8 @@ export default function AppointmentEditor({
     error: false,
     data: {
       appointment: null,
-      clients: [],
-      users: [],
+      client: null,
+      holder: null,
     },
   });
 
@@ -357,15 +373,13 @@ export default function AppointmentEditor({
     let active = true;
 
     (async () => {
-      if (active) {
-        dispatch({ type: "loadStarted" });
-      }
+      dispatch({ type: "load" });
 
       try {
-        const [appointment, clients, users] = await Promise.all([
-          appointmentService.getById(appointmentId),
-          clientService.getAll(),
-          userService.getAll(),
+        const appointment = await appointmentService.getById(appointmentId);
+        const [client, holder] = await Promise.all([
+          clientService.getById(appointment.clientId),
+          employeeService.getById(appointment.holderId),
         ]);
 
         if (active) {
@@ -373,8 +387,8 @@ export default function AppointmentEditor({
             type: "loadSucceed",
             payload: {
               appointment,
-              clients,
-              users,
+              client,
+              holder,
             },
           });
         }

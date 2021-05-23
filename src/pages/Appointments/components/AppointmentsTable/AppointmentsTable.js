@@ -2,7 +2,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
-
+import { debounce, throttle } from "lodash";
 import {
   Paper,
   Toolbar as MuiToolBar,
@@ -25,16 +25,16 @@ import {
   setSorting,
   setCurrentPage,
   setItemsPerPage,
-  setSelectedAppointmentId,
-  setFirstAppointmentSelected,
+  setSelectedAppointment,
   deleteAppointment,
   selectAllAppointments,
   selectSorting,
   selectPagination,
-  selectAppointmentId,
+  selectAppointment,
   selectBusy,
 } from "./appointmentsTableSlice";
 
+import AppointmentCreator from "../AppointmentCreator/AppointmentCreator";
 import AppointmentViewer from "../AppointmentViewer/AppointmentViewer";
 import AppointmentEditor from "../AppointmentEditor/AppointmentEditor";
 
@@ -48,6 +48,7 @@ const useToolBarStyles = makeStyles((_theme) => ({
 
 function ToolBar({
   isAppointmentSelected,
+  onCreateOpenClick,
   onViewOpenClick,
   onEditOpenClick,
   onDeleteClick,
@@ -57,7 +58,7 @@ function ToolBar({
   return (
     <>
       <MuiToolBar className={classes.root}>
-        <IconButton>
+        <IconButton onClick={onCreateOpenClick}>
           <AddIcon />
         </IconButton>
 
@@ -102,22 +103,18 @@ const columns = [
 
 export default function AppointmentsTable() {
   const dispatch = useDispatch();
+  const busy = useSelector(selectBusy);
   const appointments = useSelector(selectAllAppointments);
   const sorting = useSelector(selectSorting);
   const pagination = useSelector(selectPagination);
-  const selectedAppointmentId = useSelector(selectAppointmentId);
-  const busy = useSelector(selectBusy);
+  const selectedAppointment = useSelector(selectAppointment);
 
+  const [creatorOpen, setCreatorOpen] = React.useState(false);
   const [viewerOpen, setViewerOpen] = React.useState(false);
   const [editorOpen, setEditorOpen] = React.useState(false);
 
   React.useEffect(() => {
-    async function loadData() {
-      await dispatch(loadAppointments());
-      dispatch(setFirstAppointmentSelected());
-    }
-
-    loadData();
+    dispatch(loadAppointments());
   }, []);
 
   function handleSortRequest(order, field) {
@@ -125,23 +122,20 @@ export default function AppointmentsTable() {
     dispatch(loadAppointments());
   }
 
-  async function handleCurrentPageChange(newPage) {
+  function handleCurrentPageChange(newPage) {
     dispatch(setCurrentPage(newPage));
-    await dispatch(loadAppointments());
-    dispatch(setFirstAppointmentSelected());
+    dispatch(loadAppointments());
   }
 
-  async function handleItemsPerPageChange(newItemsPerPage) {
+  function handleItemsPerPageChange(newItemsPerPage) {
     dispatch(setItemsPerPage(newItemsPerPage));
     dispatch(setCurrentPage(0));
-    await dispatch(loadAppointments());
-    dispatch(setFirstAppointmentSelected());
+    dispatch(loadAppointments());
   }
 
-  async function handleDelete() {
-    await dispatch(deleteAppointment(selectedAppointmentId));
-    await dispatch(loadAppointments());
-    dispatch(setFirstAppointmentSelected());
+  function handleCreateSubmitted() {
+    setCreatorOpen(false);
+    dispatch(loadAppointments());
   }
 
   function handleEditSubmitted() {
@@ -149,14 +143,23 @@ export default function AppointmentsTable() {
     dispatch(loadAppointments());
   }
 
+  const handleDelete = React.useCallback(
+    throttle(async () => {
+      await dispatch(deleteAppointment(selectedAppointment.id));
+      dispatch(loadAppointments());
+    }, 500),
+    [selectedAppointment],
+  );
+
   return (
     <ClickAwayListener
-      onClickAway={() => dispatch(setSelectedAppointmentId(null))}
+      onClickAway={() => dispatch(setSelectedAppointment(null))}
     >
       <Paper>
         <BusyScreen isBusy={busy}>
           <ToolBar
-            isAppointmentSelected={Boolean(selectedAppointmentId)}
+            isAppointmentSelected={Boolean(selectedAppointment)}
+            onCreateOpenClick={() => setCreatorOpen(true)}
             onViewOpenClick={() => setViewerOpen(true)}
             onEditOpenClick={() => setEditorOpen(true)}
             onDeleteClick={handleDelete}
@@ -167,27 +170,32 @@ export default function AppointmentsTable() {
             rows={appointments}
             pagination={pagination}
             sorting={sorting}
-            selectedRow={appointments.find(
-              (x) => x.id === selectedAppointmentId,
-            )}
+            selectedRow={selectedAppointment}
             onSelectedRowChange={(appointment) =>
-              dispatch(setSelectedAppointmentId(appointment.id))
+              dispatch(setSelectedAppointment(appointment))
             }
             onSortRequest={handleSortRequest}
             onCurrentPageChange={handleCurrentPageChange}
             onItemsPerPageChange={handleItemsPerPageChange}
           />
 
-          {selectedAppointmentId && viewerOpen && (
+          {creatorOpen && (
+            <AppointmentCreator
+              onSubmitted={handleCreateSubmitted}
+              onClose={() => setCreatorOpen(false)}
+            />
+          )}
+
+          {viewerOpen && (
             <AppointmentViewer
-              appointmentId={selectedAppointmentId}
+              appointmentId={selectedAppointment.id}
               onClose={() => setViewerOpen(false)}
             />
           )}
 
-          {selectedAppointmentId && editorOpen && (
+          {editorOpen && (
             <AppointmentEditor
-              appointmentId={selectedAppointmentId}
+              appointmentId={selectedAppointment.id}
               onSubmitted={handleEditSubmitted}
               onClose={() => setEditorOpen(false)}
             />

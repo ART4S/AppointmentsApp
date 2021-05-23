@@ -1,5 +1,5 @@
+/* eslint-disable no-shadow */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
@@ -17,23 +17,21 @@ import {
 import SearchIcon from "@material-ui/icons/Search";
 import ClearIcon from "@material-ui/icons/Clear";
 
-import UserSelector from "common/components/UserSelector/UserSelector";
-import BusyScreen from "common/components/BusyScreen/BusyScreen";
+import EmployeeSelector from "common/components/EmployeeSelector/EmployeeSelector";
+import ClientSelector from "common/components/ClientSelector/ClientSelector";
 
 import appointmentStatuses from "model/enums/appointmentStatuses";
 
 import { loadAppointments } from "../AppointmentsTable/appointmentsTableSlice";
 
 import {
-  loadUsers,
-  loadClients,
-  selectFilter,
   setFilterValue,
-  setBusy,
+  setClient,
+  setHolder,
   clearFilter,
-  selectUsers,
-  selectClients,
-  selectBusy,
+  selectFilter,
+  selectClient,
+  selectHolder,
 } from "./appointmentsFiltersSlice";
 
 const CLIENT = "Клиент";
@@ -60,20 +58,11 @@ const useStyle = makeStyles((theme) => ({
 const SPACING = 5;
 
 export default function AppointmentsFilters() {
-  const classes = useStyle();
   const dispatch = useDispatch();
+  const classes = useStyle();
   const filter = useSelector(selectFilter);
-  const users = useSelector(selectUsers);
-  const clients = useSelector(selectClients);
-  const busy = useSelector(selectBusy);
-
-  useEffect(() => {
-    (async () => {
-      dispatch(setBusy(true));
-      await Promise.all([dispatch(loadUsers()), dispatch(loadClients())]);
-      dispatch(setBusy(false));
-    })();
-  }, []);
+  const client = useSelector(selectClient);
+  const holder = useSelector(selectHolder);
 
   function handleFilterFieldChange(event) {
     dispatch(
@@ -87,152 +76,134 @@ export default function AppointmentsFilters() {
     );
   }
 
-  function handleHolderChange(holder) {
-    dispatch(
-      setFilterValue({
-        name: "holderId",
-        value: holder?.id ?? "",
-      }),
-    );
-  }
-
-  function handleClientChange(client) {
-    dispatch(setFilterValue({ name: "clientId", value: client?.id ?? "" }));
-  }
-
   function handleOnClear() {
     dispatch(clearFilter());
     dispatch(loadAppointments());
   }
 
-  function handleFilterRequest() {
-    dispatch(loadAppointments());
-  }
-
   return (
     <Box className={classes.root}>
-      <BusyScreen isBusy={busy}>
-        <form className={classes.form} noValidate>
-          <Grid container>
-            <Grid item container xs direction="column" spacing={SPACING}>
-              <Grid item container justify="center">
-                <TextField
-                  className={classes.control}
-                  name="startDate"
-                  label={START_DATE}
-                  type="date"
-                  value={filter.startDate}
+      <form className={classes.form} noValidate>
+        <Grid container>
+          <Grid item container xs direction="column" spacing={SPACING}>
+            <Grid item container justify="center">
+              <TextField
+                className={classes.control}
+                name="startDate"
+                label={START_DATE}
+                type="date"
+                value={filter.startDate}
+                onChange={handleFilterFieldChange}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </Grid>
+
+            <Grid item container justify="center">
+              <FormControl className={classes.control}>
+                <InputLabel id="status-label">{STATUS}</InputLabel>
+
+                <Select
+                  id="status-select"
+                  name="status"
+                  labelId="status-label"
+                  value={filter.status}
                   onChange={handleFilterFieldChange}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                />
-              </Grid>
+                >
+                  <MenuItem key={-1} value="">
+                    {NONE}
+                  </MenuItem>
 
-              <Grid item container justify="center">
-                <FormControl className={classes.control}>
-                  <InputLabel id="status-label">{STATUS}</InputLabel>
-
-                  <Select
-                    id="status-select"
-                    name="status"
-                    labelId="status-label"
-                    value={filter.status}
-                    onChange={handleFilterFieldChange}
-                  >
-                    <MenuItem key={-1} value="">
-                      {NONE}
+                  {Object.keys(appointmentStatuses).map((status) => (
+                    <MenuItem key={status} value={status}>
+                      {status}
                     </MenuItem>
-
-                    {Object.keys(appointmentStatuses).map((status) => (
-                      <MenuItem key={status} value={status}>
-                        {status}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-
-              <Grid item container justify="center">
-                <FormControlLabel
-                  className={classes.control}
-                  control={
-                    <Checkbox
-                      name="onlyMe"
-                      checked={filter.onlyMe}
-                      onChange={handleFilterFieldChange}
-                      color="primary"
-                    />
-                  }
-                  label={ONLY_ME}
-                />
-              </Grid>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
 
-            <Grid item container xs direction="column" spacing={SPACING}>
-              <Grid item container justify="center">
-                <TextField
-                  className={classes.control}
-                  name="finishDate"
-                  label={FINISH_DATE}
-                  type="date"
-                  value={filter.finishDate}
-                  onChange={handleFilterFieldChange}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                />
-              </Grid>
-
-              <Grid item container justify="center">
-                <UserSelector
-                  className={classes.control}
-                  id="holderId"
-                  name="holderId"
-                  label={HOLDER}
-                  users={users}
-                  value={users.find((x) => x.id === filter.holderId) ?? ""}
-                  onChange={handleHolderChange}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid item container xs direction="column" spacing={SPACING}>
-              <Grid item container justify="center">
-                <TextField
-                  className={classes.control}
-                  name="complaints"
-                  label={COMPLAINTS}
-                  value={filter.complaints}
-                  onChange={handleFilterFieldChange}
-                />
-              </Grid>
-
-              <Grid item container justify="center">
-                <UserSelector
-                  className={classes.control}
-                  id="clientId"
-                  name="clientId"
-                  label={CLIENT}
-                  users={clients}
-                  value={clients.find((x) => x.id === filter.clientId) ?? ""}
-                  onChange={handleClientChange}
-                />
-              </Grid>
-
-              <Grid item container justify="center">
-                <IconButton color="default" onClick={handleFilterRequest}>
-                  <SearchIcon />
-                </IconButton>
-
-                <IconButton color="default" onClick={handleOnClear}>
-                  <ClearIcon />
-                </IconButton>
-              </Grid>
+            <Grid item container justify="center">
+              <FormControlLabel
+                className={classes.control}
+                control={
+                  <Checkbox
+                    name="onlyMe"
+                    checked={filter.onlyMe}
+                    onChange={handleFilterFieldChange}
+                    color="primary"
+                  />
+                }
+                label={ONLY_ME}
+              />
             </Grid>
           </Grid>
-        </form>
-      </BusyScreen>
+
+          <Grid item container xs direction="column" spacing={SPACING}>
+            <Grid item container justify="center">
+              <TextField
+                className={classes.control}
+                name="finishDate"
+                label={FINISH_DATE}
+                type="date"
+                value={filter.finishDate}
+                onChange={handleFilterFieldChange}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </Grid>
+
+            <Grid item container justify="center">
+              <EmployeeSelector
+                className={classes.control}
+                id="holderId"
+                name="holderId"
+                value={holder}
+                label={HOLDER}
+                onChange={(holder) => dispatch(setHolder(holder))}
+              />
+            </Grid>
+          </Grid>
+
+          <Grid item container xs direction="column" spacing={SPACING}>
+            <Grid item container justify="center">
+              <TextField
+                className={classes.control}
+                name="complaints"
+                label={COMPLAINTS}
+                value={filter.complaints}
+                onChange={handleFilterFieldChange}
+              />
+            </Grid>
+
+            <Grid item container justify="center">
+              <ClientSelector
+                className={classes.control}
+                id="clientId"
+                name="clientId"
+                label={CLIENT}
+                value={client}
+                onChange={(client) => dispatch(setClient(client))}
+              />
+            </Grid>
+
+            <Grid item container justify="center">
+              <IconButton
+                color="default"
+                onClick={() => dispatch(loadAppointments())}
+              >
+                <SearchIcon />
+              </IconButton>
+
+              <IconButton color="default" onClick={handleOnClear}>
+                <ClearIcon />
+              </IconButton>
+            </Grid>
+          </Grid>
+        </Grid>
+      </form>
     </Box>
   );
 }

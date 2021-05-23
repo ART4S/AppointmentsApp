@@ -1,10 +1,6 @@
-import faker from "faker";
+import { normalize } from "utils/collectionUtils";
 
-import { repeat, normalize } from "utils/collectionUtils";
-
-faker.locale = "ru";
-
-export const defaultUsers = [
+const defaultUsers = [
   {
     id: "b7bd063a-836f-4f93-9128-348c2efe84f4",
     firstName: "Иван",
@@ -23,17 +19,6 @@ export const defaultUsers = [
   },
 ];
 
-function createUser() {
-  return {
-    id: faker.datatype.uuid(),
-    firstName: faker.name.firstName(),
-    middleName: faker.name.middleName(),
-    lastName: faker.name.lastName(),
-    login: faker.internet.email(),
-    password: faker.internet.password(),
-  };
-}
-
-const users = normalize([...defaultUsers, ...repeat(100, createUser)]);
+const users = normalize(defaultUsers);
 
 export default users;

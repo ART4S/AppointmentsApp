@@ -4,7 +4,7 @@ import faker from "faker";
 import { repeat, normalize } from "utils/collectionUtils";
 
 import appointmentStatuses from "./enums/appointmentStatuses";
-import users from "./users";
+import employees from "./employees";
 import clients from "./clients";
 
 const compliences = [
@@ -20,7 +20,7 @@ const diagnosis = ["Застужено правое ухо", "Ангина", "М
 function createAppointment() {
   const status = faker.random.arrayElement(Object.values(appointmentStatuses));
   const client = faker.random.arrayElement(Object.values(clients));
-  const holder = faker.random.arrayElement(Object.values(users));
+  const holder = faker.random.arrayElement(Object.values(employees));
 
   return {
     id: faker.datatype.uuid(),

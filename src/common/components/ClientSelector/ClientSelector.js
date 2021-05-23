@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/display-name */
 import React from "react";
 import { Box, TextField, Typography } from "@material-ui/core";
@@ -16,13 +17,19 @@ const ListBoxComponentContext = React.createContext();
 
 const InnerElementType = React.forwardRef((props, ref) => {
   const { style, children } = props;
-  const { onScroll, ...rest } = React.useContext(ListBoxComponentContext);
+  const { onScroll, ...listboxProps } = React.useContext(
+    ListBoxComponentContext,
+  );
 
   return (
     <ul
       ref={ref}
-      {...rest}
-      style={{ ...style, padding: 0, maxHeight: "inherit" }}
+      {...listboxProps}
+      style={{
+        ...style,
+        padding: 0,
+        maxHeight: "inherit",
+      }}
     >
       {children}
     </ul>
@@ -30,38 +37,38 @@ const InnerElementType = React.forwardRef((props, ref) => {
 });
 
 const OutherElementType = React.forwardRef((props, ref) => {
-  const { onScroll: listOnScroll } = React.useContext(ListBoxComponentContext);
-  const { onScroll: defaultOnScroll } = props;
+  const { onScroll: listboxOnScroll } = React.useContext(
+    ListBoxComponentContext,
+  );
+  const { onScroll: fixedsizelistOnScroll } = props;
 
   function handleScroll(event) {
-    listOnScroll(event);
-    defaultOnScroll(event);
+    listboxOnScroll(event);
+    fixedsizelistOnScroll(event);
   }
 
   return <div ref={ref} {...props} onScroll={handleScroll} />;
 });
 
 function renderRow({ data, index, style }) {
-  return React.cloneElement(data[index], {
-    style,
-  });
+  return React.cloneElement(data[index], { style });
 }
 
 const ListBoxComponent = React.forwardRef((props, ref) => {
-  const { children, ...rest } = props;
-  const itemSize = 35;
+  const { children, ...listboxProps } = props;
+  const itemSize = 70;
   const itemData = React.Children.toArray(children);
-  const height = Math.min(ITEMS_PER_PAGE - 1, itemData.length) * itemSize;
+  const height = Math.min(4, itemData.length) * itemSize;
 
   return (
     <div ref={ref}>
-      <ListBoxComponentContext.Provider value={rest}>
+      <ListBoxComponentContext.Provider value={listboxProps}>
         <FixedSizeList
           height={height}
           itemSize={itemSize}
           itemData={itemData}
           itemCount={itemData.length}
-          overscanCount={5}
+          overscanCount={3}
           innerElementType={InnerElementType}
           outerElementType={OutherElementType}
         >
@@ -127,7 +134,14 @@ function reducer(state, action) {
   }
 }
 
-export default function ClientSelector(props) {
+export default function ClientSelector({
+  name,
+  label,
+  error,
+  helperText,
+  onChange,
+  ...autocompleteProps
+}) {
   const [state, dispatch] = React.useReducer(reducer, {
     loading: false,
     loadMore: false,
@@ -140,12 +154,11 @@ export default function ClientSelector(props) {
     },
   });
 
-  const setSearchTextDebounced = React.useMemo(
-    () =>
-      debounce(
-        (value) => dispatch({ type: "setSearchText", payload: value }),
-        200,
-      ),
+  const setSearchTextDebounced = React.useCallback(
+    debounce(
+      (value) => dispatch({ type: "setSearchText", payload: value }),
+      200,
+    ),
     [],
   );
 
@@ -159,10 +172,12 @@ export default function ClientSelector(props) {
     if (state.searchText) {
       (async () => {
         dispatch({ type: "loadClients" });
+
         const data = await clientService.search(state.searchText, {
           currentPage: 0,
           itemsPerPage: ITEMS_PER_PAGE,
         });
+
         if (active) {
           dispatch({ type: "loadClientsSucceed", payload: data });
         }
@@ -182,7 +197,6 @@ export default function ClientSelector(props) {
     }
 
     const { currentPage, totalPages } = state.pagination;
-
     if (currentPage === totalPages) {
       return undefined;
     }
@@ -191,10 +205,12 @@ export default function ClientSelector(props) {
 
     (async () => {
       dispatch({ type: "loadMore" });
+
       const data = await clientService.search(state.searchText, {
         currentPage: currentPage + 1,
         itemsPerPage: ITEMS_PER_PAGE,
       });
+
       if (active) {
         dispatch({ type: "loadMoreSucceed", payload: data });
       }
@@ -219,27 +235,34 @@ export default function ClientSelector(props) {
   }
 
   function handleScroll(event) {
-    dispatch({ type: "setLoadMore", payload: isNearTheBottom(event.target) }); // TODO: causes multiple re-render
+    if (isNearTheBottom(event.target)) {
+      dispatch({ type: "setLoadMore", payload: true });
+    }
   }
 
   return (
     <Autocomplete
-      {...props}
+      {...autocompleteProps}
       open={state.open}
       loading={state.loading}
       options={state.options}
-      getOptionLabel={(option) => option.name ?? ""}
+      getOptionLabel={(option) => option.fullName ?? ""}
       ListboxComponent={ListBoxComponent}
       ListboxProps={{
         onScroll: handleScroll,
       }}
       onOpen={() => dispatch({ type: "setOpen", payload: true })}
       onClose={() => dispatch({ type: "setOpen", payload: false })}
+      onChange={(_event, value) => onChange(value)}
       onInputChange={(_event, value) => setSearchTextDebounced(value)}
       renderInput={(params) => (
         <TextField
           {...params}
-          variant="outlined"
+          fullWidth
+          name={name}
+          label={label}
+          error={error}
+          helperText={helperText}
           InputProps={{
             ...params.InputProps,
             endAdornment: (
@@ -252,7 +275,7 @@ export default function ClientSelector(props) {
         />
       )}
       renderOption={(option) => {
-        const parts = parse(option.name, option.matches);
+        const parts = parse(option.fullName, option.matches);
         return (
           <Typography>
             {parts.map(({ text, highlight }, index) => (
