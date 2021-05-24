@@ -1,8 +1,9 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react-hooks/exhaustive-deps */
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  Box,
+  Grid,
   FormControl,
   InputLabel,
   Select,
@@ -12,10 +13,10 @@ import {
   Checkbox,
   makeStyles,
   MenuItem,
-  Grid,
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import ClearIcon from "@material-ui/icons/Clear";
+import { debounce } from "lodash";
 
 import EmployeeSelector from "common/components/EmployeeSelector/EmployeeSelector";
 import ClientSelector from "common/components/ClientSelector/ClientSelector";
@@ -76,13 +77,21 @@ export default function AppointmentsFilters() {
     );
   }
 
-  function handleOnClear() {
-    dispatch(clearFilter());
-    dispatch(loadAppointments());
-  }
+  const handleOnApplyFilters = React.useCallback(
+    debounce(() => dispatch(loadAppointments()), 1000),
+    [],
+  );
+
+  const handleOnClear = React.useCallback(
+    debounce(() => {
+      dispatch(clearFilter());
+      dispatch(loadAppointments());
+    }, 1000),
+    [],
+  );
 
   return (
-    <Box className={classes.root}>
+    <div className={classes.root}>
       <form className={classes.form} noValidate>
         <Grid container>
           <Grid item container xs direction="column" spacing={SPACING}>
@@ -190,10 +199,7 @@ export default function AppointmentsFilters() {
             </Grid>
 
             <Grid item container justify="center">
-              <IconButton
-                color="default"
-                onClick={() => dispatch(loadAppointments())}
-              >
+              <IconButton color="default" onClick={handleOnApplyFilters}>
                 <SearchIcon />
               </IconButton>
 
@@ -204,6 +210,6 @@ export default function AppointmentsFilters() {
           </Grid>
         </Grid>
       </form>
-    </Box>
+    </div>
   );
 }

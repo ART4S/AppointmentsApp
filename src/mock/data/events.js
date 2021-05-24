@@ -5,13 +5,18 @@ import employees from "./employees";
 
 function createEvent() {
   const type = faker.random.arrayElement(Object.values(eventTypes));
-  const author = faker.random.arrayElement(Object.values(employees));
+  const [author, employee] = faker.random.arrayElements(
+    Object.values(employees),
+    2,
+  );
   return {
     id: faker.datatype.uuid(),
     name: faker.lorem.word,
     date: faker.date.future(),
     type,
     authorId: author.id,
+    employeeId: employee.id,
+    seen: false,
   };
 }
 

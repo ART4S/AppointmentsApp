@@ -350,10 +350,6 @@ function reducer(state, action) {
   }
 }
 
-function ErrorAlert() {
-  return <Alert severity="error">{LOAD_ERROR}</Alert>;
-}
-
 export default function AppointmentEditor({
   appointmentId,
   onClose,
@@ -406,7 +402,7 @@ export default function AppointmentEditor({
 
   function renderForm() {
     if (state.error) {
-      return <ErrorAlert />;
+      return <Alert severity="error">{LOAD_ERROR}</Alert>;
     }
 
     if (state.loading) {

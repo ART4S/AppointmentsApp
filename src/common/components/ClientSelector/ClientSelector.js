@@ -88,7 +88,7 @@ function reducer(state, action) {
       return { ...state, options: action.payload };
     }
     case "clearOptions": {
-      return { ...state, options: [] };
+      return { ...state, loading: false, options: [] };
     }
     case "setSearchText": {
       return { ...state, searchText: action.payload };
@@ -154,7 +154,7 @@ export default function ClientSelector({
     },
   });
 
-  const setSearchTextDebounced = React.useCallback(
+  const setSearchText = React.useCallback(
     debounce(
       (value) => dispatch({ type: "setSearchText", payload: value }),
       200,
@@ -254,7 +254,7 @@ export default function ClientSelector({
       onOpen={() => dispatch({ type: "setOpen", payload: true })}
       onClose={() => dispatch({ type: "setOpen", payload: false })}
       onChange={(_event, value) => onChange(value)}
-      onInputChange={(_event, value) => setSearchTextDebounced(value)}
+      onInputChange={(_event, value) => setSearchText(value)}
       renderInput={(params) => (
         <TextField
           {...params}

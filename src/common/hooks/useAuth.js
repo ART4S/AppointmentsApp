@@ -6,28 +6,50 @@ import tokenExpiredEvent from "common/events/tokenExpiredEvent";
 
 const AuthContext = React.createContext();
 
-export function ProvideAuth({ children }) {
-  const [user, setUser] = React.useState(
-    JSON.parse(localStorage.getItem("user")),
-  );
-
-  async function login(email, password) {
-    const response = await authService.login(email, password);
-
-    if (response.isSuccess) {
-      const { user, token } = response.data;
-      setUser(user);
+function reducer(state, action) {
+  switch (action.type) {
+    case "logout": {
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      return { ...state, user: null, error: null };
+    }
+    case "loginSucceed": {
+      const { user, token } = action.payload;
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", token);
+      return { ...state, user };
     }
-
-    return response;
+    case "loginFailed": {
+      return { ...state, error: action.payload };
+    }
+    default:
+      throw new Error();
   }
+}
+
+export function ProvideAuth({ children }) {
+  const [state, dispatch] = React.useReducer(reducer, {
+    user: JSON.parse(localStorage.getItem("user")),
+    error: null,
+  });
 
   function logout() {
-    setUser(null);
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
+    dispatch({ type: "logout" });
+  }
+
+  async function login(email, password) {
+    dispatch({ type: "logout" });
+
+    const {
+      isSuccess,
+      data: { user, token, error },
+    } = await authService.login(email, password);
+
+    if (isSuccess) {
+      dispatch({ type: "loginSucceed", payload: { user, token } });
+    } else {
+      dispatch({ type: "loginFailed", payload: error });
+    }
   }
 
   React.useEffect(() => tokenExpiredEvent.subscribe(logout), []);
@@ -35,7 +57,8 @@ export function ProvideAuth({ children }) {
   return (
     <AuthContext.Provider
       value={{
-        user,
+        user: state.user,
+        error: state.error,
         login,
         logout,
       }}

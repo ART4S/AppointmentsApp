@@ -1,3 +1,4 @@
+/* eslint-disable arrow-body-style */
 /* eslint-disable prefer-arrow-callback */
 /* eslint-disable react/display-name */
 import React from "react";
@@ -12,6 +13,8 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import { Error as ErrorIcon } from "@material-ui/icons";
+
+const ERROR = "Ошибка";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -30,27 +33,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Transition = React.forwardRef(function Transition(props, ref) {
+const Transition = React.forwardRef((props, ref) => {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function ErrorPopup({ title, text, closeDelay, ...rest }) {
+export default function ErrorPopup({
+  title,
+  text,
+  closeDelay,
+  ...dialogProps
+}) {
   const classes = useStyles();
-
   const [open, setOpen] = React.useState(true);
-
-  function handleEnter() {
-    setTimeout(() => {
-      setOpen(false);
-    }, closeDelay);
-  }
 
   return (
     <Dialog
-      {...rest}
+      {...dialogProps}
       open={open}
       TransitionComponent={Transition}
-      onEnter={handleEnter}
+      onEnter={() => setTimeout(() => setOpen(false), closeDelay)}
     >
       <DialogTitle>
         <Typography className={classes.title} variant="h5">
@@ -74,3 +75,8 @@ export default function ErrorPopup({ title, text, closeDelay, ...rest }) {
     </Dialog>
   );
 }
+
+ErrorPopup.defaultProps = {
+  title: ERROR,
+  closeDelay: 3000,
+};

@@ -13,7 +13,7 @@ export default function EmployeeSelector({
   error,
   helperText,
   onChange,
-  ...rest
+  ...autocompleteProps
 }) {
   const [employees, setEmployees] = React.useState([]);
   const [open, setOpen] = React.useState(false);
@@ -63,7 +63,7 @@ export default function EmployeeSelector({
 
   return (
     <Autocomplete
-      {...rest}
+      {...autocompleteProps}
       options={employees}
       filterOptions={filterOptions}
       getOptionLabel={(user) => getFullName(user)}

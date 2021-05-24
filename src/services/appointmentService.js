@@ -1,29 +1,27 @@
 import client from "api/client";
 import { handleResponse } from "utils/responseUtils";
 
-class AppointmentService {
-  async getAll(params) {
-    const { data } = await client.get("/appointments", params);
-    return data;
-  }
-
-  async getById(id) {
-    const { data } = await client.get(`/appointments/${id}`);
-    return data;
-  }
-
-  create(appointment) {
-    return handleResponse(() => client.post("/appointments", appointment));
-  }
-
-  update(id, appointment) {
-    return handleResponse(() => client.put(`/appointments/${id}`, appointment));
-  }
-
-  async delete(id) {
-    const { data } = await client.delete(`/appointments/${id}`);
-    return data;
-  }
+async function getAll(params) {
+  const { data } = await client.get("/appointments", params);
+  return data;
 }
 
-export default new AppointmentService();
+async function getById(id) {
+  const { data } = await client.get(`/appointments/${id}`);
+  return data;
+}
+
+function create(appointment) {
+  return handleResponse(() => client.post("/appointments", appointment));
+}
+
+function update(id, appointment) {
+  return handleResponse(() => client.put(`/appointments/${id}`, appointment));
+}
+
+async function deleteItem(id) {
+  const { data } = await client.delete(`/appointments/${id}`);
+  return data;
+}
+
+export default { getAll, getById, create, update, deleteItem };

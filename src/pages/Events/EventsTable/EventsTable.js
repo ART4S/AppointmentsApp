@@ -20,23 +20,18 @@ import BusyScreen from "common/components/BusyScreen/BusyScreen";
 import appointmentStatuses from "model/enums/appointmentStatuses";
 
 import {
-  loadAppointments,
+  loadEvents,
   setBusy,
   setSorting,
   setCurrentPage,
   setItemsPerPage,
-  setSelectedAppointment,
-  deleteAppointment,
-  selectAppointments,
+  setSelectedEvent,
+  selectEvents,
   selectSorting,
   selectPagination,
-  selectAppointment,
+  selectEvent,
   selectBusy,
-} from "./appointmentsTableSlice";
-
-import AppointmentCreator from "../AppointmentCreator/AppointmentCreator";
-import AppointmentViewer from "../AppointmentViewer/AppointmentViewer";
-import AppointmentEditor from "../AppointmentEditor/AppointmentEditor";
+} from "./eventsTableSlice";
 
 const useToolBarStyles = makeStyles((_theme) => ({
   root: {
@@ -84,119 +79,71 @@ const columns = [
     formatter: (d) => moment(d).format("DD.MM.YYYY"),
   },
   {
-    field: "status",
-    header: "Статус",
+    field: "name",
+    header: "Наименование",
     enableSort: true,
-    formatter: (s) => appointmentStatuses[s],
   },
   {
-    field: "clientName",
-    header: "Клиент",
+    field: "authorName",
+    header: "Автор",
     enableSort: true,
   },
-  { field: "holderName", header: "Принимающий", enableSort: true },
-  { field: "complaints", header: "Жалобы" },
-  { field: "diagnosis", header: "Диагноз" },
 ];
 
-export default function AppointmentsTable() {
+export default function EventsTable() {
   const dispatch = useDispatch();
   const busy = useSelector(selectBusy);
-  const appointments = useSelector(selectAppointments);
+  const events = useSelector(selectEvents);
   const sorting = useSelector(selectSorting);
   const pagination = useSelector(selectPagination);
-  const selectedAppointment = useSelector(selectAppointment);
+  const selectedEvent = useSelector(selectEvent);
 
   const [creatorOpen, setCreatorOpen] = React.useState(false);
   const [viewerOpen, setViewerOpen] = React.useState(false);
   const [editorOpen, setEditorOpen] = React.useState(false);
 
   React.useEffect(() => {
-    dispatch(loadAppointments());
+    dispatch(loadEvents());
   }, []);
 
   function handleSortRequest(order, field) {
     dispatch(setSorting({ order, field }));
-    dispatch(loadAppointments());
+    dispatch(loadEvents());
   }
 
   function handleCurrentPageChange(newPage) {
     dispatch(setCurrentPage(newPage));
-    dispatch(loadAppointments());
+    dispatch(loadEvents());
   }
 
   function handleItemsPerPageChange(newItemsPerPage) {
     dispatch(setItemsPerPage(newItemsPerPage));
     dispatch(setCurrentPage(0));
-    dispatch(loadAppointments());
-  }
-
-  function handleCreateSubmitted() {
-    setCreatorOpen(false);
-    dispatch(loadAppointments());
-  }
-
-  function handleEditSubmitted() {
-    setEditorOpen(false);
-    dispatch(loadAppointments());
-  }
-
-  async function handleDelete() {
-    dispatch(setBusy(true));
-    await dispatch(deleteAppointment(selectedAppointment.id));
-    await dispatch(loadAppointments());
-    dispatch(setBusy(false));
+    dispatch(loadEvents());
   }
 
   return (
-    <ClickAwayListener
-      onClickAway={() => dispatch(setSelectedAppointment(null))}
-    >
+    <ClickAwayListener onClickAway={() => dispatch(setSelectedEvent(null))}>
       <Paper>
         <BusyScreen isBusy={busy}>
           <ToolBar
-            isAppointmentSelected={Boolean(selectedAppointment)}
+            isAppointmentSelected={Boolean(selectedEvent)}
             onCreateOpenClick={() => setCreatorOpen(true)}
             onViewOpenClick={() => setViewerOpen(true)}
             onEditOpenClick={() => setEditorOpen(true)}
-            onDeleteClick={handleDelete}
           />
 
           <Table
             columns={columns}
-            rows={appointments}
+            rows={events}
             pagination={pagination}
             sorting={sorting}
-            selectedRow={selectedAppointment}
-            onSelectedRowChange={(appointment) =>
-              dispatch(setSelectedAppointment(appointment))
-            }
+            selectedRow={selectedEvent}
+            onSelectedRowChange={(event) => dispatch(setSelectedEvent(event))}
             onSortRequest={handleSortRequest}
             onCurrentPageChange={handleCurrentPageChange}
             onItemsPerPageChange={handleItemsPerPageChange}
           />
-
-          {creatorOpen && (
-            <AppointmentCreator
-              onSubmitted={handleCreateSubmitted}
-              onClose={() => setCreatorOpen(false)}
-            />
-          )}
-
-          {viewerOpen && (
-            <AppointmentViewer
-              appointmentId={selectedAppointment.id}
-              onClose={() => setViewerOpen(false)}
-            />
-          )}
-
-          {editorOpen && (
-            <AppointmentEditor
-              appointmentId={selectedAppointment.id}
-              onSubmitted={handleEditSubmitted}
-              onClose={() => setEditorOpen(false)}
-            />
-          )}
         </BusyScreen>
       </Paper>
     </ClickAwayListener>

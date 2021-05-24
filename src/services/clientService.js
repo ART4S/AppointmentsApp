@@ -1,23 +1,21 @@
 import client from "api/client";
 
-class ClientService {
-  async getAll() {
-    const { data } = await client.get("/clients");
-    return data;
-  }
-
-  async getById(id) {
-    const { data } = await client.get(`/clients/${id}`);
-    return data;
-  }
-
-  async search(searchText, pagination) {
-    const { data } = await client.get("/clients/search", {
-      searchText,
-      ...pagination,
-    });
-    return data;
-  }
+async function getAll() {
+  const { data } = await client.get("/clients");
+  return data;
 }
 
-export default new ClientService();
+async function getById(id) {
+  const { data } = await client.get(`/clients/${id}`);
+  return data;
+}
+
+async function search(searchText, pagination) {
+  const { data } = await client.get("/clients/search", {
+    searchText,
+    ...pagination,
+  });
+  return data;
+}
+
+export default { getAll, getById, search };

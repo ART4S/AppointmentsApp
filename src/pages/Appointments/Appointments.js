@@ -1,7 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import {
-  Box,
   Grid,
   Container,
   Tooltip,
@@ -25,7 +24,6 @@ import { selectError } from "./components/AppointmentsTable/appointmentsTableSli
 
 const APPOINTMENTS = "Приемы";
 const FILTERS = "Фильтры";
-const ERROR = "Ошибка";
 const ERROR_LOAD_DATA =
   "В процессе загрузки данных произошла ошибка, пожалуйста перезагрузите страницу";
 
@@ -55,6 +53,9 @@ function Accordion({ header, children }) {
 const SPACING = 2;
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    minWidth: theme.breakpoints.values.md,
+  },
   body: {
     marginTop: theme.spacing(SPACING),
   },
@@ -78,12 +79,12 @@ export default function Appointments() {
   }
 
   return (
-    <Box minWidth="md">
+    <div className={classes.root}>
       <Header title={APPOINTMENTS} Icon={AppointmentIcon} />
 
       <Container className={classes.body} maxWidth="md">
         <Grid item container direction="column" spacing={SPACING}>
-          <Grid item>
+          <Grid item xs>
             <Accordion header={renderFilterButton()}>
               <AppointmentsFilters />
             </Accordion>
@@ -95,9 +96,7 @@ export default function Appointments() {
         </Grid>
       </Container>
 
-      {error && (
-        <ErrorPopup title={ERROR} text={ERROR_LOAD_DATA} closeDelay={3000} />
-      )}
-    </Box>
+      {error && <ErrorPopup text={ERROR_LOAD_DATA} />}
+    </div>
   );
 }

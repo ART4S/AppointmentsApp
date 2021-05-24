@@ -12,6 +12,7 @@ import useAuth from "common/hooks/useAuth";
 const useStyles = makeStyles((theme) => ({
   header: {
     display: "flex",
+    width: "100%",
     justifyContent: "space-around",
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.primary.contrastText,

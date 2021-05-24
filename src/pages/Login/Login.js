@@ -6,7 +6,6 @@ import * as yup from "yup";
 import { Formik, Form } from "formik";
 import {
   Container,
-  Box,
   Avatar,
   Typography,
   TextField,
@@ -84,26 +83,26 @@ const schema = yup.object({
 export default function Login() {
   const [remember, setRemember] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
-  const [serverError, setServerError] = React.useState("");
 
   const classes = useStyles();
   const auth = useAuth();
   const location = useLocation();
   const history = useHistory();
 
+  React.useEffect(() => {
+    if (auth.user) {
+      history.replace(location.state?.from?.pathname ?? "/");
+    }
+  }, [auth.user, location, history]);
+
   const initialValues = {
     email: "",
     password: "",
   };
 
-  async function handleSubmit({ email, password }) {
-    const { isSuccess, data } = await auth.login(email, password);
-
-    if (isSuccess) {
-      history.replace(location.state?.from?.pathname ?? "/");
-    } else {
-      setServerError(data.error);
-    }
+  async function handleSubmit({ email, password }, { setSubmitting }) {
+    await auth.login(email, password);
+    setSubmitting(false);
   }
 
   return (
@@ -116,9 +115,9 @@ export default function Login() {
         {SIGNIN}
       </Typography>
 
-      {serverError && (
+      {auth.error && (
         <Alert severity="error" style={{ width: "100%" }}>
-          {serverError}
+          {auth.error}
         </Alert>
       )}
 
@@ -209,7 +208,7 @@ export default function Login() {
               {LOGIN}
             </Button>
 
-            <Box className={classes.links}>
+            <div className={classes.links}>
               <Link>
                 <Typography>{FORGOT_PASSWORD}</Typography>
               </Link>
@@ -217,18 +216,18 @@ export default function Login() {
               <Link>
                 <Typography>{SIGNUP}</Typography>
               </Link>
-            </Box>
+            </div>
           </Form>
         )}
       </Formik>
 
-      <Box className={classes.copyright}>
+      <div className={classes.copyright}>
         <Typography variant="body2" color="textSecondary">
           {"Copyright © "}
           <Link color="inherit">Appointments App</Link>
           {" 2021"}
         </Typography>
-      </Box>
+      </div>
     </Container>
   );
 }

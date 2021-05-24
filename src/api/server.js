@@ -4,6 +4,7 @@ import { Server, Response } from "miragejs";
 
 import appointments from "mock/controllers/appointmentsController";
 import employees from "mock/controllers/employeesController";
+import events from "mock/controllers/eventsController";
 import clients from "mock/controllers/clientsController";
 import auth from "mock/controllers/authController";
 import ServerError from "common/errors/serverError";
@@ -81,5 +82,9 @@ new Server({
         throw e;
       }
     });
+
+    this.get("/api/events", (_schema, request) =>
+      events.getAll(request.queryParams),
+    );
   },
 });

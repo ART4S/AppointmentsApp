@@ -14,11 +14,12 @@ import store from "redux/store";
 import Login from "pages/Login/Login";
 import Home from "pages/Home/Home";
 import Appointments from "pages/Appointments/Appointments";
+import Events from "pages/Events/Events";
 import NotFound from "pages/NotFound/NotFound";
 
 import useAuth, { ProvideAuth } from "common/hooks/useAuth";
 
-function AuthRoute({ children, ...rest }) {
+function AuthRoute({ children, ...routeProps }) {
   const auth = useAuth();
 
   function render({ location }) {
@@ -31,7 +32,7 @@ function AuthRoute({ children, ...rest }) {
     return children;
   }
 
-  return <Route {...rest} render={render} />;
+  return <Route {...routeProps} render={render} />;
 }
 
 export default function App() {
@@ -52,6 +53,10 @@ export default function App() {
 
             <AuthRoute path="/appointments">
               <Appointments />
+            </AuthRoute>
+
+            <AuthRoute path="/events">
+              <Events />
             </AuthRoute>
 
             <Route path="/">

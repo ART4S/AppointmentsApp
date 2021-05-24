@@ -109,9 +109,9 @@ export default function AppointmentViewer({ appointmentId, onClose }) {
           <Progress />
         ) : (
           <>
-            <Box className={classes.fields}>
+            <div className={classes.fields}>
               <Fields appointment={state.appointment} />
-            </Box>
+            </div>
 
             <Box display="flex" justifyContent="flex-end">
               <Button

@@ -5,7 +5,7 @@ import {
   createAsyncThunk,
 } from "@reduxjs/toolkit";
 
-import appointmentService from "services/appointmentService";
+import { appointmentService } from "services";
 
 const appointmentsAdapter = createEntityAdapter();
 
@@ -44,7 +44,7 @@ export const loadAppointments = createAsyncThunk(
 
 export const deleteAppointment = createAsyncThunk(
   "appointments/table/deleteAppointment",
-  (id, _thunkApi) => appointmentService.delete(id),
+  (id, _thunkApi) => appointmentService.deleteItem(id),
 );
 
 const tableSlice = createSlice({
@@ -70,7 +70,7 @@ const tableSlice = createSlice({
     },
 
     clearError(state) {
-      state.data.error = false;
+      state.error = false;
     },
 
     setSelectedAppointment(state, action) {
@@ -107,6 +107,7 @@ const tableSlice = createSlice({
 });
 
 export const {
+  setBusy,
   setSorting,
   setCurrentPage,
   setItemsPerPage,
@@ -115,18 +116,18 @@ export const {
 } = tableSlice.actions;
 
 export const {
-  selectAll: selectAllAppointments,
+  selectAll: selectAppointments,
 } = appointmentsAdapter.getSelectors((state) => state.appointments.table.data);
 
-export const selectSorting = (state) => state.appointments.table.sorting;
-
-export const selectPagination = (state) => state.appointments.table.pagination;
+export const selectBusy = (state) => state.appointments.table.busy;
 
 export const selectError = (state) => state.appointments.table.data.error;
 
 export const selectAppointment = (state) =>
   state.appointments.table.selectedAppointment;
 
-export const selectBusy = (state) => state.appointments.table.busy;
+export const selectPagination = (state) => state.appointments.table.pagination;
+
+export const selectSorting = (state) => state.appointments.table.sorting;
 
 export default tableSlice.reducer;

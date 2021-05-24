@@ -65,7 +65,7 @@ function NavigationItem({ title, Icon, link }) {
   );
 }
 
-const navigationItems = [
+const NAVIGATION_ITEMS = [
   { title: APPOINTMENTS, Icon: AppointmentIcon, link: "/appointments" },
   { title: EVENTS, Icon: StarIcon, link: "/events" },
   { title: NOTIFICATIONS, Icon: BroadcastIcon, link: "/notifications" },
@@ -74,29 +74,29 @@ const navigationItems = [
   { title: EMPLOYEES, Icon: EmployeesIcon, link: "/employees" },
 ];
 
-const spacing = 2;
+const SPACING = 2;
 
 function NavigationPanel() {
   return (
-    <Box>
-      <Grid container direction="column" spacing={spacing} wrap="nowrap">
-        <Grid item container spacing={spacing}>
-          {navigationItems.slice(0, 3).map((x) => (
-            <Grid item key={x.title}>
-              <NavigationItem {...x} />
+    <div>
+      <Grid container direction="column" spacing={SPACING} wrap="nowrap">
+        <Grid item container spacing={SPACING}>
+          {NAVIGATION_ITEMS.slice(0, 3).map((navItem) => (
+            <Grid item key={navItem.title}>
+              <NavigationItem {...navItem} />
             </Grid>
           ))}
         </Grid>
 
-        <Grid item container spacing={spacing} wrap="nowrap">
-          {navigationItems.slice(3, 6).map((x) => (
-            <Grid item key={x.title}>
-              <NavigationItem {...x} />
+        <Grid item container spacing={SPACING} wrap="nowrap">
+          {NAVIGATION_ITEMS.slice(3, 6).map((navItem) => (
+            <Grid item key={navItem.title}>
+              <NavigationItem {...navItem} />
             </Grid>
           ))}
         </Grid>
       </Grid>
-    </Box>
+    </div>
   );
 }
 
@@ -104,12 +104,12 @@ export default function Home() {
   const classes = useStyles();
 
   return (
-    <Box className={classes.page}>
+    <div className={classes.page}>
       <Header Icon={HouseIcon} title={HOME_PAGE} />
 
-      <Box className={classes.body}>
+      <div className={classes.body}>
         <NavigationPanel />
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }

@@ -2,7 +2,6 @@
 /* eslint-disable no-nested-ternary */
 import faker from "faker";
 import { matchSorter } from "match-sorter";
-import moment from "moment";
 
 import ServerError from "common/errors/serverError";
 import ValidationError from "common/errors/validationError";
