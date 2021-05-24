@@ -6,6 +6,11 @@ import tokenExpiredEvent from "common/events/tokenExpiredEvent";
 
 const AuthContext = React.createContext();
 
+const initialValue = {
+  user: JSON.parse(localStorage.getItem("user")),
+  error: null,
+};
+
 function reducer(state, action) {
   switch (action.type) {
     case "logout": {
@@ -28,14 +33,12 @@ function reducer(state, action) {
 }
 
 export function ProvideAuth({ children }) {
-  const [state, dispatch] = React.useReducer(reducer, {
-    user: JSON.parse(localStorage.getItem("user")),
-    error: null,
-  });
+  const [{ user, error }, dispatch] = React.useReducer(reducer, initialValue);
 
-  function logout() {
-    dispatch({ type: "logout" });
-  }
+  React.useEffect(
+    () => tokenExpiredEvent.subscribe(() => dispatch({ type: "logout" })),
+    [],
+  );
 
   async function login(email, password) {
     dispatch({ type: "logout" });
@@ -52,13 +55,15 @@ export function ProvideAuth({ children }) {
     }
   }
 
-  React.useEffect(() => tokenExpiredEvent.subscribe(logout), []);
+  function logout() {
+    dispatch({ type: "logout" });
+  }
 
   return (
     <AuthContext.Provider
       value={{
-        user: state.user,
-        error: state.error,
+        user,
+        error,
         login,
         logout,
       }}
