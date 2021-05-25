@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 import {
-  createEntityAdapter,
   createAsyncThunk,
   createSlice,
 } from "@reduxjs/toolkit";

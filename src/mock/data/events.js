@@ -11,7 +11,7 @@ function createEvent() {
   );
   return {
     id: faker.datatype.uuid(),
-    name: faker.lorem.word,
+    name: faker.lorem.word(),
     date: faker.date.future(),
     type,
     authorId: author.id,

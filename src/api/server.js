@@ -86,5 +86,8 @@ new Server({
     this.get("/api/events", (_schema, request) =>
       events.getAll(request.queryParams),
     );
+    this.put("/api/events/:id", (_schema, request) =>
+      events.update(request.params.id, JSON.parse(request.requestBody)),
+    );
   },
 });

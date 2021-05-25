@@ -5,4 +5,8 @@ async function getAll(params) {
   return data;
 }
 
-export default { getAll };
+function markSeen(id) {
+  return client.put(`/events/${id}`, { seen: true });
+}
+
+export default { getAll, markSeen };

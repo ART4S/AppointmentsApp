@@ -42,11 +42,6 @@ export const loadAppointments = createAsyncThunk(
   },
 );
 
-export const deleteAppointment = createAsyncThunk(
-  "appointments/table/deleteAppointment",
-  (id, _thunkApi) => appointmentService.deleteItem(id),
-);
-
 const tableSlice = createSlice({
   name: "appointments/table",
   initialState,
@@ -114,6 +109,16 @@ export const {
   clearError,
   setSelectedAppointment,
 } = tableSlice.actions;
+
+export const deleteAppointment = createAsyncThunk(
+  "appointments/table/deleteAppointment",
+  async (id, { dispatch }) => {
+    dispatch(setBusy(true));
+    await appointmentService.deleteItem(id);
+    await dispatch(loadAppointments());
+    dispatch(setBusy(false));
+  },
+);
 
 export const {
   selectAll: selectAppointments,

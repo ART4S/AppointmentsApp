@@ -1,5 +1,5 @@
+import PropTypes from "prop-types";
 import {
-  Box,
   TableContainer as MuiTableContainer,
   Table as MuiTable,
   TableHead as MuiTableHead,
@@ -26,12 +26,6 @@ const TableCell = withStyles((theme) => ({
   },
 }))(MuiTableCell);
 
-const TableRow = withStyles((theme) => ({
-  hover: {
-    cursor: "pointer",
-  },
-}))(MuiTableRow);
-
 function SortLabel({ order, orderBy, column, onSortRequested }) {
   function createSortHandler(property) {
     return () => onSortRequested(order === "asc" ? "desc" : "asc", property);
@@ -51,7 +45,7 @@ function SortLabel({ order, orderBy, column, onSortRequested }) {
 function TableHead({ columns, order, orderBy, onSortRequested }) {
   return (
     <MuiTableHead>
-      <TableRow>
+      <MuiTableRow>
         {columns.map((column) => (
           <TableCell
             key={column.field}
@@ -69,35 +63,45 @@ function TableHead({ columns, order, orderBy, onSortRequested }) {
             )}
           </TableCell>
         ))}
-      </TableRow>
+      </MuiTableRow>
     </MuiTableHead>
   );
 }
 
+const useTableRowStyles = makeStyles((_theme) => ({
+  hover: {
+    cursor: "pointer",
+  },
+}));
+
 function TableBody({ columns, rows, selectedRow, onSelectedRowChange }) {
+  const classes = useTableRowStyles();
+
   function formatData(row, column) {
     const data = row[column.field];
-    const { formatter } = column;
-    return formatter ? formatter(data) : data;
+    return column?.formatter?.(data) ?? data;
   }
 
   function createClickHandler(row) {
-    return () => onSelectedRowChange(row);
+    return () => onSelectedRowChange(row.data);
   }
 
   return (
     <MuiTableBody>
       {rows.map((row) => (
-        <TableRow
+        <MuiTableRow
           hover
-          key={row.id}
-          selected={row === selectedRow}
+          key={row.key}
+          selected={selectedRow && row.data === selectedRow.data}
+          classes={{ hover: classes.hover }}
           onClick={createClickHandler(row)}
         >
           {columns.map((column) => (
-            <TableCell key={column.header}>{formatData(row, column)}</TableCell>
+            <TableCell key={column.field}>
+              {formatData(row.data, column)}
+            </TableCell>
           ))}
-        </TableRow>
+        </MuiTableRow>
       ))}
     </MuiTableBody>
   );
@@ -179,12 +183,35 @@ export default function Table({
         count={pagination.totalItems}
         rowsPerPage={pagination.itemsPerPage}
         page={pagination.currentPage}
+        SelectProps={{
+          MenuProps: { disablePortal: true },
+        }}
         ActionsComponent={TablePaginationActions}
-        onChangePage={(_, newPage) => onCurrentPageChange(newPage)}
-        onChangeRowsPerPage={(e) =>
-          onItemsPerPageChange(parseInt(e.target.value, 10))
+        onChangePage={(_event, newPage) => onCurrentPageChange(newPage)}
+        onChangeRowsPerPage={(event) =>
+          onItemsPerPageChange(parseInt(event.target.value, 10))
         }
       />
     </Paper>
   );
 }
+
+Table.propTypes = {
+  columns: PropTypes.arrayOf(
+    PropTypes.shape({
+      field: PropTypes.string.isRequired,
+      header: PropTypes.string,
+      enableSort: PropTypes.bool,
+      formatter: PropTypes.func,
+    }),
+  ).isRequired,
+
+  rows: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string,
+      visited: PropTypes.bool,
+      // eslint-disable-next-line react/forbid-prop-types
+      data: PropTypes.any,
+    }),
+  ).isRequired,
+};

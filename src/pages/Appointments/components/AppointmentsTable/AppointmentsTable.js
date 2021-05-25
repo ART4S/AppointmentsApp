@@ -2,20 +2,10 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
-import {
-  Paper,
-  Toolbar as MuiToolBar,
-  IconButton,
-  ClickAwayListener,
-  makeStyles,
-} from "@material-ui/core";
-
-import EditIcon from "@material-ui/icons/Edit";
-import AddIcon from "@material-ui/icons/Add";
-import DeleteIcon from "@material-ui/icons/Delete";
-import VisibilityIcon from "@material-ui/icons/Visibility";
+import { Paper, ClickAwayListener } from "@material-ui/core";
 
 import Table from "common/components/Table/Table";
+import TableToolbar from "common/components/TableToolbar/TableToolBar";
 import BusyScreen from "common/components/BusyScreen/BusyScreen";
 import appointmentStatuses from "model/enums/appointmentStatuses";
 
@@ -37,44 +27,6 @@ import {
 import AppointmentCreator from "../AppointmentCreator/AppointmentCreator";
 import AppointmentViewer from "../AppointmentViewer/AppointmentViewer";
 import AppointmentEditor from "../AppointmentEditor/AppointmentEditor";
-
-const useToolBarStyles = makeStyles((_theme) => ({
-  root: {
-    display: "flex",
-    justifyContent: "start",
-    width: "100%",
-  },
-}));
-
-function ToolBar({
-  isAppointmentSelected,
-  onCreateOpenClick,
-  onViewOpenClick,
-  onEditOpenClick,
-  onDeleteClick,
-}) {
-  const classes = useToolBarStyles();
-
-  return (
-    <MuiToolBar className={classes.root}>
-      <IconButton onClick={onCreateOpenClick}>
-        <AddIcon />
-      </IconButton>
-
-      <IconButton disabled={!isAppointmentSelected} onClick={onViewOpenClick}>
-        <VisibilityIcon />
-      </IconButton>
-
-      <IconButton disabled={!isAppointmentSelected} onClick={onEditOpenClick}>
-        <EditIcon />
-      </IconButton>
-
-      <IconButton disabled={!isAppointmentSelected} onClick={onDeleteClick}>
-        <DeleteIcon />
-      </IconButton>
-    </MuiToolBar>
-  );
-}
 
 const columns = [
   {
@@ -141,11 +93,8 @@ export default function AppointmentsTable() {
     dispatch(loadAppointments());
   }
 
-  async function handleDelete() {
-    dispatch(setBusy(true));
-    await dispatch(deleteAppointment(selectedAppointment.id));
-    await dispatch(loadAppointments());
-    dispatch(setBusy(false));
+  function handleDelete() {
+    dispatch(deleteAppointment(selectedAppointment.id));
   }
 
   return (
@@ -154,11 +103,11 @@ export default function AppointmentsTable() {
     >
       <Paper>
         <BusyScreen isBusy={busy}>
-          <ToolBar
-            isAppointmentSelected={Boolean(selectedAppointment)}
-            onCreateOpenClick={() => setCreatorOpen(true)}
-            onViewOpenClick={() => setViewerOpen(true)}
-            onEditOpenClick={() => setEditorOpen(true)}
+          <TableToolbar
+            isItemSelected={Boolean(selectedAppointment)}
+            onCreateClick={() => setCreatorOpen(true)}
+            onViewClick={() => setViewerOpen(true)}
+            onEditClick={() => setEditorOpen(true)}
             onDeleteClick={handleDelete}
           />
 

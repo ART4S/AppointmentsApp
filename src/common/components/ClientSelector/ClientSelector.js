@@ -182,8 +182,6 @@ export default function ClientSelector({
           dispatch({ type: "loadClientsSucceed", payload: data });
         }
       })();
-    } else {
-      dispatch({ type: "clearOptions" });
     }
 
     return () => {

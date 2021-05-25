@@ -9,7 +9,7 @@ import ErrorPopup from "common/components/ErrorPopup/ErrorPopup";
 
 import EventsTable from "./EventsTable/EventsTable";
 
-import { selectError } from "./eventsSlice";
+import { selectError } from "./EventsTable/eventsTableSlice";
 
 const EVENTS = "События";
 const ERROR_LOAD_DATA =

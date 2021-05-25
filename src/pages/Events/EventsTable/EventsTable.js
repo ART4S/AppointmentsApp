@@ -1,27 +1,23 @@
+/* eslint-disable react/display-name */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
-import {
-  Paper,
-  Toolbar as MuiToolBar,
-  IconButton,
-  ClickAwayListener,
-  makeStyles,
-} from "@material-ui/core";
+import { Paper, ClickAwayListener } from "@material-ui/core";
 
-import EditIcon from "@material-ui/icons/Edit";
-import AddIcon from "@material-ui/icons/Add";
-import DeleteIcon from "@material-ui/icons/Delete";
-import VisibilityIcon from "@material-ui/icons/Visibility";
+import AnnouncementOutlinedIcon from "@material-ui/icons/AnnouncementOutlined";
+import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
+import ErrorIcon from "@material-ui/icons/Error";
 
 import Table from "common/components/Table/Table";
+import TableToolBar from "common/components/TableToolbar/TableToolBar";
 import BusyScreen from "common/components/BusyScreen/BusyScreen";
-import appointmentStatuses from "model/enums/appointmentStatuses";
+
+import eventTypes from "model/enums/eventTypes";
 
 import {
   loadEvents,
-  setBusy,
+  markSeen,
   setSorting,
   setCurrentPage,
   setItemsPerPage,
@@ -33,43 +29,11 @@ import {
   selectBusy,
 } from "./eventsTableSlice";
 
-const useToolBarStyles = makeStyles((_theme) => ({
-  root: {
-    display: "flex",
-    justifyContent: "start",
-    width: "100%",
-  },
-}));
-
-function ToolBar({
-  isAppointmentSelected,
-  onCreateOpenClick,
-  onViewOpenClick,
-  onEditOpenClick,
-  onDeleteClick,
-}) {
-  const classes = useToolBarStyles();
-
-  return (
-    <MuiToolBar className={classes.root}>
-      <IconButton onClick={onCreateOpenClick}>
-        <AddIcon />
-      </IconButton>
-
-      <IconButton disabled={!isAppointmentSelected} onClick={onViewOpenClick}>
-        <VisibilityIcon />
-      </IconButton>
-
-      <IconButton disabled={!isAppointmentSelected} onClick={onEditOpenClick}>
-        <EditIcon />
-      </IconButton>
-
-      <IconButton disabled={!isAppointmentSelected} onClick={onDeleteClick}>
-        <DeleteIcon />
-      </IconButton>
-    </MuiToolBar>
-  );
-}
+const typeIcons = {
+  [eventTypes.news]: AnnouncementOutlinedIcon,
+  [eventTypes.meeting]: PeopleAltIcon,
+  [eventTypes.emergency]: () => <ErrorIcon color="secondary" />,
+};
 
 const columns = [
   {
@@ -87,6 +51,13 @@ const columns = [
     field: "authorName",
     header: "Автор",
     enableSort: true,
+  },
+  {
+    field: "type",
+    formatter: (t) => {
+      const Icon = typeIcons[t];
+      return <Icon />;
+    },
   },
 ];
 
@@ -122,24 +93,35 @@ export default function EventsTable() {
     dispatch(loadEvents());
   }
 
+  function handleSelectedRowChange(event) {
+    dispatch(setSelectedEvent(event));
+    if (!event.seen) {
+      dispatch(markSeen(event));
+    }
+  }
+
+  function createRow(event) {
+    return { key: event.id, visited: event.seen, data: event };
+  }
+
   return (
     <ClickAwayListener onClickAway={() => dispatch(setSelectedEvent(null))}>
       <Paper>
         <BusyScreen isBusy={busy}>
-          <ToolBar
-            isAppointmentSelected={Boolean(selectedEvent)}
-            onCreateOpenClick={() => setCreatorOpen(true)}
-            onViewOpenClick={() => setViewerOpen(true)}
-            onEditOpenClick={() => setEditorOpen(true)}
+          <TableToolBar
+            isItemSelected={Boolean(selectedEvent)}
+            onCreateClick={() => setCreatorOpen(true)}
+            onViewClick={() => setViewerOpen(true)}
+            onEditClick={() => setEditorOpen(true)}
           />
 
           <Table
             columns={columns}
-            rows={events}
+            rows={events.map(createRow)}
             pagination={pagination}
             sorting={sorting}
-            selectedRow={selectedEvent}
-            onSelectedRowChange={(event) => dispatch(setSelectedEvent(event))}
+            selectedRow={selectedEvent && createRow(selectedEvent)}
+            onSelectedRowChange={handleSelectedRowChange}
             onSortRequest={handleSortRequest}
             onCurrentPageChange={handleCurrentPageChange}
             onItemsPerPageChange={handleItemsPerPageChange}

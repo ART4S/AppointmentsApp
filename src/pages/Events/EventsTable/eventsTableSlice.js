@@ -39,6 +39,11 @@ export const loadEvents = createAsyncThunk(
   },
 );
 
+export const markSeen = createAsyncThunk(
+  "events/table/markSeen",
+  (event, _thunkApi) => eventService.markSeen(event.id),
+);
+
 const tableSlice = createSlice({
   name: "events/table",
   initialState,
@@ -86,6 +91,11 @@ const tableSlice = createSlice({
     [loadEvents.rejected](state) {
       state.busy = false;
       state.error = true;
+    },
+
+    [markSeen.pending](state, action) {
+      const event = action.meta.arg;
+      state.data.entities[event.id].seen = true;
     },
   },
 });
