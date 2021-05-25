@@ -1,8 +1,5 @@
 /* eslint-disable no-param-reassign */
-import {
-  createAsyncThunk,
-  createSlice,
-} from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import userService from "services/employeeService";
 

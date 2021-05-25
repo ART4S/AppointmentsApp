@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import ServerError from "common/errors/serverError";
+import ServerError from "common/errors/ServerError";
 import { getFullName } from "utils/userUtils";
 
 import events from "../data/events";

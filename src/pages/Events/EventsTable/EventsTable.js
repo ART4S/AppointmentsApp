@@ -3,7 +3,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
-import { Paper, ClickAwayListener } from "@material-ui/core";
+import { Paper, ClickAwayListener, useTheme } from "@material-ui/core";
 
 import AnnouncementOutlinedIcon from "@material-ui/icons/AnnouncementOutlined";
 import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
@@ -29,10 +29,14 @@ import {
   selectBusy,
 } from "./eventsTableSlice";
 
-const typeIcons = {
+const eventTypeIcons = {
   [eventTypes.news]: AnnouncementOutlinedIcon,
   [eventTypes.meeting]: PeopleAltIcon,
-  [eventTypes.emergency]: () => <ErrorIcon color="secondary" />,
+  [eventTypes.emergency]: () => {
+    const theme = useTheme();
+    const color = theme.palette.error.main;
+    return <ErrorIcon style={{ color }} />;
+  },
 };
 
 const columns = [
@@ -55,7 +59,7 @@ const columns = [
   {
     field: "type",
     formatter: (t) => {
-      const Icon = typeIcons[t];
+      const Icon = eventTypeIcons[t];
       return <Icon />;
     },
   },
@@ -93,7 +97,7 @@ export default function EventsTable() {
     dispatch(loadEvents());
   }
 
-  function handleSelectedRowChange(event) {
+  function handleSelectedRowChange({ data: event }) {
     dispatch(setSelectedEvent(event));
     if (!event.seen) {
       dispatch(markSeen(event));

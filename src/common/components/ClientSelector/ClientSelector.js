@@ -130,7 +130,7 @@ function reducer(state, action) {
       };
     }
     default:
-      return state;
+      throw new Error();
   }
 }
 

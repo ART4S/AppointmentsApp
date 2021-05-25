@@ -3,8 +3,8 @@
 import faker from "faker";
 import { matchSorter } from "match-sorter";
 
-import ServerError from "common/errors/serverError";
-import ValidationError from "common/errors/validationError";
+import ServerError from "common/errors/ServerError";
+import ValidationError from "common/errors/ValidationError";
 
 import { getFullName } from "utils/userUtils";
 

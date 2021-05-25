@@ -1,7 +1,7 @@
 import jwt from "jwt-simple";
 import moment from "moment";
 
-import ServerError from "common/errors/serverError";
+import ServerError from "common/errors/ServerError";
 
 import users from "../data/users";
 

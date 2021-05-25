@@ -18,7 +18,7 @@ const initialState = {
     currentPage: 0,
     pageSize: 0,
     totalItems: 0,
-    itemsPerPage: 5,
+    itemsPerPage: 15,
     availableItemsPerPage: [5, 15, 25],
   },
   sorting: {

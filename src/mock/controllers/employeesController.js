@@ -1,4 +1,4 @@
-import ServerError from "common/errors/serverError";
+import ServerError from "common/errors/ServerError";
 import employees from "../data/employees";
 
 class EmployeesController {

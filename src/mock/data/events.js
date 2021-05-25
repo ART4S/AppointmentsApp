@@ -16,7 +16,7 @@ function createEvent() {
     type,
     authorId: author.id,
     employeeId: employee.id,
-    seen: false,
+    seen: faker.datatype.boolean(),
   };
 }
 

@@ -1,5 +1,5 @@
 import match from "autosuggest-highlight/match";
-import ServerError from "common/errors/serverError";
+import ServerError from "common/errors/ServerError";
 import { getFullName } from "utils/userUtils";
 import clients from "../data/clients";
 

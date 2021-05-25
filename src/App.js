@@ -7,7 +7,7 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-import { CssBaseline } from "@material-ui/core";
+import { ThemeProvider, CssBaseline, createMuiTheme } from "@material-ui/core";
 
 import store from "redux/store";
 
@@ -36,35 +36,39 @@ function AuthRoute({ children, ...routeProps }) {
 }
 
 export default function App() {
+  const theme = createMuiTheme();
+
   return (
     <Provider store={store}>
-      <CssBaseline />
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
 
-      <ProvideAuth>
-        <Router>
-          <Switch>
-            <Route path="/login" exact>
-              <Login />
-            </Route>
+        <ProvideAuth>
+          <Router>
+            <Switch>
+              <Route path="/login" exact>
+                <Login />
+              </Route>
 
-            <AuthRoute path="/" exact>
-              <Home />
-            </AuthRoute>
+              <AuthRoute path="/" exact>
+                <Home />
+              </AuthRoute>
 
-            <AuthRoute path="/appointments">
-              <Appointments />
-            </AuthRoute>
+              <AuthRoute path="/appointments">
+                <Appointments />
+              </AuthRoute>
 
-            <AuthRoute path="/events">
-              <Events />
-            </AuthRoute>
+              <AuthRoute path="/events">
+                <Events />
+              </AuthRoute>
 
-            <Route path="/">
-              <NotFound />
-            </Route>
-          </Switch>
-        </Router>
-      </ProvideAuth>
+              <Route path="/">
+                <NotFound />
+              </Route>
+            </Switch>
+          </Router>
+        </ProvideAuth>
+      </ThemeProvider>
     </Provider>
   );
 }

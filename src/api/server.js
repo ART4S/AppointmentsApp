@@ -7,8 +7,8 @@ import employees from "mock/controllers/employeesController";
 import events from "mock/controllers/eventsController";
 import clients from "mock/controllers/clientsController";
 import auth from "mock/controllers/authController";
-import ServerError from "common/errors/serverError";
-import ValidationError from "common/errors/validationError";
+import ServerError from "common/errors/ServerError";
+import ValidationError from "common/errors/ValidationError";
 
 new Server({
   routes() {

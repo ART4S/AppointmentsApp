@@ -12,6 +12,7 @@ import {
   IconButton,
   withStyles,
   makeStyles,
+  useTheme,
 } from "@material-ui/core";
 
 import FirstPageIcon from "@material-ui/icons/FirstPage";
@@ -27,15 +28,18 @@ const TableCell = withStyles((theme) => ({
 }))(MuiTableCell);
 
 function SortLabel({ order, orderBy, column, onSortRequested }) {
-  function createSortHandler(property) {
-    return () => onSortRequested(order === "asc" ? "desc" : "asc", property);
-  }
+  const active = orderBy === column.field;
 
   return (
     <MuiTableSortLabel
-      active={orderBy === column.field}
-      direction={orderBy === column.field ? order : "asc"}
-      onClick={createSortHandler(column.field)}
+      active={active}
+      direction={active ? order : "asc"}
+      onClick={() =>
+        onSortRequested(
+          active && order === "asc" ? "desc" : "asc",
+          column.field,
+        )
+      }
     >
       {column.header}
     </MuiTableSortLabel>
@@ -68,9 +72,12 @@ function TableHead({ columns, order, orderBy, onSortRequested }) {
   );
 }
 
-const useTableRowStyles = makeStyles((_theme) => ({
+const useTableRowStyles = makeStyles((theme) => ({
   hover: {
     cursor: "pointer",
+  },
+  new: {
+    backgroundColor: theme.palette.success.light,
   },
 }));
 
@@ -78,12 +85,8 @@ function TableBody({ columns, rows, selectedRow, onSelectedRowChange }) {
   const classes = useTableRowStyles();
 
   function formatData(row, column) {
-    const data = row[column.field];
+    const data = row.data[column.field];
     return column?.formatter?.(data) ?? data;
-  }
-
-  function createClickHandler(row) {
-    return () => onSelectedRowChange(row.data);
   }
 
   return (
@@ -91,15 +94,16 @@ function TableBody({ columns, rows, selectedRow, onSelectedRowChange }) {
       {rows.map((row) => (
         <MuiTableRow
           hover
+          className={!row.visited && classes.new}
           key={row.key}
-          selected={selectedRow && row.data === selectedRow.data}
-          classes={{ hover: classes.hover }}
-          onClick={createClickHandler(row)}
+          selected={selectedRow && row.key === selectedRow.key}
+          classes={{
+            hover: classes.hover,
+          }}
+          onClick={(_event) => onSelectedRowChange(row)}
         >
           {columns.map((column) => (
-            <TableCell key={column.field}>
-              {formatData(row.data, column)}
-            </TableCell>
+            <TableCell key={column.field}>{formatData(row, column)}</TableCell>
           ))}
         </MuiTableRow>
       ))}
@@ -118,27 +122,32 @@ function TablePaginationActions({ count, page, rowsPerPage, onChangePage }) {
 
   return (
     <div style={{ display: "flex" }}>
-      <IconButton disabled={!canGotoPrev()} onClick={(e) => onChangePage(e, 0)}>
+      <IconButton
+        disabled={!canGotoPrev()}
+        onClick={(event) => onChangePage(event, 0)}
+      >
         <FirstPageIcon />
       </IconButton>
 
       <IconButton
         disabled={!canGotoPrev()}
-        onClick={(e) => onChangePage(e, page - 1)}
+        onClick={(event) => onChangePage(event, page - 1)}
       >
         <KeyboardArrowLeft />
       </IconButton>
 
       <IconButton
         disabled={!canGotoNext()}
-        onClick={(e) => onChangePage(e, page + 1)}
+        onClick={(event) => onChangePage(event, page + 1)}
       >
         <KeyboardArrowRight />
       </IconButton>
 
       <IconButton
         disabled={!canGotoNext()}
-        onClick={(e) => onChangePage(e, Math.ceil(count / rowsPerPage) - 1)}
+        onClick={(event) =>
+          onChangePage(event, Math.ceil(count / rowsPerPage) - 1)
+        }
       >
         <LastPageIcon />
       </IconButton>
@@ -208,10 +217,10 @@ Table.propTypes = {
 
   rows: PropTypes.arrayOf(
     PropTypes.shape({
-      key: PropTypes.string,
+      key: PropTypes.string.isRequired,
       visited: PropTypes.bool,
       // eslint-disable-next-line react/forbid-prop-types
-      data: PropTypes.any,
+      data: PropTypes.any.isRequired,
     }),
   ).isRequired,
 };
