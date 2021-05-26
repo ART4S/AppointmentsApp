@@ -8,13 +8,15 @@ function createNotification() {
   const employee = faker.random.arrayElement(Object.values(employees));
   return {
     id: faker.datatype.uuid(),
-    name: faker.lorem.word,
-    date: faker.date.future(),
+    date: faker.date.past(),
     type,
+    name: faker.lorem.word(),
+    description: faker.lorem.text(),
     employeeId: employee.id,
+    seen: faker.datatype.boolean(),
   };
 }
 
-const notifications = normalize(repeat(10, createNotification));
+const notifications = normalize(repeat(1000, createNotification));
 
 export default notifications;

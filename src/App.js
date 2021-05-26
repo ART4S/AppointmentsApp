@@ -15,6 +15,7 @@ import Login from "pages/Login/Login";
 import Home from "pages/Home/Home";
 import Appointments from "pages/Appointments/Appointments";
 import Events from "pages/Events/Events";
+import Notifications from "pages/Notifications/Notifications";
 import NotFound from "pages/NotFound/NotFound";
 
 import useAuth, { ProvideAuth } from "common/hooks/useAuth";
@@ -60,6 +61,10 @@ export default function App() {
 
               <AuthRoute path="/events">
                 <Events />
+              </AuthRoute>
+
+              <AuthRoute path="/notifications">
+                <Notifications />
               </AuthRoute>
 
               <Route path="/">

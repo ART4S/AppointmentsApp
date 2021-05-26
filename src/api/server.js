@@ -2,13 +2,15 @@
 /* eslint-disable arrow-body-style */
 import { Server, Response } from "miragejs";
 
+import ServerError from "common/errors/ServerError";
+import ValidationError from "common/errors/ValidationError";
+
 import appointments from "mock/controllers/appointmentsController";
 import employees from "mock/controllers/employeesController";
 import events from "mock/controllers/eventsController";
 import clients from "mock/controllers/clientsController";
 import auth from "mock/controllers/authController";
-import ServerError from "common/errors/ServerError";
-import ValidationError from "common/errors/ValidationError";
+import notifications from "mock/controllers/notificationsController";
 
 new Server({
   routes() {
@@ -94,5 +96,12 @@ new Server({
       const { ids } = JSON.parse(request.requestBody);
       events.markSeen(ids);
     });
+
+    this.get("/api/notifications", (_schema, request) =>
+      notifications.getAll(request.queryParams),
+    );
+    this.put("/api/notifications/:id", (_schema, request) =>
+      notifications.update(request.params.id, JSON.parse(request.requestBody)),
+    );
   },
 });

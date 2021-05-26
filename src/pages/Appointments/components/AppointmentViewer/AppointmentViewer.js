@@ -51,12 +51,14 @@ function Field({ name, value }) {
   );
 }
 
+const DATE_FORMAT = "DD.MM.YYYY HH:MM";
+
 function Fields({ appointment }) {
   return (
     <>
       <Field
         name={`${DATE}:`}
-        value={moment(appointment.date).format("DD.MM.YYYY HH:MM")}
+        value={moment(appointment.date).format(DATE_FORMAT)}
       />
       <Field name={`${CLIENT}:`} value={appointment.clientName} />
       <Field name={`${STATUS}:`} value={appointment.status} />
@@ -70,17 +72,17 @@ function Fields({ appointment }) {
 const reducer = createReducer(
   {},
   {
-    load(state) {
+    loadAppointment(state) {
       state.loading = true;
       state.error = false;
     },
 
-    loadSucceed(state, action) {
+    loadAppointmentSucceed(state, action) {
       state.loading = false;
       state.appointment = action.payload;
     },
 
-    loadFailed(state) {
+    loadAppointmentFailed(state) {
       state.loading = false;
       state.error = true;
     },
@@ -98,12 +100,12 @@ export default function AppointmentViewer({ appointmentId, onClose }) {
 
   React.useEffect(() => {
     (async () => {
-      dispatch({ type: "load" });
+      dispatch({ type: "loadAppointment" });
       try {
         const appointment = await appointmentService.getById(appointmentId);
-        dispatch({ type: "loadSucceed", payload: appointment });
+        dispatch({ type: "loadAppointmentSucceed", payload: appointment });
       } catch {
-        dispatch({ type: "loadFailed" });
+        dispatch({ type: "loadAppointmentFailed" });
       }
     })();
   }, [appointmentId]);

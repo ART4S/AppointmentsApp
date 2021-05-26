@@ -1,9 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import ServerError from "common/errors/ServerError";
-import { getFullName } from "utils/userUtils";
-
-import events from "../data/events";
-import employees from "../data/employees";
+import notifications from "../data/notifications";
 
 function createSorter(order, field) {
   const orderModifier = order === "asc" ? 1 : -1;
@@ -11,11 +8,10 @@ function createSorter(order, field) {
     orderModifier * (a[field] > b[field] ? 1 : a[field] < b[field] ? -1 : 0);
 }
 
-class EventsController {
+class NotificationsController {
   getAll(params) {
-    let data = Object.values(events).map((x) => ({
+    let data = Object.values(notifications).map((x) => ({
       ...x,
-      authorName: getFullName(employees[x.authorId]),
     }));
 
     if (params.field) {
@@ -43,22 +39,16 @@ class EventsController {
   }
 
   getNewCount() {
-    return Object.values(events).filter((x) => !x.seen).length;
+    return Object.values(notifications).filter((x) => !x.seen).length;
   }
 
   update(id, dto) {
-    if (!events[id]) {
+    if (!notifications[id]) {
       throw new ServerError("item not found");
     }
 
-    events[id] = { ...events[id], ...dto };
-  }
-
-  markSeen(ids) {
-    ids.forEach((id) => {
-      events[id].seen = true;
-    });
+    notifications[id] = { ...notifications[id], ...dto };
   }
 }
 
-export default new EventsController();
+export default new NotificationsController();

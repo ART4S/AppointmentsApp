@@ -120,19 +120,21 @@ export const deleteAppointment = createAsyncThunk(
   },
 );
 
+const selectState = (state) => state.appointments.table;
+
 export const {
   selectAll: selectAppointments,
-} = appointmentsAdapter.getSelectors((state) => state.appointments.table.data);
+} = appointmentsAdapter.getSelectors((state) => selectState(state).data);
 
-export const selectBusy = (state) => state.appointments.table.busy;
+export const selectBusy = (state) => selectState(state).busy;
 
-export const selectError = (state) => state.appointments.table.data.error;
+export const selectError = (state) => selectState(state).data.error;
 
 export const selectAppointment = (state) =>
-  state.appointments.table.selectedAppointment;
+  selectState(state).selectedAppointment;
 
-export const selectPagination = (state) => state.appointments.table.pagination;
+export const selectPagination = (state) => selectState(state).pagination;
 
-export const selectSorting = (state) => state.appointments.table.sorting;
+export const selectSorting = (state) => selectState(state).sorting;
 
 export default tableSlice.reducer;
