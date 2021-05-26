@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
 import { Link } from "react-router-dom";
-import { Box, Grid, Typography, makeStyles } from "@material-ui/core";
+import { Box, Grid, Badge, Typography, makeStyles } from "@material-ui/core";
 
 import Header from "common/components/Header/Header";
 
@@ -12,6 +12,8 @@ import { ReactComponent as MessagesIcon } from "assets/icons/messages.svg";
 import { ReactComponent as BroadcastIcon } from "assets/icons/broadcast.svg";
 import { ReactComponent as EmployeesIcon } from "assets/icons/employees.svg";
 import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg";
+
+import { eventService } from "services";
 
 const HOME_PAGE = "Домашняя";
 const APPOINTMENTS = "Приемы";
@@ -39,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    padding: theme.spacing(2),
+    padding: theme.spacing(3),
   },
   icon: {
     fill: theme.palette.primary.main,
@@ -50,38 +52,77 @@ const useStyles = makeStyles((theme) => ({
     color: "inherit",
     textDecoration: "inherit",
   },
+  badge: {
+    fontSize: "1.2rem",
+  },
 }));
 
-function NavigationItem({ title, Icon, link }) {
+function NavigationItem({ title, Icon, link, badgeContent }) {
   const classes = useStyles();
 
   return (
-    <Link className={classes.link} to={link}>
-      <Box className={classes.navigationItem}>
-        <Icon className={classes.icon} />
-        <Typography variant="h5">{title}</Typography>
-      </Box>
-    </Link>
+    <Badge
+      badgeContent={badgeContent}
+      color="secondary"
+      classes={{ badge: classes.badge }}
+    >
+      <Link className={classes.link} to={link}>
+        <Box className={classes.navigationItem}>
+          <Icon className={classes.icon} />
+          <Typography variant="h5">{title}</Typography>
+        </Box>
+      </Link>
+    </Badge>
   );
 }
 
-const NAVIGATION_ITEMS = [
-  { title: APPOINTMENTS, Icon: AppointmentIcon, link: "/appointments" },
-  { title: EVENTS, Icon: StarIcon, link: "/events" },
-  { title: NOTIFICATIONS, Icon: BroadcastIcon, link: "/notifications" },
-  { title: MESSAGES, Icon: MessagesIcon, link: "/messages" },
-  { title: CLIENTS, Icon: ClientsIcon, link: "/clients" },
-  { title: EMPLOYEES, Icon: EmployeesIcon, link: "/employees" },
-];
+NavigationItem.defaultProps = {
+  badgeContent: 0,
+};
 
-const SPACING = 2;
+const SPACING = 3;
 
 function NavigationPanel() {
+  const [newEventsCount, setNewEventsCount] = React.useState(0);
+
+  React.useEffect(() => {
+    let active = true;
+
+    (async () => {
+      const count = await eventService.getNewCount();
+      if (active) {
+        setNewEventsCount(count);
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const navigationItems = [
+    { title: APPOINTMENTS, Icon: AppointmentIcon, link: "/appointments" },
+    {
+      title: EVENTS,
+      Icon: StarIcon,
+      link: "/events",
+      badgeContent: newEventsCount,
+    },
+    { title: NOTIFICATIONS, Icon: BroadcastIcon, link: "/notifications" },
+    {
+      title: MESSAGES,
+      Icon: MessagesIcon,
+      link: "/messages",
+    },
+    { title: CLIENTS, Icon: ClientsIcon, link: "/clients" },
+    { title: EMPLOYEES, Icon: EmployeesIcon, link: "/employees" },
+  ];
+
   return (
     <div>
       <Grid container direction="column" spacing={SPACING} wrap="nowrap">
         <Grid item container spacing={SPACING}>
-          {NAVIGATION_ITEMS.slice(0, 3).map((navItem) => (
+          {navigationItems.slice(0, 3).map((navItem) => (
             <Grid item key={navItem.title}>
               <NavigationItem {...navItem} />
             </Grid>
@@ -89,7 +130,7 @@ function NavigationPanel() {
         </Grid>
 
         <Grid item container spacing={SPACING} wrap="nowrap">
-          {NAVIGATION_ITEMS.slice(3, 6).map((navItem) => (
+          {navigationItems.slice(3, 6).map((navItem) => (
             <Grid item key={navItem.title}>
               <NavigationItem {...navItem} />
             </Grid>

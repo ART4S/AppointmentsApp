@@ -5,8 +5,13 @@ async function getAll(params) {
   return data;
 }
 
-function markSeen(id) {
-  return client.put(`/events/${id}`, { seen: true });
+async function markSeen(eventIds) {
+  await client.put("/events/markSeen", { ids: eventIds });
 }
 
-export default { getAll, markSeen };
+async function getNewCount() {
+  const { data } = await client.get("/events/count");
+  return data;
+}
+
+export default { getAll, markSeen, getNewCount };

@@ -49,6 +49,16 @@ class EventsController {
 
     events[id] = { ...events[id], ...dto };
   }
+
+  markSeen(ids) {
+    ids.forEach((id) => {
+      events[id].seen = true;
+    });
+  }
+
+  getNewCount() {
+    return Object.values(events).filter((x) => !x.seen).length;
+  }
 }
 
 export default new EventsController();

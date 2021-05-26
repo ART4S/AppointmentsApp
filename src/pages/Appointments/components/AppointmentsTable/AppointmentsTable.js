@@ -11,7 +11,6 @@ import appointmentStatuses from "model/enums/appointmentStatuses";
 
 import {
   loadAppointments,
-  setBusy,
   setSorting,
   setCurrentPage,
   setItemsPerPage,
@@ -97,6 +96,10 @@ export default function AppointmentsTable() {
     dispatch(deleteAppointment(selectedAppointment.id));
   }
 
+  function createRow(appointment) {
+    return { key: appointment.id, visited: true, data: appointment };
+  }
+
   return (
     <ClickAwayListener
       onClickAway={() => dispatch(setSelectedAppointment(null))}
@@ -113,11 +116,11 @@ export default function AppointmentsTable() {
 
           <Table
             columns={columns}
-            rows={appointments}
+            rows={appointments.map(createRow)}
             pagination={pagination}
             sorting={sorting}
-            selectedRow={selectedAppointment}
-            onSelectedRowChange={(appointment) =>
+            selectedRow={selectedAppointment && createRow(selectedAppointment)}
+            onSelectedRowChange={({ data: appointment }) =>
               dispatch(setSelectedAppointment(appointment))
             }
             onSortRequest={handleSortRequest}

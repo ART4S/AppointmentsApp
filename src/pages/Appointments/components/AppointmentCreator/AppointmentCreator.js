@@ -83,30 +83,31 @@ function CreateForm({ onSubmitted }) {
 
     if (isSuccess) {
       onSubmitted();
-    } else {
-      const {
-        error: { common, fields },
-      } = data;
-
-      setServerErrors(common);
-
-      Object.entries(fields).forEach(([field, errors]) => {
-        switch (field) {
-          case "clientId": {
-            field = "client";
-            break;
-          }
-          case "holderId": {
-            field = "holder";
-            break;
-          }
-        }
-
-        setFieldError(field, errors.join("; "));
-      });
-
-      setSubmitting(false);
+      return;
     }
+
+    const {
+      error: { common, fields },
+    } = data;
+
+    setServerErrors(common);
+
+    Object.entries(fields).forEach(([field, errors]) => {
+      switch (field) {
+        case "clientId": {
+          field = "client";
+          break;
+        }
+        case "holderId": {
+          field = "holder";
+          break;
+        }
+      }
+
+      setFieldError(field, errors.join("; "));
+    });
+
+    setSubmitting(false);
   }
 
   return (

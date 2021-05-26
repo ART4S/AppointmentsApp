@@ -3,6 +3,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
+import { debounce } from "lodash";
 import { Paper, ClickAwayListener, useTheme } from "@material-ui/core";
 
 import AnnouncementOutlinedIcon from "@material-ui/icons/AnnouncementOutlined";
@@ -22,14 +23,16 @@ import {
   setCurrentPage,
   setItemsPerPage,
   setSelectedEvent,
+  sendSeenEvents,
   selectEvents,
   selectSorting,
   selectPagination,
   selectEvent,
   selectBusy,
+  selectSeenEventIds,
 } from "./eventsTableSlice";
 
-const eventTypeIcons = {
+const EVENT_TYPE_ICONS = {
   [eventTypes.news]: AnnouncementOutlinedIcon,
   [eventTypes.meeting]: PeopleAltIcon,
   [eventTypes.emergency]: () => {
@@ -39,12 +42,14 @@ const eventTypeIcons = {
   },
 };
 
-const columns = [
+const DATE_FORMAT = "DD.MM.YYYY";
+
+const COLUMNS = [
   {
     field: "date",
     header: "Дата",
     enableSort: true,
-    formatter: (d) => moment(d).format("DD.MM.YYYY"),
+    formatter: (d) => moment(d).format(DATE_FORMAT),
   },
   {
     field: "name",
@@ -59,7 +64,7 @@ const columns = [
   {
     field: "type",
     formatter: (t) => {
-      const Icon = eventTypeIcons[t];
+      const Icon = EVENT_TYPE_ICONS[t];
       return <Icon />;
     },
   },
@@ -72,14 +77,22 @@ export default function EventsTable() {
   const sorting = useSelector(selectSorting);
   const pagination = useSelector(selectPagination);
   const selectedEvent = useSelector(selectEvent);
-
-  const [creatorOpen, setCreatorOpen] = React.useState(false);
-  const [viewerOpen, setViewerOpen] = React.useState(false);
-  const [editorOpen, setEditorOpen] = React.useState(false);
+  const seenEventIds = useSelector(selectSeenEventIds);
 
   React.useEffect(() => {
     dispatch(loadEvents());
   }, []);
+
+  const sendSeenEventsDebounced = React.useCallback(
+    debounce(() => dispatch(sendSeenEvents()), 2000),
+    [],
+  );
+
+  React.useEffect(() => {
+    if (seenEventIds.length) {
+      sendSeenEventsDebounced();
+    }
+  }, [seenEventIds]);
 
   function handleSortRequest(order, field) {
     dispatch(setSorting({ order, field }));
@@ -114,13 +127,13 @@ export default function EventsTable() {
         <BusyScreen isBusy={busy}>
           <TableToolBar
             isItemSelected={Boolean(selectedEvent)}
-            onCreateClick={() => setCreatorOpen(true)}
-            onViewClick={() => setViewerOpen(true)}
-            onEditClick={() => setEditorOpen(true)}
+            onCreateClick={() => {}}
+            onViewClick={() => {}}
+            onEditClick={() => {}}
           />
 
           <Table
-            columns={columns}
+            columns={COLUMNS}
             rows={events.map(createRow)}
             pagination={pagination}
             sorting={sorting}

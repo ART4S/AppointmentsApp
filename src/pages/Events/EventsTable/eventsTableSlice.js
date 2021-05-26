@@ -7,13 +7,14 @@ import {
 
 import { eventService } from "services";
 
-const eventsAdapter = createEntityAdapter();
+const adapter = createEntityAdapter();
 
 const initialState = {
   busy: false,
   error: false,
   selectedEvent: null,
-  data: eventsAdapter.getInitialState({}),
+  data: adapter.getInitialState({}),
+  seenEventIds: [],
   pagination: {
     currentPage: 0,
     pageSize: 0,
@@ -39,9 +40,12 @@ export const loadEvents = createAsyncThunk(
   },
 );
 
-export const markSeen = createAsyncThunk(
-  "events/table/markSeen",
-  (event, _thunkApi) => eventService.markSeen(event.id),
+export const sendSeenEvents = createAsyncThunk(
+  "events/table/markSeenEvents",
+  (_params, thunkApi) => {
+    const { seenEventIds } = thunkApi.getState().events.table;
+    return eventService.markSeen(seenEventIds);
+  },
 );
 
 const tableSlice = createSlice({
@@ -69,6 +73,12 @@ const tableSlice = createSlice({
     setSelectedEvent(state, action) {
       state.selectedEvent = action.payload;
     },
+
+    markSeen(state, action) {
+      const event = action.payload;
+      state.data.entities[event.id].seen = true;
+      state.seenEventIds.push(event.id);
+    },
   },
   extraReducers: {
     [loadEvents.pending](state) {
@@ -79,7 +89,7 @@ const tableSlice = createSlice({
     [loadEvents.fulfilled](state, action) {
       const { data, currentPage, pageSize, totalItems } = action.payload;
       state.busy = false;
-      state.data = eventsAdapter.setAll(state.data, data);
+      state.data = adapter.setAll(state.data, data);
       state.pagination.pageSize = pageSize;
       state.pagination.totalItems = totalItems;
       state.pagination.currentPage = currentPage;
@@ -93,9 +103,8 @@ const tableSlice = createSlice({
       state.error = true;
     },
 
-    [markSeen.pending](state, action) {
-      const event = action.meta.arg;
-      state.data.entities[event.id].seen = true;
+    [sendSeenEvents.fulfilled](state) {
+      state.seenEventIds = [];
     },
   },
 });
@@ -107,9 +116,10 @@ export const {
   setItemsPerPage,
   clearError,
   setSelectedEvent,
+  markSeen,
 } = tableSlice.actions;
 
-export const { selectAll: selectEvents } = eventsAdapter.getSelectors(
+export const { selectAll: selectEvents } = adapter.getSelectors(
   (state) => state.events.table.data,
 );
 
@@ -122,5 +132,7 @@ export const selectEvent = (state) => state.events.table.selectedEvent;
 export const selectPagination = (state) => state.events.table.pagination;
 
 export const selectSorting = (state) => state.events.table.sorting;
+
+export const selectSeenEventIds = (state) => state.events.table.seenEventIds;
 
 export default tableSlice.reducer;

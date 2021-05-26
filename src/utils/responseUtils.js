@@ -11,11 +11,11 @@ export async function handleResponse(promiseGetter) {
 
   const { status, data } = response;
 
-  if (status === 200 || status === 201) {
+  if (status >= 200 && status < 300) {
     return { isSuccess: true, data };
   }
 
-  if (status === 400) {
+  if (status >= 400 && status < 500) {
     return { isSuccess: false, data };
   }
 

@@ -3,6 +3,7 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable no-shadow */
 import React from "react";
+import { createReducer } from "@reduxjs/toolkit";
 import moment from "moment";
 import { Formik, Form } from "formik";
 import {
@@ -334,21 +335,25 @@ function EditForm(props) {
   );
 }
 
-function reducer(state, action) {
-  switch (action.type) {
-    case "load": {
-      return { ...state, loading: true, error: false };
-    }
-    case "loadSucceed": {
-      return { ...state, loading: false, data: action.payload };
-    }
-    case "loadFailed": {
-      return { ...state, loading: false, error: true };
-    }
-    default:
-      return state;
-  }
-}
+const reducer = createReducer(
+  {},
+  {
+    load(state) {
+      state.loading = true;
+      state.error = false;
+    },
+
+    loadSucceed(state, action) {
+      state.loading = false;
+      state.data = action.payload;
+    },
+
+    loadFailed(state) {
+      state.loading = false;
+      state.error = true;
+    },
+  },
+);
 
 export default function AppointmentEditor({
   appointmentId,

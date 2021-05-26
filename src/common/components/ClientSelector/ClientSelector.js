@@ -1,6 +1,8 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/display-name */
 import React from "react";
+import { createReducer } from "@reduxjs/toolkit";
 import { Box, TextField, Typography } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { FixedSizeList } from "react-window";
@@ -79,60 +81,60 @@ const ListBoxComponent = React.forwardRef((props, ref) => {
   );
 });
 
-function reducer(state, action) {
-  switch (action.type) {
-    case "setOpen": {
-      return { ...state, open: action.payload };
-    }
-    case "setOptions": {
-      return { ...state, options: action.payload };
-    }
-    case "clearOptions": {
-      return { ...state, loading: false, options: [] };
-    }
-    case "setSearchText": {
-      return { ...state, searchText: action.payload };
-    }
-    case "loadClients": {
-      return { ...state, loading: true };
-    }
-    case "loadClientsSucceed": {
-      const { currentPage, totalPages, data } = action.payload;
-      return {
-        ...state,
-        loading: false,
-        options: data,
-        pagination: {
-          ...state.pagination,
-          currentPage,
-          totalPages,
-        },
+const reducer = createReducer(
+  {},
+  {
+    setOpen(state, action) {
+      state.open = action.payload;
+    },
+
+    setOptions(state, action) {
+      state.options = action.payload;
+    },
+
+    clearOptions(state, action) {
+      state.loading = false;
+      state.options = [];
+    },
+
+    setSearchText(state, action) {
+      state.searchText = action.payload;
+    },
+
+    loadClients(state, action) {
+      state.loading = true;
+    },
+
+    loadClientsSucceed(state, action) {
+      const { data, currentPage, totalPages } = action.payload;
+      state.loading = false;
+      state.options = data;
+      state.pagination = {
+        currentPage,
+        totalPages,
       };
-    }
-    case "setLoadMore": {
-      return { ...state, loadMore: action.payload };
-    }
-    case "loadMore": {
-      return { ...state, loading: true };
-    }
-    case "loadMoreSucceed": {
-      const { currentPage, totalPages, data } = action.payload;
-      return {
-        ...state,
-        loading: false,
-        loadMore: false,
-        options: [...state.options, ...data],
-        pagination: {
-          ...state.pagination,
-          currentPage,
-          totalPages,
-        },
+    },
+
+    setLoadMore(state, action) {
+      state.loadMore = action.payload;
+    },
+
+    loadMore(state, action) {
+      state.loading = true;
+    },
+
+    loadMoreSucceed(state, action) {
+      const { data, currentPage, totalPages } = action.payload;
+      state.loading = false;
+      state.loadMore = false;
+      state.options = [...state.options, ...data];
+      state.pagination = {
+        currentPage,
+        totalPages,
       };
-    }
-    default:
-      throw new Error();
-  }
-}
+    },
+  },
+);
 
 export default function ClientSelector({
   name,

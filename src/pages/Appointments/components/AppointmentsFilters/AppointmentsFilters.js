@@ -78,7 +78,7 @@ export default function AppointmentsFilters() {
   }
 
   const handleOnApplyFilters = React.useCallback(
-    debounce(() => dispatch(loadAppointments()), 1000),
+    debounce(() => dispatch(loadAppointments()), 500),
     [],
   );
 
@@ -86,7 +86,7 @@ export default function AppointmentsFilters() {
     debounce(() => {
       dispatch(clearFilter());
       dispatch(loadAppointments());
-    }, 1000),
+    }, 500),
     [],
   );
 

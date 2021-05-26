@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import cn from "classnames";
 import {
   TableContainer as MuiTableContainer,
   Table as MuiTable,
@@ -12,7 +13,6 @@ import {
   IconButton,
   withStyles,
   makeStyles,
-  useTheme,
 } from "@material-ui/core";
 
 import FirstPageIcon from "@material-ui/icons/FirstPage";
@@ -53,6 +53,7 @@ function TableHead({ columns, order, orderBy, onSortRequested }) {
         {columns.map((column) => (
           <TableCell
             key={column.field}
+            style={{ pointerEvents: column.enableSort ? "inherit" : "none" }}
             sortDirection={orderBy === column.field ? order : false}
           >
             {column.enableSort ? (
@@ -94,7 +95,7 @@ function TableBody({ columns, rows, selectedRow, onSelectedRowChange }) {
       {rows.map((row) => (
         <MuiTableRow
           hover
-          className={!row.visited && classes.new}
+          className={cn({ [classes.new]: !row.visited })}
           key={row.key}
           selected={selectedRow && row.key === selectedRow.key}
           classes={{

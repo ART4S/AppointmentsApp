@@ -1,4 +1,6 @@
+/* eslint-disable no-param-reassign */
 import React from "react";
+import { createReducer } from "@reduxjs/toolkit";
 import moment from "moment";
 
 import { Typography, Button, Box, Grid, makeStyles } from "@material-ui/core";
@@ -65,21 +67,25 @@ function Fields({ appointment }) {
   );
 }
 
-function reducer(state, action) {
-  switch (action.type) {
-    case "load": {
-      return { ...state, loading: true, error: false };
-    }
-    case "loadSucceed": {
-      return { ...state, loading: false, appointment: action.payload };
-    }
-    case "loadFailed": {
-      return { ...state, loading: false, error: true };
-    }
-    default:
-      return state;
-  }
-}
+const reducer = createReducer(
+  {},
+  {
+    load(state) {
+      state.loading = true;
+      state.error = false;
+    },
+
+    loadSucceed(state, action) {
+      state.loading = false;
+      state.appointment = action.payload;
+    },
+
+    loadFailed(state) {
+      state.loading = false;
+      state.error = true;
+    },
+  },
+);
 
 export default function AppointmentViewer({ appointmentId, onClose }) {
   const classes = useStyles();

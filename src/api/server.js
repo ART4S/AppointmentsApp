@@ -86,8 +86,13 @@ new Server({
     this.get("/api/events", (_schema, request) =>
       events.getAll(request.queryParams),
     );
+    this.get("/api/events/count", () => events.getNewCount());
     this.put("/api/events/:id", (_schema, request) =>
       events.update(request.params.id, JSON.parse(request.requestBody)),
     );
+    this.put("/api/events/markSeen", (_schema, request) => {
+      const { ids } = JSON.parse(request.requestBody);
+      events.markSeen(ids);
+    });
   },
 });

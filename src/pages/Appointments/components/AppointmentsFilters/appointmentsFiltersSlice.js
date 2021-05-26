@@ -9,6 +9,8 @@ export const loadUsers = createAsyncThunk(
 );
 
 const initialState = {
+  client: null,
+  holder: null,
   filter: {
     startDate: "",
     finishDate: "",
@@ -18,8 +20,6 @@ const initialState = {
     complaints: "",
     onlyMe: false,
   },
-  client: null,
-  holder: null,
 };
 
 const filtersSlice = createSlice({
