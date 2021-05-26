@@ -52,15 +52,15 @@ const OutherElementType = React.forwardRef((props, ref) => {
   return <div ref={ref} {...props} onScroll={handleScroll} />;
 });
 
-function renderRow({ data, index, style }) {
-  return React.cloneElement(data[index], { style });
-}
-
 const ListBoxComponent = React.forwardRef((props, ref) => {
   const { children, ...listboxProps } = props;
   const itemSize = 70;
   const itemData = React.Children.toArray(children);
   const height = Math.min(4, itemData.length) * itemSize;
+
+  function renderRow({ data, index, style }) {
+    return React.cloneElement(data[index], { style });
+  }
 
   return (
     <div ref={ref}>

@@ -58,10 +58,12 @@ export const {
   setHolder,
 } = filtersSlice.actions;
 
-export const selectFilter = (state) => state.appointments.filters.filter;
+const selectState = (state) => state.appointments.filters;
 
-export const selectClient = (state) => state.appointments.filters.client;
+export const selectFilter = (state) => selectState(state).filter;
 
-export const selectHolder = (state) => state.appointments.filters.holder;
+export const selectClient = (state) => selectState(state).client;
+
+export const selectHolder = (state) => selectState(state).holder;
 
 export default filtersSlice.reducer;

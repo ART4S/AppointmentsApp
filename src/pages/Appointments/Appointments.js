@@ -5,9 +5,6 @@ import {
   Container,
   Tooltip,
   IconButton,
-  Accordion as MuiAccordion,
-  AccordionSummary,
-  AccordionDetails,
   makeStyles,
 } from "@material-ui/core";
 import { FilterList as FilterListIcon } from "@material-ui/icons";
@@ -17,6 +14,7 @@ import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg"
 import Header from "common/components/Header/Header";
 import ErrorPopup from "common/components/ErrorPopup/ErrorPopup";
 
+import Accordion from "./components/Accordion/Accordion";
 import AppointmentsFilters from "./components/AppointmentsFilters/AppointmentsFilters";
 import AppointmentsTable from "./components/AppointmentsTable/AppointmentsTable";
 
@@ -26,29 +24,6 @@ const APPOINTMENTS = "Приемы";
 const FILTERS = "Фильтры";
 const ERROR_LOAD_DATA =
   "В процессе загрузки данных произошла ошибка, пожалуйста перезагрузите страницу";
-
-const useAccordionStyles = makeStyles((theme) => ({
-  summary: {
-    backgroundColor: theme.palette.primary.main,
-    height: 10,
-  },
-  details: {
-    padding: 0,
-  },
-}));
-
-function Accordion({ header, children }) {
-  const classes = useAccordionStyles();
-
-  return (
-    <MuiAccordion defaultExpanded>
-      <AccordionSummary className={classes.summary}>{header}</AccordionSummary>
-      <AccordionDetails className={classes.details}>
-        {children}
-      </AccordionDetails>
-    </MuiAccordion>
-  );
-}
 
 const SPACING = 2;
 
