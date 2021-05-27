@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Grid, Typography, makeStyles } from "@material-ui/core";
 
 import { ReactComponent as StarIcon } from "assets/icons/star.svg";
@@ -13,13 +14,6 @@ import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg"
 import Badge from "common/components/Badge/Badge";
 
 import { eventService } from "services";
-
-const APPOINTMENTS = "Приемы";
-const EVENTS = "События";
-const NOTIFICATIONS = "Оповещения";
-const MESSAGES = "Сообщения";
-const CLIENTS = "Клиенты";
-const EMPLOYEES = "Сотрудники";
 
 const useStyles = makeStyles((theme) => ({
   navItem: {
@@ -70,6 +64,8 @@ const SPACING = 3;
 export default function NavigationPanel() {
   const [newEventsCount, setNewEventsCount] = React.useState(0);
 
+  const { t } = useTranslation();
+
   React.useEffect(() => {
     let active = true;
 
@@ -86,21 +82,21 @@ export default function NavigationPanel() {
   }, []);
 
   const navigationItems = [
-    { title: APPOINTMENTS, Icon: AppointmentIcon, link: "/appointments" },
+    { title: t("appointments"), Icon: AppointmentIcon, link: "/appointments" },
     {
-      title: EVENTS,
+      title: t("events"),
       Icon: StarIcon,
       link: "/events",
       badgeContent: newEventsCount,
     },
-    { title: NOTIFICATIONS, Icon: BroadcastIcon, link: "/notifications" },
+    { title: t("notifications"), Icon: BroadcastIcon, link: "/notifications" },
     {
-      title: MESSAGES,
+      title: t("messages"),
       Icon: MessagesIcon,
       link: "/messages",
     },
-    { title: CLIENTS, Icon: ClientsIcon, link: "/clients" },
-    { title: EMPLOYEES, Icon: EmployeesIcon, link: "/employees" },
+    { title: t("clients"), Icon: ClientsIcon, link: "/clients" },
+    { title: t("employees"), Icon: EmployeesIcon, link: "/employees" },
   ];
 
   return (

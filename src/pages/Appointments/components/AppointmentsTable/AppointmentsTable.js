@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import moment from "moment";
 import { Paper, ClickAwayListener } from "@material-ui/core";
 
@@ -27,29 +28,6 @@ import AppointmentCreator from "../AppointmentCreator/AppointmentCreator";
 import AppointmentViewer from "../AppointmentViewer/AppointmentViewer";
 import AppointmentEditor from "../AppointmentEditor/AppointmentEditor";
 
-const columns = [
-  {
-    field: "date",
-    header: "Дата",
-    enableSort: true,
-    formatter: (d) => moment(d).format("DD.MM.YYYY"),
-  },
-  {
-    field: "status",
-    header: "Статус",
-    enableSort: true,
-    formatter: (s) => appointmentStatuses[s],
-  },
-  {
-    field: "clientName",
-    header: "Клиент",
-    enableSort: true,
-  },
-  { field: "holderName", header: "Принимающий", enableSort: true },
-  { field: "complaints", header: "Жалобы" },
-  { field: "diagnosis", header: "Диагноз" },
-];
-
 export default function AppointmentsTable() {
   const dispatch = useDispatch();
   const busy = useSelector(selectBusy);
@@ -61,6 +39,31 @@ export default function AppointmentsTable() {
   const [creatorOpen, setCreatorOpen] = React.useState(false);
   const [viewerOpen, setViewerOpen] = React.useState(false);
   const [editorOpen, setEditorOpen] = React.useState(false);
+
+  const { t } = useTranslation();
+
+  const columns = [
+    {
+      field: "date",
+      header: t("date"),
+      enableSort: true,
+      formatter: (d) => moment(d).format("DD.MM.YYYY"),
+    },
+    {
+      field: "status",
+      header: t("status"),
+      enableSort: true,
+      formatter: (s) => appointmentStatuses[s],
+    },
+    {
+      field: "clientName",
+      header: t("client"),
+      enableSort: true,
+    },
+    { field: "holderName", header: t("holder"), enableSort: true },
+    { field: "complaints", header: t("complaints") },
+    { field: "diagnosis", header: t("diagnosis") },
+  ];
 
   React.useEffect(() => {
     dispatch(loadAppointments());

@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { makeStyles } from "@material-ui/core";
 
 import Header from "common/components/Header/Header";
@@ -7,8 +8,6 @@ import Header from "common/components/Header/Header";
 import { ReactComponent as HouseIcon } from "assets/icons/house.svg";
 
 import NavigationPanel from "./NavigationPanel/NavigationPanel";
-
-const HOME_PAGE = "Домашняя";
 
 const useStyles = makeStyles((_theme) => ({
   body: {
@@ -21,10 +20,11 @@ const useStyles = makeStyles((_theme) => ({
 
 export default function Home() {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   return (
     <div>
-      <Header Icon={HouseIcon} title={HOME_PAGE} />
+      <Header Icon={HouseIcon} title={t("homePage")} />
 
       <div className={classes.body}>
         <NavigationPanel />

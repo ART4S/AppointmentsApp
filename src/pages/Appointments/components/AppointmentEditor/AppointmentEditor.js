@@ -3,6 +3,7 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable no-shadow */
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { createReducer } from "@reduxjs/toolkit";
 import moment from "moment";
 import { Formik, Form } from "formik";
@@ -28,17 +29,8 @@ import { appointmentService, employeeService, clientService } from "services";
 import appointmentStatuses from "model/enums/appointmentStatuses";
 import { getFullName } from "utils/userUtils";
 
-const APPOINTMENT_EDIT = "Редактирование приема";
-const CLIENT = "Клиент";
-const HOLDER = "Принимающий";
-const DATE = "Дата";
-const DIAGNOSIS = "Диагноз";
-const COMPLAINTS = "Жалобы";
-const STATUS = "Статус";
-const SAVE = "Сохранить";
-const REQUIRED = "Необходимо указать";
-const LOAD_ERROR =
-  "Произошла ошибка в процессе загрузки данных.\nПопробуйте обновить страницу";
+const SPACING = 2;
+const DATE_FORMAT = "YYYY-MM-DDTHH:mm";
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -54,9 +46,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SPACING = 2;
-const DATE_FORMAT = "YYYY-MM-DDTHH:mm";
-
 function EditForm(props) {
   const {
     data: { appointment, client, holder },
@@ -64,6 +53,7 @@ function EditForm(props) {
   } = props;
 
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const [serverErrors, setServerErrors] = React.useState([]);
 
@@ -81,9 +71,11 @@ function EditForm(props) {
 
   function checkStatus(status, allowedStatuses) {
     if (!allowedStatuses.some((s) => s === status)) {
-      return `Допустимые значения: ${Object.values(allowedStatuses)
-        .map((x) => `'${x}'`)
-        .join(", ")}`;
+      return t("allowedValues", {
+        values: Object.values(allowedStatuses)
+          .map((x) => `'${x}'`)
+          .join(", "),
+      });
     }
     return undefined;
   }
@@ -92,7 +84,7 @@ function EditForm(props) {
     const errors = {};
 
     if (!values.date) {
-      errors.date = REQUIRED;
+      errors.date = t("required");
     } else if (moment(values.date).isBefore(moment(), "day")) {
       errors.status = checkStatus(values.status, [
         appointmentStatuses.canceled,
@@ -114,18 +106,18 @@ function EditForm(props) {
     }
 
     if (!values.client) {
-      errors.client = REQUIRED;
+      errors.client = t("required");
     }
 
     if (!values.holder) {
-      errors.holder = REQUIRED;
+      errors.holder = t("required");
     }
 
     if (
       values.status === appointmentStatuses.pending &&
       (!values.diagnosis || !values.diagnosis.trim())
     ) {
-      errors.diagnosis = REQUIRED;
+      errors.diagnosis = t("required");
     }
 
     Object.keys(errors).forEach((key) => {
@@ -208,7 +200,7 @@ function EditForm(props) {
                 <ClientSelector
                   className={classes.control}
                   name="client"
-                  label={CLIENT}
+                  label={t("client")}
                   value={values.client}
                   error={touched.client && Boolean(errors.client)}
                   helperText={touched.client && errors.client}
@@ -222,7 +214,7 @@ function EditForm(props) {
                 <EmployeeSelector
                   className={classes.control}
                   name="holder"
-                  label={HOLDER}
+                  label={t("holder")}
                   value={values.holder}
                   error={touched.holder && Boolean(errors.holder)}
                   helperText={touched.holder && errors.holder}
@@ -242,7 +234,7 @@ function EditForm(props) {
                   disabled={isSubmitting}
                 >
                   <InputLabel shrink id="status-input">
-                    {STATUS}
+                    {t("status")}
                   </InputLabel>
 
                   <Select
@@ -272,7 +264,7 @@ function EditForm(props) {
                   className={classes.control}
                   id="date"
                   name="date"
-                  label={DATE}
+                  label={t("date")}
                   type="datetime-local"
                   value={values.date}
                   error={touched.date && Boolean(errors.date)}
@@ -291,8 +283,8 @@ function EditForm(props) {
                 multiline
                 className={classes.control}
                 id="diagnosis"
-                label={DIAGNOSIS}
-                placeholder={DIAGNOSIS}
+                label={t("diagnosis")}
+                placeholder={t("diagnosis")}
                 value={values.diagnosis}
                 error={touched.diagnosis && Boolean(errors.diagnosis)}
                 helperText={touched.diagnosis && errors.diagnosis}
@@ -308,8 +300,8 @@ function EditForm(props) {
                 multiline
                 className={classes.control}
                 id="complaints"
-                label={COMPLAINTS}
-                placeholder={COMPLAINTS}
+                label={t("complaints")}
+                placeholder={t("complaints")}
                 value={values.complaints}
                 error={touched.complaints && Boolean(errors.complaints)}
                 helperText={touched.complaints && errors.complaints}
@@ -325,7 +317,7 @@ function EditForm(props) {
                 color="primary"
                 disabled={isSubmitting}
               >
-                {SAVE}
+                {t("save")}
               </Button>
             </Grid>
           </Grid>
@@ -370,6 +362,8 @@ export default function AppointmentEditor({
     },
   });
 
+  const { t } = useTranslation();
+
   React.useEffect(() => {
     let active = true;
 
@@ -407,7 +401,7 @@ export default function AppointmentEditor({
 
   function renderForm() {
     if (state.error) {
-      return <Alert severity="error">{LOAD_ERROR}</Alert>;
+      return <Alert severity="error">{t("loadDataError")}</Alert>;
     }
 
     if (state.loading) {
@@ -418,7 +412,7 @@ export default function AppointmentEditor({
   }
 
   return (
-    <Popup open title={APPOINTMENT_EDIT} onClose={onClose}>
+    <Popup open title={t("editAppointment")} onClose={onClose}>
       <Box pb={2}>{renderForm()}</Box>
     </Popup>
   );

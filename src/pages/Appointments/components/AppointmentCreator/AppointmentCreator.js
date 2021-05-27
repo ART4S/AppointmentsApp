@@ -2,6 +2,7 @@
 /* eslint-disable default-case */
 import React from "react";
 import moment from "moment";
+import { useTranslation } from "react-i18next";
 import { Formik, Form } from "formik";
 import { Box, Grid, Button, TextField, makeStyles } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
@@ -11,12 +12,8 @@ import EmployeeSelector from "common/components/EmployeeSelector/EmployeeSelecto
 import ClientSelector from "common/components/ClientSelector/ClientSelector";
 import { appointmentService } from "services";
 
-const APPOINTMENT_CREATE = "Создание приема";
-const CLIENT = "Клиент";
-const HOLDER = "Принимающий";
-const DATE = "Дата";
-const SAVE = "Сохранить";
-const REQUIRED = "Необходимо указать";
+const SPACING = 2;
+const DATE_FORMAT = "YYYY-MM-DDTHH:mm";
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -32,11 +29,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SPACING = 2;
-const DATE_FORMAT = "YYYY-MM-DDTHH:mm";
-
 function CreateForm({ onSubmitted }) {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const [serverErrors, setServerErrors] = React.useState([]);
 
@@ -50,17 +45,17 @@ function CreateForm({ onSubmitted }) {
     const errors = {};
 
     if (!values.date) {
-      errors.date = REQUIRED;
+      errors.date = t("required");
     } else if (moment(values.date).isBefore(moment())) {
-      errors.date = "Дата должна быть больше текущей";
+      errors.date = t("dateMustBeGreaterThanCurrent");
     }
 
     if (!values.client) {
-      errors.client = REQUIRED;
+      errors.client = t("required");
     }
 
     if (!values.holder) {
-      errors.holder = REQUIRED;
+      errors.holder = t("required");
     }
 
     Object.keys(errors).forEach((key) => {
@@ -140,7 +135,7 @@ function CreateForm({ onSubmitted }) {
                   className={classes.control}
                   id="date"
                   name="date"
-                  label={DATE}
+                  label={t("date")}
                   type="datetime-local"
                   value={values.date}
                   error={touched.date && Boolean(errors.date)}
@@ -158,7 +153,7 @@ function CreateForm({ onSubmitted }) {
                 <ClientSelector
                   className={classes.control}
                   name="client"
-                  label={CLIENT}
+                  label={t("client")}
                   value={values.client}
                   error={touched.client && Boolean(errors.client)}
                   helperText={touched.client && errors.client}
@@ -174,7 +169,7 @@ function CreateForm({ onSubmitted }) {
                 <EmployeeSelector
                   className={classes.control}
                   name="holder"
-                  label={HOLDER}
+                  label={t("holder")}
                   value={values.holder}
                   error={touched.holder && Boolean(errors.holder)}
                   helperText={touched.holder && errors.holder}
@@ -192,7 +187,7 @@ function CreateForm({ onSubmitted }) {
                 color="primary"
                 disabled={isSubmitting}
               >
-                {SAVE}
+                {t("save")}
               </Button>
             </Grid>
           </Grid>
@@ -203,8 +198,10 @@ function CreateForm({ onSubmitted }) {
 }
 
 export default function AppointmentCreator({ onSubmitted, onClose }) {
+  const { t } = useTranslation();
+
   return (
-    <Popup open title={APPOINTMENT_CREATE} onClose={onClose}>
+    <Popup open title={t("createAppointment")} onClose={onClose}>
       <Box pb={2}>
         <CreateForm onSubmitted={onSubmitted} />
       </Box>

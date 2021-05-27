@@ -2,6 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import {
   Grid,
   FormControl,
@@ -35,15 +36,6 @@ import {
   selectHolder,
 } from "./appointmentsFiltersSlice";
 
-const CLIENT = "Клиент";
-const COMPLAINTS = "Жалобы";
-const HOLDER = "Принимающий";
-const START_DATE = "C";
-const FINISH_DATE = "По";
-const NONE = "Нет";
-const STATUS = "Статус";
-const ONLY_ME = "Только я";
-
 const useStyle = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -64,6 +56,8 @@ export default function AppointmentsFilters() {
   const filter = useSelector(selectFilter);
   const client = useSelector(selectClient);
   const holder = useSelector(selectHolder);
+
+  const { t } = useTranslation();
 
   function handleFilterFieldChange(event) {
     dispatch(
@@ -99,7 +93,7 @@ export default function AppointmentsFilters() {
               <TextField
                 className={classes.control}
                 name="startDate"
-                label={START_DATE}
+                label={t("fromDate")}
                 type="date"
                 value={filter.startDate}
                 onChange={handleFilterFieldChange}
@@ -111,7 +105,7 @@ export default function AppointmentsFilters() {
 
             <Grid item container justify="center">
               <FormControl className={classes.control}>
-                <InputLabel id="status-label">{STATUS}</InputLabel>
+                <InputLabel id="status-label">{t("status")}</InputLabel>
 
                 <Select
                   id="status-select"
@@ -121,7 +115,7 @@ export default function AppointmentsFilters() {
                   onChange={handleFilterFieldChange}
                 >
                   <MenuItem key={-1} value="">
-                    {NONE}
+                    {t("none")}
                   </MenuItem>
 
                   {Object.keys(appointmentStatuses).map((status) => (
@@ -144,7 +138,7 @@ export default function AppointmentsFilters() {
                     color="primary"
                   />
                 }
-                label={ONLY_ME}
+                label={t("onlyMe")}
               />
             </Grid>
           </Grid>
@@ -154,7 +148,7 @@ export default function AppointmentsFilters() {
               <TextField
                 className={classes.control}
                 name="finishDate"
-                label={FINISH_DATE}
+                label={t("toDate")}
                 type="date"
                 value={filter.finishDate}
                 onChange={handleFilterFieldChange}
@@ -170,7 +164,7 @@ export default function AppointmentsFilters() {
                 id="holderId"
                 name="holderId"
                 value={holder}
-                label={HOLDER}
+                label={t("holder")}
                 onChange={(holder) => dispatch(setHolder(holder))}
               />
             </Grid>
@@ -181,7 +175,7 @@ export default function AppointmentsFilters() {
               <TextField
                 className={classes.control}
                 name="complaints"
-                label={COMPLAINTS}
+                label={t("complaints")}
                 value={filter.complaints}
                 onChange={handleFilterFieldChange}
               />
@@ -192,7 +186,7 @@ export default function AppointmentsFilters() {
                 className={classes.control}
                 id="clientId"
                 name="clientId"
-                label={CLIENT}
+                label={t("client")}
                 value={client}
                 onChange={(client) => dispatch(setClient(client))}
               />

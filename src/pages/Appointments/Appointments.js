@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import {
   Grid,
   Container,
@@ -20,11 +21,6 @@ import AppointmentsTable from "./components/AppointmentsTable/AppointmentsTable"
 
 import { selectError } from "./components/AppointmentsTable/appointmentsTableSlice";
 
-const APPOINTMENTS = "Приемы";
-const FILTERS = "Фильтры";
-const ERROR_LOAD_DATA =
-  "В процессе загрузки данных произошла ошибка, пожалуйста перезагрузите страницу";
-
 const SPACING = 2;
 
 const useStyles = makeStyles((theme) => ({
@@ -42,10 +38,11 @@ const useStyles = makeStyles((theme) => ({
 export default function Appointments() {
   const classes = useStyles();
   const error = useSelector(selectError);
+  const { t } = useTranslation();
 
   function renderFilterButton() {
     return (
-      <Tooltip title={FILTERS}>
+      <Tooltip title={t("filters")}>
         <IconButton className={classes.icon}>
           <FilterListIcon />
         </IconButton>
@@ -55,7 +52,7 @@ export default function Appointments() {
 
   return (
     <div className={classes.root}>
-      <Header title={APPOINTMENTS} Icon={AppointmentIcon} />
+      <Header title={t("appointments")} Icon={AppointmentIcon} />
 
       <Container className={classes.body} maxWidth="md">
         <Grid item container direction="column" spacing={SPACING}>
@@ -71,7 +68,7 @@ export default function Appointments() {
         </Grid>
       </Container>
 
-      {error && <ErrorPopup text={ERROR_LOAD_DATA} />}
+      {error && <ErrorPopup text={t("loadDataError")} />}
     </div>
   );
 }

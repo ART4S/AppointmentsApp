@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Box, Typography, makeStyles } from "@material-ui/core";
-
-const NOT_FOUND = "Страница отсутствует";
-const BACK_TO_HOMEPAGE = "Вернуться на домашнюю страницу";
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -25,15 +23,16 @@ const useStyles = makeStyles((theme) => ({
 
 export default function NotFound() {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   return (
     <Box className={classes.page}>
       <Typography className={classes.title} variant="h1">
-        {NOT_FOUND}
+        {t("pageNotFound")}
       </Typography>
 
       <Link className={classes.link} to="/">
-        <Typography>{BACK_TO_HOMEPAGE}</Typography>
+        <Typography>{t("backToHomePage")}</Typography>
       </Link>
     </Box>
   );

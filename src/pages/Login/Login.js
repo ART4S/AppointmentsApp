@@ -2,6 +2,7 @@
 /* eslint-disable no-param-reassign */
 import React from "react";
 import { useHistory, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import * as yup from "yup";
 import { Formik, Form } from "formik";
 import {
@@ -25,16 +26,6 @@ import VisibilityIcon from "@material-ui/icons/Visibility";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 
 import useAuth from "common/hooks/useAuth";
-
-const EMAIL = "Электронная почта";
-const PASSWORD = "Пароль";
-const REMEMBER = "Запомнить";
-const LOGIN = "Войти";
-const FORGOT_PASSWORD = "Забыли пароль?";
-const SIGNIN = "Вход";
-const SIGNUP = "Регистрация";
-const WRITE_CORRECT_EMAIL = "Укажите корректный адрес";
-const REQUIRED = "Необходимо заполнить";
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -4,6 +4,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { debounce } from "lodash";
+import { useTranslation } from "react-i18next";
 import { Paper, ClickAwayListener, useTheme } from "@material-ui/core";
 
 import AnnouncementOutlinedIcon from "@material-ui/icons/AnnouncementOutlined";
@@ -44,32 +45,6 @@ const EVENT_TYPE_ICONS = {
 
 const DATE_FORMAT = "DD.MM.YYYY";
 
-const COLUMNS = [
-  {
-    field: "date",
-    header: "Дата",
-    enableSort: true,
-    formatter: (d) => moment(d).format(DATE_FORMAT),
-  },
-  {
-    field: "name",
-    header: "Наименование",
-    enableSort: true,
-  },
-  {
-    field: "authorName",
-    header: "Автор",
-    enableSort: true,
-  },
-  {
-    field: "type",
-    formatter: (t) => {
-      const Icon = EVENT_TYPE_ICONS[t];
-      return <Icon />;
-    },
-  },
-];
-
 export default function EventsTable() {
   const dispatch = useDispatch();
   const busy = useSelector(selectBusy);
@@ -78,6 +53,34 @@ export default function EventsTable() {
   const pagination = useSelector(selectPagination);
   const selectedEvent = useSelector(selectEvent);
   const seenEventIds = useSelector(selectSeenEventIds);
+
+  const { t } = useTranslation();
+
+  const columns = [
+    {
+      field: "date",
+      header: t("date"),
+      enableSort: true,
+      formatter: (d) => moment(d).format(DATE_FORMAT),
+    },
+    {
+      field: "name",
+      header: t("name"),
+      enableSort: true,
+    },
+    {
+      field: "authorName",
+      header: t("author"),
+      enableSort: true,
+    },
+    {
+      field: "type",
+      formatter: (type) => {
+        const Icon = EVENT_TYPE_ICONS[type];
+        return <Icon />;
+      },
+    },
+  ];
 
   React.useEffect(() => {
     dispatch(loadEvents());
@@ -133,7 +136,7 @@ export default function EventsTable() {
           />
 
           <Table
-            columns={COLUMNS}
+            columns={columns}
             rows={events.map(createRow)}
             pagination={pagination}
             sorting={sorting}

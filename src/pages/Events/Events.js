@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { Grid, Container, makeStyles } from "@material-ui/core";
 
 import { ReactComponent as StarIcon } from "assets/icons/star.svg";
@@ -10,10 +11,6 @@ import ErrorPopup from "common/components/ErrorPopup/ErrorPopup";
 import EventsTable from "./EventsTable/EventsTable";
 
 import { selectError } from "./EventsTable/eventsTableSlice";
-
-const EVENTS = "События";
-const ERROR_LOAD_DATA =
-  "В процессе загрузки данных произошла ошибка, пожалуйста перезагрузите страницу";
 
 const SPACING = 2;
 
@@ -32,10 +29,11 @@ const useStyles = makeStyles((theme) => ({
 export default function Events() {
   const classes = useStyles();
   const error = useSelector(selectError);
+  const { t } = useTranslation();
 
   return (
     <div className={classes.root}>
-      <Header title={EVENTS} Icon={StarIcon} />
+      <Header title={t("events")} Icon={StarIcon} />
 
       <Container className={classes.body} maxWidth="md">
         <Grid item container direction="column" spacing={SPACING}>
@@ -45,7 +43,7 @@ export default function Events() {
         </Grid>
       </Container>
 
-      {error && <ErrorPopup text={ERROR_LOAD_DATA} />}
+      {error && <ErrorPopup text={t("loadDataError")} />}
     </div>
   );
 }

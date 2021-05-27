@@ -1,8 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
-
 import "api/server";
-
+import "./i18n";
 import App from "./App";
 
 ReactDOM.render(
