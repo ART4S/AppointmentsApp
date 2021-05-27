@@ -93,7 +93,7 @@ export default function AppointmentsFilters() {
               <TextField
                 className={classes.control}
                 name="startDate"
-                label={t("fromDate")}
+                label={t("appointments.filters.fromDate")}
                 type="date"
                 value={filter.startDate}
                 onChange={handleFilterFieldChange}
@@ -105,7 +105,9 @@ export default function AppointmentsFilters() {
 
             <Grid item container justify="center">
               <FormControl className={classes.control}>
-                <InputLabel id="status-label">{t("status")}</InputLabel>
+                <InputLabel id="status-label">
+                  {t("appointments.filters.status")}
+                </InputLabel>
 
                 <Select
                   id="status-select"
@@ -115,7 +117,7 @@ export default function AppointmentsFilters() {
                   onChange={handleFilterFieldChange}
                 >
                   <MenuItem key={-1} value="">
-                    {t("none")}
+                    {t("appointments.filters.none")}
                   </MenuItem>
 
                   {Object.keys(appointmentStatuses).map((status) => (
@@ -138,7 +140,7 @@ export default function AppointmentsFilters() {
                     color="primary"
                   />
                 }
-                label={t("onlyMe")}
+                label={t("appointments.filters.onlyMe")}
               />
             </Grid>
           </Grid>
@@ -148,7 +150,7 @@ export default function AppointmentsFilters() {
               <TextField
                 className={classes.control}
                 name="finishDate"
-                label={t("toDate")}
+                label={t("appointments.filters.toDate")}
                 type="date"
                 value={filter.finishDate}
                 onChange={handleFilterFieldChange}
@@ -164,7 +166,7 @@ export default function AppointmentsFilters() {
                 id="holderId"
                 name="holderId"
                 value={holder}
-                label={t("holder")}
+                label={t("appointments.filters.holder")}
                 onChange={(holder) => dispatch(setHolder(holder))}
               />
             </Grid>
@@ -175,7 +177,7 @@ export default function AppointmentsFilters() {
               <TextField
                 className={classes.control}
                 name="complaints"
-                label={t("complaints")}
+                label={t("appointments.filters.complaints")}
                 value={filter.complaints}
                 onChange={handleFilterFieldChange}
               />
@@ -186,7 +188,7 @@ export default function AppointmentsFilters() {
                 className={classes.control}
                 id="clientId"
                 name="clientId"
-                label={t("client")}
+                label={t("appointments.filters.client")}
                 value={client}
                 onChange={(client) => dispatch(setClient(client))}
               />

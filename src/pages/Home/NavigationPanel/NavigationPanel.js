@@ -82,21 +82,21 @@ export default function NavigationPanel() {
   }, []);
 
   const navigationItems = [
-    { title: t("appointments"), Icon: AppointmentIcon, link: "/appointments" },
+    { title: t("home.appointments"), Icon: AppointmentIcon, link: "/appointments" },
     {
-      title: t("events"),
+      title: t("home.events"),
       Icon: StarIcon,
       link: "/events",
       badgeContent: newEventsCount,
     },
-    { title: t("notifications"), Icon: BroadcastIcon, link: "/notifications" },
+    { title: t("home.notifications"), Icon: BroadcastIcon, link: "/notifications" },
     {
-      title: t("messages"),
+      title: t("home.messages"),
       Icon: MessagesIcon,
       link: "/messages",
     },
-    { title: t("clients"), Icon: ClientsIcon, link: "/clients" },
-    { title: t("employees"), Icon: EmployeesIcon, link: "/employees" },
+    { title: t("home.clients"), Icon: ClientsIcon, link: "/clients" },
+    { title: t("home.employees"), Icon: EmployeesIcon, link: "/employees" },
   ];
 
   return (

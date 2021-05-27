@@ -1,0 +1,91 @@
+{
+  "translation": {
+    "common": {},
+
+    "actions": {
+      "ok": "ОК",
+      "save": "Сохранить"
+    },
+
+    "validation": {
+      "required": "Необходимо указать"
+    },
+
+    "errors": {
+      "loadData": "Произошла ошибка в процессе загрузки данных.\nПопробуйте обновить страницу",
+      "dateMustBeGreaterThanCurrent": "Дата должна быть больше текущей"
+    },
+
+    "home": {
+      "page": "Домашняя",
+      "appointments": "Приемы",
+      "events": "События",
+      "notifications": "Уведомления",
+      "messages": "Сообщения",
+      "clients": "Клиенты",
+      "employees": "Сотрудники"
+    },
+
+    "appointments": {
+      "common": {
+        "page": "Приемы",
+        "filters": "Фильтры"
+      },
+
+      "filters": {
+        "complaints": "Жалобы",
+        "holder": "Принимающий",
+        "client": "Клиент",
+        "fromDate": "C",
+        "toDate": "По",
+        "none": "Нет",
+        "status": "Статус",
+        "onlyMe": "Только я"
+      },
+
+      "table": {
+        "date": "Дата",
+        "status": "Статус",
+        "client": "Клиент",
+        "holder": "Принимающий",
+        "complaints": "Жалобы",
+        "diagnosis": "Диагноз"
+      },
+
+      "viewer": {
+        "header": "Детали приема",
+        "date": "Дата",
+        "client": "Клиент",
+        "status": "Статус",
+        "holder": "Принимающий",
+        "complaints": "Жалобы",
+        "diagnosis": "Диагноз"
+      },
+
+      "editor": {
+        "header": "Редактирование приема",
+        "client": "Клиент",
+        "holder": "Принимающий",
+        "status": "Статус",
+        "date": "Дата",
+        "diagnosis": "Диагноз",
+        "complaints": "Жалобы",
+        "allowedValues": "Допустимые значения: {{values}}"
+      },
+
+      "creator": {
+        "header": "Создание приема",
+        "date": "Дата",
+        "client": "Клиент",
+        "holder": "Принимающий"
+      }
+    },
+
+    "events": {
+      "page": "События",
+      "date": "Дата",
+      "name": "Наименование",
+      "author": "Автор"
+    }
+  }
+}

@@ -66,11 +66,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const schema = yup.object({
-  email: yup.string().email(WRITE_CORRECT_EMAIL).required(REQUIRED),
-  password: yup.string().required(REQUIRED),
-});
-
 export default function Login() {
   const [remember, setRemember] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
@@ -79,6 +74,12 @@ export default function Login() {
   const auth = useAuth();
   const location = useLocation();
   const history = useHistory();
+  const { t } = useTranslation();
+
+  const schema = yup.object({
+    email: yup.string().email(t("writeCorrectEmail")).required(t("required")),
+    password: yup.string().required(t("required")),
+  });
 
   React.useEffect(() => {
     if (auth.user) {
@@ -103,7 +104,7 @@ export default function Login() {
       </Avatar>
 
       <Typography className={classes.title} variant="h5">
-        {SIGNIN}
+        {t("signIn")}
       </Typography>
 
       {auth.error && (
@@ -132,7 +133,7 @@ export default function Login() {
               id="email"
               name="email"
               variant="outlined"
-              label={EMAIL}
+              label={t("email")}
               value={values.email}
               error={touched.email && Boolean(errors.email)}
               helperText={touched.email && errors.email}
@@ -149,7 +150,7 @@ export default function Login() {
               name="password"
               variant="outlined"
               type={showPassword ? "text" : "password"}
-              label={PASSWORD}
+              label={t("password")}
               value={values.password}
               error={touched.password && Boolean(errors.password)}
               helperText={touched.password && errors.password}
@@ -179,7 +180,7 @@ export default function Login() {
               id="remember"
               name="remember"
               className={classes.label}
-              label={REMEMBER}
+              label={t("rememberMe")}
               disabled={isSubmitting}
               control={
                 <Checkbox
@@ -196,16 +197,16 @@ export default function Login() {
               type="submit"
               disabled={isSubmitting}
             >
-              {LOGIN}
+              {t("signIn").toUpperCase()}
             </Button>
 
             <div className={classes.links}>
               <Link>
-                <Typography>{FORGOT_PASSWORD}</Typography>
+                <Typography>{t("forgotPassword")}</Typography>
               </Link>
 
               <Link>
-                <Typography>{SIGNUP}</Typography>
+                <Typography>{t("signUp")}</Typography>
               </Link>
             </div>
           </Form>
@@ -214,9 +215,9 @@ export default function Login() {
 
       <div className={classes.copyright}>
         <Typography variant="body2" color="textSecondary">
-          {"Copyright © "}
-          <Link color="inherit">Appointments App</Link>
-          {" 2021"}
+          {`${t("copyRight")} © `}
+          <Link color="inherit">Appointments app</Link>
+          {new Date().getFullYear()}
         </Typography>
       </div>
     </Container>

@@ -42,7 +42,7 @@ export default function Appointments() {
 
   function renderFilterButton() {
     return (
-      <Tooltip title={t("filters")}>
+      <Tooltip title={t("appointments.common.filters")}>
         <IconButton className={classes.icon}>
           <FilterListIcon />
         </IconButton>
@@ -52,7 +52,7 @@ export default function Appointments() {
 
   return (
     <div className={classes.root}>
-      <Header title={t("appointments")} Icon={AppointmentIcon} />
+      <Header title={t("appointments.common.page")} Icon={AppointmentIcon} />
 
       <Container className={classes.body} maxWidth="md">
         <Grid item container direction="column" spacing={SPACING}>
@@ -68,7 +68,7 @@ export default function Appointments() {
         </Grid>
       </Container>
 
-      {error && <ErrorPopup text={t("loadDataError")} />}
+      {error && <ErrorPopup text={t("errors.loadData")} />}
     </div>
   );
 }

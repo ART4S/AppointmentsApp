@@ -1,4 +1,5 @@
 {
+  "translation": {
     "homePage": "Home",
     "appointments": "Appointments",
     "events": "Events",
@@ -32,7 +33,8 @@
     "password": "Password",
     "rememberMe": "Remember me",
     "signIn": "Sign In",
-    "registration": "Registration",
+    "signUp": "Registration",
     "writeCorrectEmail": "Write correct email",
     "forgotPassword": "Forgot password?"
+  }
 }

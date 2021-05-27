@@ -59,18 +59,18 @@ export default function EventsTable() {
   const columns = [
     {
       field: "date",
-      header: t("date"),
+      header: t("events.date"),
       enableSort: true,
       formatter: (d) => moment(d).format(DATE_FORMAT),
     },
     {
       field: "name",
-      header: t("name"),
+      header: t("events.name"),
       enableSort: true,
     },
     {
       field: "authorName",
-      header: t("author"),
+      header: t("events.author"),
       enableSort: true,
     },
     {

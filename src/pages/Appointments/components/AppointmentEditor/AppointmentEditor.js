@@ -84,7 +84,7 @@ function EditForm(props) {
     const errors = {};
 
     if (!values.date) {
-      errors.date = t("required");
+      errors.date = t("validation.required");
     } else if (moment(values.date).isBefore(moment(), "day")) {
       errors.status = checkStatus(values.status, [
         appointmentStatuses.canceled,
@@ -106,18 +106,18 @@ function EditForm(props) {
     }
 
     if (!values.client) {
-      errors.client = t("required");
+      errors.client = t("validation.required");
     }
 
     if (!values.holder) {
-      errors.holder = t("required");
+      errors.holder = t("validation.required");
     }
 
     if (
       values.status === appointmentStatuses.pending &&
       (!values.diagnosis || !values.diagnosis.trim())
     ) {
-      errors.diagnosis = t("required");
+      errors.diagnosis = t("validation.required");
     }
 
     Object.keys(errors).forEach((key) => {
@@ -200,7 +200,7 @@ function EditForm(props) {
                 <ClientSelector
                   className={classes.control}
                   name="client"
-                  label={t("client")}
+                  label={t("appointments.editor.client")}
                   value={values.client}
                   error={touched.client && Boolean(errors.client)}
                   helperText={touched.client && errors.client}
@@ -214,7 +214,7 @@ function EditForm(props) {
                 <EmployeeSelector
                   className={classes.control}
                   name="holder"
-                  label={t("holder")}
+                  label={t("appointments.editor.holder")}
                   value={values.holder}
                   error={touched.holder && Boolean(errors.holder)}
                   helperText={touched.holder && errors.holder}
@@ -234,7 +234,7 @@ function EditForm(props) {
                   disabled={isSubmitting}
                 >
                   <InputLabel shrink id="status-input">
-                    {t("status")}
+                    {t("appointments.editor.status")}
                   </InputLabel>
 
                   <Select
@@ -264,7 +264,7 @@ function EditForm(props) {
                   className={classes.control}
                   id="date"
                   name="date"
-                  label={t("date")}
+                  label={t("appointments.editor.date")}
                   type="datetime-local"
                   value={values.date}
                   error={touched.date && Boolean(errors.date)}
@@ -283,8 +283,8 @@ function EditForm(props) {
                 multiline
                 className={classes.control}
                 id="diagnosis"
-                label={t("diagnosis")}
-                placeholder={t("diagnosis")}
+                label={t("appointments.editor.diagnosis")}
+                placeholder={t("appointments.editor.diagnosis")}
                 value={values.diagnosis}
                 error={touched.diagnosis && Boolean(errors.diagnosis)}
                 helperText={touched.diagnosis && errors.diagnosis}
@@ -300,8 +300,8 @@ function EditForm(props) {
                 multiline
                 className={classes.control}
                 id="complaints"
-                label={t("complaints")}
-                placeholder={t("complaints")}
+                label={t("appointments.editor.complaints")}
+                placeholder={t("appointments.editor.complaints")}
                 value={values.complaints}
                 error={touched.complaints && Boolean(errors.complaints)}
                 helperText={touched.complaints && errors.complaints}
@@ -317,7 +317,7 @@ function EditForm(props) {
                 color="primary"
                 disabled={isSubmitting}
               >
-                {t("save")}
+                {t("actions.save")}
               </Button>
             </Grid>
           </Grid>
@@ -412,7 +412,7 @@ export default function AppointmentEditor({
   }
 
   return (
-    <Popup open title={t("editAppointment")} onClose={onClose}>
+    <Popup open title={t("appointments.editor.header")} onClose={onClose}>
       <Box pb={2}>{renderForm()}</Box>
     </Popup>
   );

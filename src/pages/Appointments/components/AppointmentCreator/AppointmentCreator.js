@@ -45,17 +45,17 @@ function CreateForm({ onSubmitted }) {
     const errors = {};
 
     if (!values.date) {
-      errors.date = t("required");
+      errors.date = t("validation.required");
     } else if (moment(values.date).isBefore(moment())) {
-      errors.date = t("dateMustBeGreaterThanCurrent");
+      errors.date = t("errors.dateMustBeGreaterThanCurrent");
     }
 
     if (!values.client) {
-      errors.client = t("required");
+      errors.client = t("validation.required");
     }
 
     if (!values.holder) {
-      errors.holder = t("required");
+      errors.holder = t("validation.required");
     }
 
     Object.keys(errors).forEach((key) => {
@@ -135,7 +135,7 @@ function CreateForm({ onSubmitted }) {
                   className={classes.control}
                   id="date"
                   name="date"
-                  label={t("date")}
+                  label={t("appointments.creator.date")}
                   type="datetime-local"
                   value={values.date}
                   error={touched.date && Boolean(errors.date)}
@@ -153,7 +153,7 @@ function CreateForm({ onSubmitted }) {
                 <ClientSelector
                   className={classes.control}
                   name="client"
-                  label={t("client")}
+                  label={t("appointments.creator.client")}
                   value={values.client}
                   error={touched.client && Boolean(errors.client)}
                   helperText={touched.client && errors.client}
@@ -169,7 +169,7 @@ function CreateForm({ onSubmitted }) {
                 <EmployeeSelector
                   className={classes.control}
                   name="holder"
-                  label={t("holder")}
+                  label={t("appointments.creator.holder")}
                   value={values.holder}
                   error={touched.holder && Boolean(errors.holder)}
                   helperText={touched.holder && errors.holder}
@@ -187,7 +187,7 @@ function CreateForm({ onSubmitted }) {
                 color="primary"
                 disabled={isSubmitting}
               >
-                {t("save")}
+                {t("actions.save")}
               </Button>
             </Grid>
           </Grid>
@@ -201,7 +201,7 @@ export default function AppointmentCreator({ onSubmitted, onClose }) {
   const { t } = useTranslation();
 
   return (
-    <Popup open title={t("createAppointment")} onClose={onClose}>
+    <Popup open title={t("appointments.creator.header")} onClose={onClose}>
       <Box pb={2}>
         <CreateForm onSubmitted={onSubmitted} />
       </Box>

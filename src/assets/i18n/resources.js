@@ -1,13 +1,9 @@
-import en from "./en/translations.json";
-import ru from "./ru/translations.json";
+import en from "./en/translation.json";
+import ru from "./ru/translation.json";
 
 const resources = {
-  en: {
-    translation: en,
-  },
-  ru: {
-    translation: ru,
-  },
+  en,
+  ru,
 };
 
 export default resources;

@@ -33,7 +33,7 @@ export default function Events() {
 
   return (
     <div className={classes.root}>
-      <Header title={t("events")} Icon={StarIcon} />
+      <Header title={t("events.page")} Icon={StarIcon} />
 
       <Container className={classes.body} maxWidth="md">
         <Grid item container direction="column" spacing={SPACING}>
@@ -43,7 +43,7 @@ export default function Events() {
         </Grid>
       </Container>
 
-      {error && <ErrorPopup text={t("loadDataError")} />}
+      {error && <ErrorPopup text={t("errors.loadData")} />}
     </div>
   );
 }

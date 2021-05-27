@@ -24,7 +24,7 @@ export default function Home() {
 
   return (
     <div>
-      <Header Icon={HouseIcon} title={t("homePage")} />
+      <Header Icon={HouseIcon} title={t("home.page")} />
 
       <div className={classes.body}>
         <NavigationPanel />

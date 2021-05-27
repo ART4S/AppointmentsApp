@@ -45,24 +45,28 @@ export default function AppointmentsTable() {
   const columns = [
     {
       field: "date",
-      header: t("date"),
+      header: t("appointments.table.date"),
       enableSort: true,
       formatter: (d) => moment(d).format("DD.MM.YYYY"),
     },
     {
       field: "status",
-      header: t("status"),
+      header: t("appointments.table.status"),
       enableSort: true,
       formatter: (s) => appointmentStatuses[s],
     },
     {
       field: "clientName",
-      header: t("client"),
+      header: t("appointments.table.client"),
       enableSort: true,
     },
-    { field: "holderName", header: t("holder"), enableSort: true },
-    { field: "complaints", header: t("complaints") },
-    { field: "diagnosis", header: t("diagnosis") },
+    {
+      field: "holderName",
+      header: t("appointments.table.holder"),
+      enableSort: true,
+    },
+    { field: "complaints", header: t("appointments.table.complaints") },
+    { field: "diagnosis", header: t("appointments.table.diagnosis") },
   ];
 
   React.useEffect(() => {
