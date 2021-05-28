@@ -1,12 +1,13 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { useTranslation } from "react-i18next";
 import { Grid, Container, makeStyles } from "@material-ui/core";
 
 import { ReactComponent as StarIcon } from "assets/icons/star.svg";
 
 import Header from "common/components/Header/Header";
 import ErrorPopup from "common/components/ErrorPopup/ErrorPopup";
+
+import useLocalization from "common/hooks/useLocalization";
 
 import EventsTable from "./EventsTable/EventsTable";
 
@@ -29,11 +30,11 @@ const useStyles = makeStyles((theme) => ({
 export default function Events() {
   const classes = useStyles();
   const error = useSelector(selectError);
-  const { t } = useTranslation();
+  const l = useLocalization();
 
   return (
     <div className={classes.root}>
-      <Header title={t("events.page")} Icon={StarIcon} />
+      <Header title={l("events.page")} Icon={StarIcon} />
 
       <Container className={classes.body} maxWidth="md">
         <Grid item container direction="column" spacing={SPACING}>
@@ -43,7 +44,7 @@ export default function Events() {
         </Grid>
       </Container>
 
-      {error && <ErrorPopup text={t("errors.loadData")} />}
+      {error && <ErrorPopup text={l("errors.loadData")} />}
     </div>
   );
 }

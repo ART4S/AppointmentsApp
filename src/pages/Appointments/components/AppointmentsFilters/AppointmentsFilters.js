@@ -2,7 +2,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useTranslation } from "react-i18next";
 import {
   Grid,
   FormControl,
@@ -21,6 +20,8 @@ import { debounce } from "lodash";
 
 import EmployeeSelector from "common/components/EmployeeSelector/EmployeeSelector";
 import ClientSelector from "common/components/ClientSelector/ClientSelector";
+
+import useLocalization from "common/hooks/useLocalization";
 
 import appointmentStatuses from "model/enums/appointmentStatuses";
 
@@ -52,12 +53,11 @@ const SPACING = 5;
 
 export default function AppointmentsFilters() {
   const dispatch = useDispatch();
+  const l = useLocalization();
   const classes = useStyle();
   const filter = useSelector(selectFilter);
   const client = useSelector(selectClient);
   const holder = useSelector(selectHolder);
-
-  const { t } = useTranslation();
 
   function handleFilterFieldChange(event) {
     dispatch(
@@ -93,7 +93,7 @@ export default function AppointmentsFilters() {
               <TextField
                 className={classes.control}
                 name="startDate"
-                label={t("appointments.filters.fromDate")}
+                label={l("appointments.filters.fromDate")}
                 type="date"
                 value={filter.startDate}
                 onChange={handleFilterFieldChange}
@@ -106,7 +106,7 @@ export default function AppointmentsFilters() {
             <Grid item container justify="center">
               <FormControl className={classes.control}>
                 <InputLabel id="status-label">
-                  {t("appointments.filters.status")}
+                  {l("appointments.filters.status")}
                 </InputLabel>
 
                 <Select
@@ -117,12 +117,12 @@ export default function AppointmentsFilters() {
                   onChange={handleFilterFieldChange}
                 >
                   <MenuItem key={-1} value="">
-                    {t("appointments.filters.none")}
+                    {l("appointments.filters.none")}
                   </MenuItem>
 
-                  {Object.keys(appointmentStatuses).map((status) => (
+                  {Object.values(appointmentStatuses).map((status) => (
                     <MenuItem key={status} value={status}>
-                      {status}
+                      {l(`model.appointmentStatuses.${status}`)}
                     </MenuItem>
                   ))}
                 </Select>
@@ -140,7 +140,7 @@ export default function AppointmentsFilters() {
                     color="primary"
                   />
                 }
-                label={t("appointments.filters.onlyMe")}
+                label={l("appointments.filters.onlyMe")}
               />
             </Grid>
           </Grid>
@@ -150,7 +150,7 @@ export default function AppointmentsFilters() {
               <TextField
                 className={classes.control}
                 name="finishDate"
-                label={t("appointments.filters.toDate")}
+                label={l("appointments.filters.toDate")}
                 type="date"
                 value={filter.finishDate}
                 onChange={handleFilterFieldChange}
@@ -166,7 +166,7 @@ export default function AppointmentsFilters() {
                 id="holderId"
                 name="holderId"
                 value={holder}
-                label={t("appointments.filters.holder")}
+                label={l("appointments.filters.holder")}
                 onChange={(holder) => dispatch(setHolder(holder))}
               />
             </Grid>
@@ -177,7 +177,7 @@ export default function AppointmentsFilters() {
               <TextField
                 className={classes.control}
                 name="complaints"
-                label={t("appointments.filters.complaints")}
+                label={l("appointments.filters.complaints")}
                 value={filter.complaints}
                 onChange={handleFilterFieldChange}
               />
@@ -188,7 +188,7 @@ export default function AppointmentsFilters() {
                 className={classes.control}
                 id="clientId"
                 name="clientId"
-                label={t("appointments.filters.client")}
+                label={l("appointments.filters.client")}
                 value={client}
                 onChange={(client) => dispatch(setClient(client))}
               />

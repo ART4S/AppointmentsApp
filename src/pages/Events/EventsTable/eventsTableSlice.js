@@ -23,7 +23,7 @@ const initialState = {
     availableItemsPerPage: [5, 15, 25],
   },
   sorting: {
-    field: "",
+    field: "date",
     order: "asc",
   },
 };

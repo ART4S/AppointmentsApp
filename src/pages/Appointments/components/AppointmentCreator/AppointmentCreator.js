@@ -2,7 +2,6 @@
 /* eslint-disable default-case */
 import React from "react";
 import moment from "moment";
-import { useTranslation } from "react-i18next";
 import { Formik, Form } from "formik";
 import { Box, Grid, Button, TextField, makeStyles } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
@@ -10,6 +9,7 @@ import { Alert } from "@material-ui/lab";
 import Popup from "common/components/Popup/Popup";
 import EmployeeSelector from "common/components/EmployeeSelector/EmployeeSelector";
 import ClientSelector from "common/components/ClientSelector/ClientSelector";
+import useLocalization from "common/hooks/useLocalization";
 import { appointmentService } from "services";
 
 const SPACING = 2;
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 
 function CreateForm({ onSubmitted }) {
   const classes = useStyles();
-  const { t } = useTranslation();
+  const l = useLocalization();
 
   const [serverErrors, setServerErrors] = React.useState([]);
 
@@ -45,17 +45,17 @@ function CreateForm({ onSubmitted }) {
     const errors = {};
 
     if (!values.date) {
-      errors.date = t("validation.required");
+      errors.date = l("validation.required");
     } else if (moment(values.date).isBefore(moment())) {
-      errors.date = t("errors.dateMustBeGreaterThanCurrent");
+      errors.date = l("validation.dateMustBeGreaterThanCurrent");
     }
 
     if (!values.client) {
-      errors.client = t("validation.required");
+      errors.client = l("validation.required");
     }
 
     if (!values.holder) {
-      errors.holder = t("validation.required");
+      errors.holder = l("validation.required");
     }
 
     Object.keys(errors).forEach((key) => {
@@ -135,7 +135,7 @@ function CreateForm({ onSubmitted }) {
                   className={classes.control}
                   id="date"
                   name="date"
-                  label={t("appointments.creator.date")}
+                  label={l("appointments.creator.date")}
                   type="datetime-local"
                   value={values.date}
                   error={touched.date && Boolean(errors.date)}
@@ -153,7 +153,7 @@ function CreateForm({ onSubmitted }) {
                 <ClientSelector
                   className={classes.control}
                   name="client"
-                  label={t("appointments.creator.client")}
+                  label={l("appointments.creator.client")}
                   value={values.client}
                   error={touched.client && Boolean(errors.client)}
                   helperText={touched.client && errors.client}
@@ -169,7 +169,7 @@ function CreateForm({ onSubmitted }) {
                 <EmployeeSelector
                   className={classes.control}
                   name="holder"
-                  label={t("appointments.creator.holder")}
+                  label={l("appointments.creator.holder")}
                   value={values.holder}
                   error={touched.holder && Boolean(errors.holder)}
                   helperText={touched.holder && errors.holder}
@@ -187,7 +187,7 @@ function CreateForm({ onSubmitted }) {
                 color="primary"
                 disabled={isSubmitting}
               >
-                {t("actions.save")}
+                {l("actions.save")}
               </Button>
             </Grid>
           </Grid>
@@ -198,10 +198,10 @@ function CreateForm({ onSubmitted }) {
 }
 
 export default function AppointmentCreator({ onSubmitted, onClose }) {
-  const { t } = useTranslation();
+  const l = useLocalization();
 
   return (
-    <Popup open title={t("appointments.creator.header")} onClose={onClose}>
+    <Popup open title={l("appointments.creator.header")} onClose={onClose}>
       <Box pb={2}>
         <CreateForm onSubmitted={onSubmitted} />
       </Box>

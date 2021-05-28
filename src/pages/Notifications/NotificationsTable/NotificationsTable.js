@@ -13,6 +13,8 @@ import Table from "common/components/Table/Table";
 import TableToolBar from "common/components/TableToolbar/TableToolBar";
 import BusyScreen from "common/components/BusyScreen/BusyScreen";
 
+import useLocalization from "common/hooks/useLocalization";
+
 import notificationTypes from "model/enums/notificationTypes";
 
 import {
@@ -28,6 +30,8 @@ import {
   selectBusy,
 } from "./notificationsTableSlice";
 
+const DATE_FORMAT = "DD.MM.YYYY";
+
 const NOTIFICATION_TYPE_ICONS = {
   [notificationTypes.info]: AnnouncementOutlinedIcon,
   [notificationTypes.warning]: PeopleAltIcon,
@@ -38,36 +42,35 @@ const NOTIFICATION_TYPE_ICONS = {
   },
 };
 
-const DATE_FORMAT = "DD.MM.YYYY";
-
-const COLUMNS = [
-  {
-    field: "date",
-    header: "Дата",
-    enableSort: true,
-    formatter: (d) => moment(d).format(DATE_FORMAT),
-  },
-  {
-    field: "name",
-    header: "Наименование",
-    enableSort: true,
-  },
-  {
-    field: "type",
-    formatter: (t) => {
-      const Icon = NOTIFICATION_TYPE_ICONS[t];
-      return <Icon />;
-    },
-  },
-];
-
 export default function NotificationsTable() {
   const dispatch = useDispatch();
+  const l = useLocalization();
   const busy = useSelector(selectBusy);
   const notifications = useSelector(selectNotifications);
   const sorting = useSelector(selectSorting);
   const pagination = useSelector(selectPagination);
   const selectedNotification = useSelector(selectNotification);
+
+  const columns = [
+    {
+      field: "date",
+      header: l("notifications.date"),
+      enableSort: true,
+      formatter: (d) => moment(d).format(DATE_FORMAT),
+    },
+    {
+      field: "name",
+      header: l("notifications.name"),
+      enableSort: true,
+    },
+    {
+      field: "type",
+      formatter: (type) => {
+        const Icon = NOTIFICATION_TYPE_ICONS[type];
+        return <Icon />;
+      },
+    },
+  ];
 
   React.useEffect(() => {
     dispatch(loadNotifications());
@@ -111,7 +114,7 @@ export default function NotificationsTable() {
           />
 
           <Table
-            columns={COLUMNS}
+            columns={columns}
             rows={notifications.map(createRow)}
             pagination={pagination}
             sorting={sorting}

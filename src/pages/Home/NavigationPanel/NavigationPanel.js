@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { Grid, Typography, makeStyles } from "@material-ui/core";
 
 import { ReactComponent as StarIcon } from "assets/icons/star.svg";
@@ -12,6 +11,8 @@ import { ReactComponent as EmployeesIcon } from "assets/icons/employees.svg";
 import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg";
 
 import Badge from "common/components/Badge/Badge";
+
+import useLocalization from "common/hooks/useLocalization";
 
 import { eventService } from "services";
 
@@ -62,9 +63,9 @@ NavigationItem.defaultProps = {
 const SPACING = 3;
 
 export default function NavigationPanel() {
-  const [newEventsCount, setNewEventsCount] = React.useState(0);
+  const l = useLocalization();
 
-  const { t } = useTranslation();
+  const [newEventsCount, setNewEventsCount] = React.useState(0);
 
   React.useEffect(() => {
     let active = true;
@@ -82,21 +83,29 @@ export default function NavigationPanel() {
   }, []);
 
   const navigationItems = [
-    { title: t("home.appointments"), Icon: AppointmentIcon, link: "/appointments" },
     {
-      title: t("home.events"),
+      title: l("home.appointments"),
+      Icon: AppointmentIcon,
+      link: "/appointments",
+    },
+    {
+      title: l("home.events"),
       Icon: StarIcon,
       link: "/events",
       badgeContent: newEventsCount,
     },
-    { title: t("home.notifications"), Icon: BroadcastIcon, link: "/notifications" },
     {
-      title: t("home.messages"),
+      title: l("home.notifications"),
+      Icon: BroadcastIcon,
+      link: "/notifications",
+    },
+    {
+      title: l("home.messages"),
       Icon: MessagesIcon,
       link: "/messages",
     },
-    { title: t("home.clients"), Icon: ClientsIcon, link: "/clients" },
-    { title: t("home.employees"), Icon: EmployeesIcon, link: "/employees" },
+    { title: l("home.clients"), Icon: ClientsIcon, link: "/clients" },
+    { title: l("home.employees"), Icon: EmployeesIcon, link: "/employees" },
   ];
 
   return (

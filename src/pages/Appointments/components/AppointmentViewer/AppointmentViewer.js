@@ -1,13 +1,14 @@
 /* eslint-disable no-param-reassign */
 import React from "react";
 import { createReducer } from "@reduxjs/toolkit";
-import { useTranslation } from "react-i18next";
 import moment from "moment";
 
 import { Typography, Button, Box, Grid, makeStyles } from "@material-ui/core";
 
 import Popup from "common/components/Popup/Popup";
 import Progress from "common/components/Progress/Progress";
+
+import useLocalization from "common/hooks/useLocalization";
 
 import { appointmentService } from "services";
 
@@ -46,32 +47,32 @@ function Field({ name, value }) {
 const DATE_FORMAT = "DD.MM.YYYY HH:MM";
 
 function Fields({ appointment }) {
-  const { t } = useTranslation();
+  const l = useLocalization();
 
   return (
     <>
       <Field
-        name={`${t("appointments.viewer.date")}:`}
+        name={`${l("appointments.viewer.date")}:`}
         value={moment(appointment.date).format(DATE_FORMAT)}
       />
       <Field
-        name={`${t("appointments.viewer.client")}:`}
+        name={`${l("appointments.viewer.client")}:`}
         value={appointment.clientName}
       />
       <Field
-        name={`${t("appointments.viewer.status")}:`}
+        name={`${l("appointments.viewer.status")}:`}
         value={appointment.status}
       />
       <Field
-        name={`${t("appointments.viewer.holder")}:`}
+        name={`${l("appointments.viewer.holder")}:`}
         value={appointment.holderName}
       />
       <Field
-        name={`${t("appointments.viewer.complaints")}:`}
+        name={`${l("appointments.viewer.complaints")}:`}
         value={appointment.complaints}
       />
       <Field
-        name={`${t("appointments.viewer.diagnosis")}:`}
+        name={`${l("appointments.viewer.diagnosis")}:`}
         value={appointment.diagnosis}
       />
     </>
@@ -100,7 +101,7 @@ const reducer = createReducer(
 
 export default function AppointmentViewer({ appointmentId, onClose }) {
   const classes = useStyles();
-  const { t } = useTranslation();
+  const l = useLocalization();
 
   const [state, dispatch] = React.useReducer(reducer, {
     loading: false,
@@ -121,7 +122,7 @@ export default function AppointmentViewer({ appointmentId, onClose }) {
   }, [appointmentId]);
 
   return (
-    <Popup open title={t("appointments.viewer.header")} onClose={onClose}>
+    <Popup open title={l("appointments.viewer.header")} onClose={onClose}>
       <Box pb={2}>
         {state.loading ? (
           <Progress />
@@ -138,7 +139,7 @@ export default function AppointmentViewer({ appointmentId, onClose }) {
                 color="primary"
                 onClick={onClose}
               >
-                {t("actions.ok")}
+                {l("actions.ok")}
               </Button>
             </Box>
           </>

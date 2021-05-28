@@ -3,7 +3,6 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable no-shadow */
 import React from "react";
-import { useTranslation } from "react-i18next";
 import { createReducer } from "@reduxjs/toolkit";
 import moment from "moment";
 import { Formik, Form } from "formik";
@@ -25,6 +24,7 @@ import Popup from "common/components/Popup/Popup";
 import Progress from "common/components/Progress/Progress";
 import EmployeeSelector from "common/components/EmployeeSelector/EmployeeSelector";
 import ClientSelector from "common/components/ClientSelector/ClientSelector";
+import useLocalization from "common/hooks/useLocalization";
 import { appointmentService, employeeService, clientService } from "services";
 import appointmentStatuses from "model/enums/appointmentStatuses";
 import { getFullName } from "utils/userUtils";
@@ -53,7 +53,7 @@ function EditForm(props) {
   } = props;
 
   const classes = useStyles();
-  const { t } = useTranslation();
+  const l = useLocalization();
 
   const [serverErrors, setServerErrors] = React.useState([]);
 
@@ -71,9 +71,9 @@ function EditForm(props) {
 
   function checkStatus(status, allowedStatuses) {
     if (!allowedStatuses.some((s) => s === status)) {
-      return t("allowedValues", {
+      return l("appointments.editor.allowedValues", {
         values: Object.values(allowedStatuses)
-          .map((x) => `'${x}'`)
+          .map((x) => l(`model.appointmentStatuses.${x}`))
           .join(", "),
       });
     }
@@ -84,7 +84,7 @@ function EditForm(props) {
     const errors = {};
 
     if (!values.date) {
-      errors.date = t("validation.required");
+      errors.date = l("validation.required");
     } else if (moment(values.date).isBefore(moment(), "day")) {
       errors.status = checkStatus(values.status, [
         appointmentStatuses.canceled,
@@ -106,18 +106,18 @@ function EditForm(props) {
     }
 
     if (!values.client) {
-      errors.client = t("validation.required");
+      errors.client = l("validation.required");
     }
 
     if (!values.holder) {
-      errors.holder = t("validation.required");
+      errors.holder = l("validation.required");
     }
 
     if (
       values.status === appointmentStatuses.pending &&
       (!values.diagnosis || !values.diagnosis.trim())
     ) {
-      errors.diagnosis = t("validation.required");
+      errors.diagnosis = l("validation.required");
     }
 
     Object.keys(errors).forEach((key) => {
@@ -200,7 +200,7 @@ function EditForm(props) {
                 <ClientSelector
                   className={classes.control}
                   name="client"
-                  label={t("appointments.editor.client")}
+                  label={l("appointments.editor.client")}
                   value={values.client}
                   error={touched.client && Boolean(errors.client)}
                   helperText={touched.client && errors.client}
@@ -214,7 +214,7 @@ function EditForm(props) {
                 <EmployeeSelector
                   className={classes.control}
                   name="holder"
-                  label={t("appointments.editor.holder")}
+                  label={l("appointments.editor.holder")}
                   value={values.holder}
                   error={touched.holder && Boolean(errors.holder)}
                   helperText={touched.holder && errors.holder}
@@ -234,7 +234,7 @@ function EditForm(props) {
                   disabled={isSubmitting}
                 >
                   <InputLabel shrink id="status-input">
-                    {t("appointments.editor.status")}
+                    {l("appointments.editor.status")}
                   </InputLabel>
 
                   <Select
@@ -244,10 +244,11 @@ function EditForm(props) {
                     value={values.status}
                     onChange={handleChange}
                     MenuProps={{ disablePortal: true }}
+                    Props
                   >
                     {Object.keys(appointmentStatuses).map((status) => (
                       <MenuItem key={status} value={status}>
-                        {status}
+                        {l(`model.appointmentStatuses.${status}`)}
                       </MenuItem>
                     ))}
                   </Select>
@@ -264,7 +265,7 @@ function EditForm(props) {
                   className={classes.control}
                   id="date"
                   name="date"
-                  label={t("appointments.editor.date")}
+                  label={l("appointments.editor.date")}
                   type="datetime-local"
                   value={values.date}
                   error={touched.date && Boolean(errors.date)}
@@ -283,8 +284,8 @@ function EditForm(props) {
                 multiline
                 className={classes.control}
                 id="diagnosis"
-                label={t("appointments.editor.diagnosis")}
-                placeholder={t("appointments.editor.diagnosis")}
+                label={l("appointments.editor.diagnosis")}
+                placeholder={l("appointments.editor.diagnosis")}
                 value={values.diagnosis}
                 error={touched.diagnosis && Boolean(errors.diagnosis)}
                 helperText={touched.diagnosis && errors.diagnosis}
@@ -300,8 +301,8 @@ function EditForm(props) {
                 multiline
                 className={classes.control}
                 id="complaints"
-                label={t("appointments.editor.complaints")}
-                placeholder={t("appointments.editor.complaints")}
+                label={l("appointments.editor.complaints")}
+                placeholder={l("appointments.editor.complaints")}
                 value={values.complaints}
                 error={touched.complaints && Boolean(errors.complaints)}
                 helperText={touched.complaints && errors.complaints}
@@ -317,7 +318,7 @@ function EditForm(props) {
                 color="primary"
                 disabled={isSubmitting}
               >
-                {t("actions.save")}
+                {l("actions.save")}
               </Button>
             </Grid>
           </Grid>
@@ -362,7 +363,7 @@ export default function AppointmentEditor({
     },
   });
 
-  const { t } = useTranslation();
+  const l = useLocalization();
 
   React.useEffect(() => {
     let active = true;
@@ -401,7 +402,7 @@ export default function AppointmentEditor({
 
   function renderForm() {
     if (state.error) {
-      return <Alert severity="error">{t("loadDataError")}</Alert>;
+      return <Alert severity="error">{l("errors.loadData")}</Alert>;
     }
 
     if (state.loading) {
@@ -412,7 +413,7 @@ export default function AppointmentEditor({
   }
 
   return (
-    <Popup open title={t("appointments.editor.header")} onClose={onClose}>
+    <Popup open title={l("appointments.editor.header")} onClose={onClose}>
       <Box pb={2}>{renderForm()}</Box>
     </Popup>
   );

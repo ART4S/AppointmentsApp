@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useTranslation } from "react-i18next";
 import moment from "moment";
 import { Paper, ClickAwayListener } from "@material-ui/core";
 
 import Table from "common/components/Table/Table";
 import TableToolbar from "common/components/TableToolbar/TableToolBar";
 import BusyScreen from "common/components/BusyScreen/BusyScreen";
-import appointmentStatuses from "model/enums/appointmentStatuses";
+
+import useLocalization from "common/hooks/useLocalization";
 
 import {
   loadAppointments,
@@ -30,6 +30,7 @@ import AppointmentEditor from "../AppointmentEditor/AppointmentEditor";
 
 export default function AppointmentsTable() {
   const dispatch = useDispatch();
+  const l = useLocalization();
   const busy = useSelector(selectBusy);
   const appointments = useSelector(selectAppointments);
   const sorting = useSelector(selectSorting);
@@ -40,33 +41,31 @@ export default function AppointmentsTable() {
   const [viewerOpen, setViewerOpen] = React.useState(false);
   const [editorOpen, setEditorOpen] = React.useState(false);
 
-  const { t } = useTranslation();
-
   const columns = [
     {
       field: "date",
-      header: t("appointments.table.date"),
+      header: l("appointments.table.date"),
       enableSort: true,
       formatter: (d) => moment(d).format("DD.MM.YYYY"),
     },
     {
       field: "status",
-      header: t("appointments.table.status"),
+      header: l("appointments.table.status"),
       enableSort: true,
-      formatter: (s) => appointmentStatuses[s],
+      formatter: (s) => l(`model.appointmentStatuses.${s}`),
     },
     {
       field: "clientName",
-      header: t("appointments.table.client"),
+      header: l("appointments.table.client"),
       enableSort: true,
     },
     {
       field: "holderName",
-      header: t("appointments.table.holder"),
+      header: l("appointments.table.holder"),
       enableSort: true,
     },
-    { field: "complaints", header: t("appointments.table.complaints") },
-    { field: "diagnosis", header: t("appointments.table.diagnosis") },
+    { field: "complaints", header: l("appointments.table.complaints") },
+    { field: "diagnosis", header: l("appointments.table.diagnosis") },
   ];
 
   React.useEffect(() => {

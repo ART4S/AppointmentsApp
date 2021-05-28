@@ -1,6 +1,5 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { useTranslation } from "react-i18next";
 import {
   Grid,
   Container,
@@ -14,6 +13,8 @@ import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg"
 
 import Header from "common/components/Header/Header";
 import ErrorPopup from "common/components/ErrorPopup/ErrorPopup";
+
+import useLocalization from "common/hooks/useLocalization";
 
 import Accordion from "./components/Accordion/Accordion";
 import AppointmentsFilters from "./components/AppointmentsFilters/AppointmentsFilters";
@@ -38,11 +39,11 @@ const useStyles = makeStyles((theme) => ({
 export default function Appointments() {
   const classes = useStyles();
   const error = useSelector(selectError);
-  const { t } = useTranslation();
+  const l = useLocalization();
 
   function renderFilterButton() {
     return (
-      <Tooltip title={t("appointments.common.filters")}>
+      <Tooltip title={l("appointments.common.filters")}>
         <IconButton className={classes.icon}>
           <FilterListIcon />
         </IconButton>
@@ -52,7 +53,7 @@ export default function Appointments() {
 
   return (
     <div className={classes.root}>
-      <Header title={t("appointments.common.page")} Icon={AppointmentIcon} />
+      <Header title={l("appointments.common.page")} Icon={AppointmentIcon} />
 
       <Container className={classes.body} maxWidth="md">
         <Grid item container direction="column" spacing={SPACING}>
@@ -68,7 +69,7 @@ export default function Appointments() {
         </Grid>
       </Container>
 
-      {error && <ErrorPopup text={t("errors.loadData")} />}
+      {error && <ErrorPopup text={l("errors.loadData")} />}
     </div>
   );
 }

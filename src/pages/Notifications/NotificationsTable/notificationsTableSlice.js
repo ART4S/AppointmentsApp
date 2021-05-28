@@ -19,7 +19,7 @@ const initialState = {
     pageSize: 0,
     totalItems: 0,
     itemsPerPage: 5,
-    availableItemsPerPage: [5, 15, 25],
+    availableItemsPerPage: [5, 15, 100],
   },
   sorting: {
     field: "date",

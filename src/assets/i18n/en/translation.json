@@ -1,40 +1,126 @@
 {
   "translation": {
-    "homePage": "Home",
-    "appointments": "Appointments",
-    "events": "Events",
-    "notifications": "Notifications",
-    "messages": "Messages",
-    "clients": "Clients",
-    "employees": "Employees",
-    "filters": "Filters",
-    "loadDataError": "Error while fetching data.\nPlease try reload page",
-    "client": "Client",
-    "complaints": "Complaints",
-    "holder": "Holder",
-    "fromDate": "From",
-    "toDate": "To",
-    "none": "None",
-    "status": "Status",
-    "onlyMe": "Only me",
-    "date": "Date",
-    "diagnosis": "Diagnosis",
-    "editAppointment": "Edit appointment",
-    "save": "Save",
-    "required": "Required",
-    "allowedValues": "Allowed values: {{values}}",
-    "createAppointment": "Create appointment",
-    "dateMustBeGreaterThanCurrent": "Date must be greater than current",
-    "name": "Name",
-    "author": "Author",
-    "pageNotFound": "Page not found",
-    "backToHomePage": "Back to home page",
-    "email": "Email",
-    "password": "Password",
-    "rememberMe": "Remember me",
-    "signIn": "Sign In",
-    "signUp": "Registration",
-    "writeCorrectEmail": "Write correct email",
-    "forgotPassword": "Forgot password?"
+    "model": {
+      "appointmentStatuses": {
+        "completed": "Completed",
+        "pending": "Pending",
+        "missed": "Missed",
+        "canceled": "Canceled",
+        "postponed": "Postponed",
+        "active": "Active"
+      }
+    },
+
+    "actions": {
+      "ok": "OK",
+      "save": "Save"
+    },
+
+    "validation": {
+      "required": "Required",
+      "dateMustBeGreaterThanCurrent": "Date must be greater than current",
+      "correctEmail": "Write correct email"
+    },
+
+    "errors": {
+      "loadData": "Error while fetching data.\nPlease try reload page"
+    },
+
+    "home": {
+      "page": "Home",
+      "appointments": "Appointments",
+      "events": "Events",
+      "notifications": "Notifications",
+      "messages": "Messages",
+      "clients": "Clients",
+      "employees": "Employees"
+    },
+
+    "appointments": {
+      "common": {
+        "page": "Appointments",
+        "filters": "Filters"
+      },
+
+      "filters": {
+        "complaints": "Complaints",
+        "holder": "Holder",
+        "client": "Client",
+        "fromDate": "From",
+        "toDate": "To",
+        "none": "None",
+        "status": "Status",
+        "onlyMe": "Only me"
+      },
+
+      "table": {
+        "date": "Date",
+        "status": "Status",
+        "client": "Client",
+        "holder": "Holder",
+        "complaints": "Complaints",
+        "diagnosis": "Diagnosis"
+      },
+
+      "viewer": {
+        "header": "Details",
+        "date": "Date",
+        "client": "Client",
+        "status": "Status",
+        "holder": "Holder",
+        "complaints": "Complaints",
+        "diagnosis": "Diagnosis"
+      },
+
+      "editor": {
+        "header": "Edit appointment",
+        "client": "Client",
+        "holder": "Holder",
+        "status": "Status",
+        "date": "Date",
+        "diagnosis": "Diagnosis",
+        "complaints": "Complaints",
+        "allowedValues": "Allowed values: {{values}}"
+      },
+
+      "creator": {
+        "header": "Create appointment",
+        "date": "Date",
+        "client": "Client",
+        "holder": "Holder"
+      }
+    },
+
+    "events": {
+      "page": "Events",
+      "date": "Date",
+      "name": "Name",
+      "author": "Author"
+    },
+
+    "notifications": {
+      "page": "Notifications",
+      "date": "Date",
+      "name": "Name"
+    },
+
+    "login": {
+      "signIn": "SignIn",
+      "signUp": "SignOut",
+      "email": "Email",
+      "password": "Password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "copyright": "Copyright"
+    },
+
+    "header": {
+      "lang": "Language"
+    },
+
+    "notFoundPage": {
+      "title": "Page not found",
+      "backToHomePage": "Back to home page"
+    }
   }
 }

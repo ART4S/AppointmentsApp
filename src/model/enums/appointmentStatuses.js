@@ -1,10 +1,10 @@
 const appointmentStatuses = {
-  completed: "completed", // Завершен
-  pending: "pending", // Ожидается
-  missed: "missed", // Пропущен
-  canceled: "canceled", // Отменен
-  postponed: "postponed", // Отложен
-  active: "active", // Активен
+  completed: "completed",
+  pending: "pending",
+  missed: "missed",
+  canceled: "canceled",
+  postponed: "postponed",
+  active: "active",
 };
 
 export default appointmentStatuses;

@@ -1,6 +1,7 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-shadow */
 import React from "react";
-
+import { createReducer } from "@reduxjs/toolkit";
 import authService from "services/authService";
 import tokenExpiredEvent from "common/events/tokenExpiredEvent";
 
@@ -11,28 +12,30 @@ const initialValue = {
   error: null,
 };
 
-function reducer(state, action) {
-  switch (action.type) {
-    case "logout": {
+const reducer = createReducer(
+  {},
+  {
+    logout(state, action) {
       localStorage.removeItem("user");
       localStorage.removeItem("token");
-      return { ...state, user: null, error: null };
-    }
-    case "loginSucceed": {
+      state.user = null;
+      state.error = null;
+    },
+
+    loginSucceed(state, action) {
       const { user, token } = action.payload;
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", token);
-      return { ...state, user };
-    }
-    case "loginFailed": {
-      return { ...state, error: action.payload };
-    }
-    default:
-      throw new Error();
-  }
-}
+      state.user = user;
+    },
 
-export function ProvideAuth({ children }) {
+    loginFailed(state, action) {
+      state.error = action.payload;
+    },
+  },
+);
+
+function ProvideAuth({ children }) {
   const [{ user, error }, dispatch] = React.useReducer(reducer, initialValue);
 
   React.useEffect(
@@ -71,6 +74,16 @@ export function ProvideAuth({ children }) {
       {children}
     </AuthContext.Provider>
   );
+}
+
+export function withAuth(Component) {
+  return function WithAuth(props) {
+    return (
+      <ProvideAuth>
+        <Component {...props} />
+      </ProvideAuth>
+    );
+  };
 }
 
 export default function useAuth() {

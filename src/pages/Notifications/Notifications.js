@@ -7,13 +7,11 @@ import { ReactComponent as BroadcastIcon } from "assets/icons/broadcast.svg";
 import Header from "common/components/Header/Header";
 import ErrorPopup from "common/components/ErrorPopup/ErrorPopup";
 
+import useLocalization from "common/hooks/useLocalization";
+
 import NotificationsTable from "./NotificationsTable/NotificationsTable";
 
 import { selectError } from "./NotificationsTable/notificationsTableSlice";
-
-const NOTIFICATIONS = "Уведомления";
-const ERROR_LOAD_DATA =
-  "В процессе загрузки данных произошла ошибка, пожалуйста перезагрузите страницу";
 
 const SPACING = 2;
 
@@ -31,11 +29,12 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Notifications() {
   const classes = useStyles();
+  const l = useLocalization();
   const error = useSelector(selectError);
 
   return (
     <div className={classes.root}>
-      <Header title={NOTIFICATIONS} Icon={BroadcastIcon} />
+      <Header title={l("notifications.page")} Icon={BroadcastIcon} />
 
       <Container className={classes.body} maxWidth="md">
         <Grid item container direction="column" spacing={SPACING}>
@@ -45,7 +44,7 @@ export default function Notifications() {
         </Grid>
       </Container>
 
-      {error && <ErrorPopup text={ERROR_LOAD_DATA} />}
+      {error && <ErrorPopup text={l("errors.loadData")} />}
     </div>
   );
 }

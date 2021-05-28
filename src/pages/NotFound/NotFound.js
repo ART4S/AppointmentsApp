@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { Box, Typography, makeStyles } from "@material-ui/core";
+
+import useLocalization from "common/hooks/useLocalization";
 
 const useStyles = makeStyles((theme) => ({
   page: {
@@ -23,16 +24,16 @@ const useStyles = makeStyles((theme) => ({
 
 export default function NotFound() {
   const classes = useStyles();
-  const { t } = useTranslation();
+  const l = useLocalization();
 
   return (
     <Box className={classes.page}>
       <Typography className={classes.title} variant="h1">
-        {t("pageNotFound")}
+        {l("notFoundPage.title")}
       </Typography>
 
       <Link className={classes.link} to="/">
-        <Typography>{t("backToHomePage")}</Typography>
+        <Typography>{l("notFoundPage.backToHomePage")}</Typography>
       </Link>
     </Box>
   );

@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom";
-import { Box, Typography, IconButton, makeStyles } from "@material-ui/core";
-import {
-  AccountCircle as AccountCircleIcon,
-  ExitToApp as ExitToAppIcon,
-} from "@material-ui/icons";
-
 import PropTypes from "prop-types";
+import { Box, Typography, IconButton, makeStyles } from "@material-ui/core";
+
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
 import useAuth from "common/hooks/useAuth";
+
+import LangPicker from "../LangPicker/LangPicker";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -37,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
 export default function Header({ title, Icon }) {
   const classes = useStyles();
   const auth = useAuth();
-  const userName = `${auth.user.firstName} ${auth.user.lastName}`;
 
   return (
     <Box className={classes.header}>
@@ -49,7 +48,7 @@ export default function Header({ title, Icon }) {
       </Link>
 
       <Box display="flex" justifyContent="center" alignItems="center">
-        <Typography variant="h5">{userName}</Typography>
+        <Typography variant="h5">{`${auth.user.firstName} ${auth.user.lastName}`}</Typography>
 
         <IconButton>
           <AccountCircleIcon className={classes.icon} />
@@ -58,6 +57,8 @@ export default function Header({ title, Icon }) {
         <IconButton onClick={() => auth.logout()}>
           <ExitToAppIcon className={classes.icon} />
         </IconButton>
+
+        <LangPicker />
       </Box>
     </Box>
   );

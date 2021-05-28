@@ -1,6 +1,15 @@
 {
   "translation": {
-    "common": {},
+    "model": {
+      "appointmentStatuses": {
+        "completed": "Завершен",
+        "pending": "Ожидается",
+        "missed": "Пропущен",
+        "canceled": "Отменен",
+        "postponed": "Отложен",
+        "active": "Активен"
+      }
+    },
 
     "actions": {
       "ok": "ОК",
@@ -8,12 +17,13 @@
     },
 
     "validation": {
-      "required": "Необходимо указать"
+      "required": "Необходимо указать",
+      "dateMustBeGreaterThanCurrent": "Дата должна быть больше текущей",
+      "correctEmail": "Укажите корректный адрес"
     },
 
     "errors": {
-      "loadData": "Произошла ошибка в процессе загрузки данных.\nПопробуйте обновить страницу",
-      "dateMustBeGreaterThanCurrent": "Дата должна быть больше текущей"
+      "loadData": "Произошла ошибка в процессе загрузки данных.\nПопробуйте обновить страницу"
     },
 
     "home": {
@@ -86,6 +96,31 @@
       "date": "Дата",
       "name": "Наименование",
       "author": "Автор"
+    },
+
+    "notifications": {
+      "page": "Уведомления",
+      "date": "Дата",
+      "name": "Наименование"
+    },
+
+    "login": {
+      "signIn": "Войти",
+      "signUp": "Регистрация",
+      "email": "Электронная почта",
+      "password": "Пароль",
+      "rememberMe": "Запомнить",
+      "forgotPassword": "Забыли пароль?",
+      "copyright": "Авторские права"
+    },
+
+    "header": {
+      "lang": "Язык"
+    },
+
+    "notFoundPage": {
+      "title": "Страница не найдена",
+      "backToHomePage": "Вернуться на домашнюю страницу"
     }
   }
 }
