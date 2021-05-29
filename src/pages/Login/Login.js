@@ -35,11 +35,10 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
   },
   avatar: {
-    color: theme.palette.common.white,
-    backgroundColor: theme.palette.secondary,
     width: theme.spacing(5),
     height: theme.spacing(5),
     marginTop: theme.spacing(10),
+    backgroundColor: theme.palette.secondary.main,
   },
   title: {
     marginTop: theme.spacing(2),
@@ -190,7 +189,7 @@ export default function Login() {
                 <Checkbox
                   color="primary"
                   checked={remember}
-                  onChange={(e) => setRemember(e.target.checked)}
+                  onChange={(event) => setRemember(event.target.checked)}
                 />
               }
             />
@@ -219,9 +218,8 @@ export default function Login() {
 
       <div className={classes.copyright}>
         <Typography variant="body2" color="textSecondary">
-          {`${l("login.copyright")} ©`}{" "}
-          <Link color="inherit">Appointments app</Link>{" "}
-          {new Date().getFullYear()}
+          {`© ${l("login.copyright")} ${new Date().getFullYear()} `}
+          <Link color="inherit">Appointments app</Link>
         </Typography>
       </div>
     </Container>

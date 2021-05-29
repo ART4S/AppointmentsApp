@@ -5,8 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { Paper, ClickAwayListener, useTheme } from "@material-ui/core";
 
-import AnnouncementOutlinedIcon from "@material-ui/icons/AnnouncementOutlined";
-import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
+import AnnouncementIcon from "@material-ui/icons/Announcement";
 import ErrorIcon from "@material-ui/icons/Error";
 
 import Table from "common/components/Table/Table";
@@ -33,8 +32,18 @@ import {
 const DATE_FORMAT = "DD.MM.YYYY";
 
 const NOTIFICATION_TYPE_ICONS = {
-  [notificationTypes.info]: AnnouncementOutlinedIcon,
-  [notificationTypes.warning]: PeopleAltIcon,
+  [notificationTypes.info]: () => {
+    const theme = useTheme();
+    const color = theme.palette.success.main;
+    return <AnnouncementIcon style={{ color }} />;
+  },
+
+  [notificationTypes.warning]: () => {
+    const theme = useTheme();
+    const color = theme.palette.warning.main;
+    return <ErrorIcon style={{ color }} />;
+  },
+
   [notificationTypes.emergency]: () => {
     const theme = useTheme();
     const color = theme.palette.error.main;

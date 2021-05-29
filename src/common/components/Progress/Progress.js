@@ -14,7 +14,7 @@ export default function Progress(props) {
 
   return (
     <Box className={classes.root}>
-      <CircularProgress {...props} />
+      <CircularProgress color="secondary" {...props} />
     </Box>
   );
 }

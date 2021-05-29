@@ -61,7 +61,7 @@ function Fields({ appointment }) {
       />
       <Field
         name={`${l("appointments.viewer.status")}:`}
-        value={appointment.status}
+        value={l(`model.appointmentStatuses.${appointment.status}`)}
       />
       <Field
         name={`${l("appointments.viewer.holder")}:`}

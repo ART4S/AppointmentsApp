@@ -40,6 +40,6 @@ export function useLocalizationContext() {
 }
 
 export default function useLocalization() {
-  const { t } = useTranslation();
-  return t;
+  const { l } = useLocalizationContext();
+  return l;
 }

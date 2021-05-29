@@ -4,11 +4,11 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { debounce } from "lodash";
-import { Paper, ClickAwayListener, useTheme } from "@material-ui/core";
+import { Paper, ClickAwayListener } from "@material-ui/core";
 
 import AnnouncementOutlinedIcon from "@material-ui/icons/AnnouncementOutlined";
 import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
-import ErrorIcon from "@material-ui/icons/Error";
+import NotificationImportantIcon from "@material-ui/icons/NotificationImportant";
 
 import Table from "common/components/Table/Table";
 import TableToolBar from "common/components/TableToolbar/TableToolBar";
@@ -37,11 +37,7 @@ import {
 const EVENT_TYPE_ICONS = {
   [eventTypes.news]: AnnouncementOutlinedIcon,
   [eventTypes.meeting]: PeopleAltIcon,
-  [eventTypes.emergency]: () => {
-    const theme = useTheme();
-    const color = theme.palette.error.main;
-    return <ErrorIcon style={{ color }} />;
-  },
+  [eventTypes.emergency]: NotificationImportantIcon,
 };
 
 const DATE_FORMAT = "DD.MM.YYYY";
