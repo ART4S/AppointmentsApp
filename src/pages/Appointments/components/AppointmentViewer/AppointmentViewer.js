@@ -12,6 +12,8 @@ import useLocalization from "common/hooks/useLocalization";
 
 import { appointmentService } from "services";
 
+const DATE_FORMAT = "DD.MM.YYYY HH:MM";
+
 const useStyles = makeStyles((theme) => ({
   header: {
     display: "flex",
@@ -43,8 +45,6 @@ function Field({ name, value }) {
     </Grid>
   );
 }
-
-const DATE_FORMAT = "DD.MM.YYYY HH:MM";
 
 function Fields({ appointment }) {
   const l = useLocalization();

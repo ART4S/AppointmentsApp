@@ -2,8 +2,6 @@
 import React from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import * as locales from "@material-ui/core/locale";
-import { ThemeProvider, CssBaseline, createMuiTheme } from "@material-ui/core";
 
 import { flowRight as compose } from "lodash";
 
@@ -17,10 +15,8 @@ import Notifications from "pages/Notifications/Notifications";
 import NotFound from "pages/NotFound/NotFound";
 
 import { withAuth } from "common/hooks/useAuth";
-import {
-  withLocalization,
-  useLocalizationContext,
-} from "common/hooks/useLocalization";
+import { withTheme } from "common/hooks/useTheme";
+import { withLocalization } from "common/hooks/useLocalization";
 
 import AuthRoute from "common/components/AuthRoute/AuthRoute";
 
@@ -54,20 +50,6 @@ function App() {
       </Switch>
     </Router>
   );
-}
-
-function withTheme(Component) {
-  return function WithTheme(props) {
-    const { language, languages } = useLocalizationContext();
-    const theme = createMuiTheme({}, locales[languages[language].code]);
-
-    return (
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Component {...props} />
-      </ThemeProvider>
-    );
-  };
 }
 
 function withStore(Component) {
