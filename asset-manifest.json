@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.js": "/AppointmentsApp/static/js/main.1382b495.chunk.js",
+    "main.js.map": "/AppointmentsApp/static/js/main.1382b495.chunk.js.map",
+    "runtime-main.js": "/AppointmentsApp/static/js/runtime-main.551a8e1c.js",
+    "runtime-main.js.map": "/AppointmentsApp/static/js/runtime-main.551a8e1c.js.map",
+    "static/js/2.5c37b499.chunk.js": "/AppointmentsApp/static/js/2.5c37b499.chunk.js",
+    "static/js/2.5c37b499.chunk.js.map": "/AppointmentsApp/static/js/2.5c37b499.chunk.js.map",
+    "index.html": "/AppointmentsApp/index.html",
+    "static/js/2.5c37b499.chunk.js.LICENSE.txt": "/AppointmentsApp/static/js/2.5c37b499.chunk.js.LICENSE.txt",
+    "static/media/appointment.96283b2b.svg": "/AppointmentsApp/static/media/appointment.96283b2b.svg",
+    "static/media/broadcast.e3cc9dad.svg": "/AppointmentsApp/static/media/broadcast.e3cc9dad.svg",
+    "static/media/clients.e062f0fd.svg": "/AppointmentsApp/static/media/clients.e062f0fd.svg",
+    "static/media/employees.b01dae81.svg": "/AppointmentsApp/static/media/employees.b01dae81.svg",
+    "static/media/house.429263b0.svg": "/AppointmentsApp/static/media/house.429263b0.svg",
+    "static/media/messages.83959c5e.svg": "/AppointmentsApp/static/media/messages.83959c5e.svg",
+    "static/media/star.b201aac8.svg": "/AppointmentsApp/static/media/star.b201aac8.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.551a8e1c.js",
+    "static/js/2.5c37b499.chunk.js",
+    "static/js/main.1382b495.chunk.js"
+  ]
+}
