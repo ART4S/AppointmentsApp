@@ -11,13 +11,13 @@ import { ReactComponent as EmployeesIcon } from "assets/icons/employees.svg";
 import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg";
 
 import Badge from "common/components/Badge/Badge";
-
 import useLocalization from "common/hooks/useLocalization";
-
 import { eventService } from "services";
 
-const useStyles = makeStyles((theme) => ({
-  navItem: {
+const SPACING = 3;
+
+const useNavigationItemStyles = makeStyles((theme) => ({
+  item: {
     border: "5px solid",
     borderRadius: 10,
     borderColor: theme.palette.primary.main,
@@ -29,25 +29,29 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     padding: theme.spacing(3),
+    "&:hover": {
+      cursor: "pointer",
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+  link: {
+    color: "inherit",
+    textDecoration: "inherit",
   },
   icon: {
     fill: theme.palette.primary.main,
     width: theme.spacing(10),
     height: theme.spacing(10),
   },
-  link: {
-    color: "inherit",
-    textDecoration: "inherit",
-  },
 }));
 
 function NavigationItem({ title, Icon, link, badgeContent }) {
-  const classes = useStyles();
+  const classes = useNavigationItemStyles();
 
   return (
     <Badge content={badgeContent}>
       <Link className={classes.link} to={link}>
-        <div className={classes.navItem}>
+        <div className={classes.item}>
           <Icon className={classes.icon} />
           <Typography variant="h5">{title}</Typography>
         </div>
@@ -59,8 +63,6 @@ function NavigationItem({ title, Icon, link, badgeContent }) {
 NavigationItem.defaultProps = {
   badgeContent: 0,
 };
-
-const SPACING = 3;
 
 export default function NavigationPanel() {
   const l = useLocalization();

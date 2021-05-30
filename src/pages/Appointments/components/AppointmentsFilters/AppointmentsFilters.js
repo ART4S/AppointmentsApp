@@ -20,13 +20,9 @@ import { debounce } from "lodash";
 
 import EmployeeSelector from "common/components/EmployeeSelector/EmployeeSelector";
 import ClientSelector from "common/components/ClientSelector/ClientSelector";
-
 import useLocalization from "common/hooks/useLocalization";
-
 import appointmentStatuses from "model/enums/appointmentStatuses";
-
 import { loadAppointments } from "../AppointmentsTable/appointmentsTableSlice";
-
 import {
   setFilterValue,
   setClient,
@@ -36,6 +32,8 @@ import {
   selectClient,
   selectHolder,
 } from "./appointmentsFiltersSlice";
+
+const SPACING = 5;
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -48,8 +46,6 @@ const useStyle = makeStyles((theme) => ({
     width: 200,
   },
 }));
-
-const SPACING = 5;
 
 export default function AppointmentsFilters() {
   const dispatch = useDispatch();

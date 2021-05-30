@@ -3,7 +3,6 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable no-shadow */
 import React from "react";
-import { createReducer } from "@reduxjs/toolkit";
 import moment from "moment";
 import { Formik, Form } from "formik";
 import {
@@ -28,6 +27,7 @@ import useLocalization from "common/hooks/useLocalization";
 import { appointmentService, employeeService, clientService } from "services";
 import appointmentStatuses from "model/enums/appointmentStatuses";
 import { getFullName } from "utils/userUtils";
+import createReducer from "utils/createReducer";
 
 const SPACING = 2;
 const DATE_FORMAT = "YYYY-MM-DDTHH:mm";
@@ -328,25 +328,22 @@ function EditForm(props) {
   );
 }
 
-const reducer = createReducer(
-  {},
-  {
-    load(state) {
-      state.loading = true;
-      state.error = false;
-    },
-
-    loadSucceed(state, action) {
-      state.loading = false;
-      state.data = action.payload;
-    },
-
-    loadFailed(state) {
-      state.loading = false;
-      state.error = true;
-    },
+const reducer = createReducer({
+  load(state) {
+    state.loading = true;
+    state.error = false;
   },
-);
+
+  loadSucceed(state, action) {
+    state.loading = false;
+    state.data = action.payload;
+  },
+
+  loadFailed(state) {
+    state.loading = false;
+    state.error = true;
+  },
+});
 
 export default function AppointmentEditor({
   appointmentId,

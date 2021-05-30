@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 import React from "react";
-import { createReducer } from "@reduxjs/toolkit";
 import moment from "moment";
 
 import { Typography, Button, Box, Grid, makeStyles } from "@material-ui/core";
@@ -9,6 +8,8 @@ import Popup from "common/components/Popup/Popup";
 import Progress from "common/components/Progress/Progress";
 
 import useLocalization from "common/hooks/useLocalization";
+
+import createReducer from "utils/createReducer";
 
 import { appointmentService } from "services";
 
@@ -79,25 +80,22 @@ function Fields({ appointment }) {
   );
 }
 
-const reducer = createReducer(
-  {},
-  {
-    loadAppointment(state) {
-      state.loading = true;
-      state.error = false;
-    },
-
-    loadAppointmentSucceed(state, action) {
-      state.loading = false;
-      state.appointment = action.payload;
-    },
-
-    loadAppointmentFailed(state) {
-      state.loading = false;
-      state.error = true;
-    },
+const reducer = createReducer({
+  loadAppointment(state) {
+    state.loading = true;
+    state.error = false;
   },
-);
+
+  loadAppointmentSucceed(state, action) {
+    state.loading = false;
+    state.appointment = action.payload;
+  },
+
+  loadAppointmentFailed(state) {
+    state.loading = false;
+    state.error = true;
+  },
+});
 
 export default function AppointmentViewer({ appointmentId, onClose }) {
   const classes = useStyles();

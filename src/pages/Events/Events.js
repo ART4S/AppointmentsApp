@@ -3,14 +3,10 @@ import { useSelector } from "react-redux";
 import { Grid, Container, makeStyles } from "@material-ui/core";
 
 import { ReactComponent as StarIcon } from "assets/icons/star.svg";
-
 import Header from "common/components/Header/Header";
 import ErrorPopup from "common/components/ErrorPopup/ErrorPopup";
-
 import useLocalization from "common/hooks/useLocalization";
-
 import EventsTable from "./EventsTable/EventsTable";
-
 import { selectError } from "./EventsTable/eventsTableSlice";
 
 const SPACING = 2;

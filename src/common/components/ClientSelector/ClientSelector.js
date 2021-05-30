@@ -2,12 +2,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/display-name */
 import React from "react";
-import { createReducer } from "@reduxjs/toolkit";
 import { Box, TextField, Typography } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { FixedSizeList } from "react-window";
 import parse from "autosuggest-highlight/parse";
 import { debounce } from "lodash";
+
+import createReducer from "utils/createReducer";
 
 import clientService from "services/clientService";
 
@@ -81,60 +82,57 @@ const ListBoxComponent = React.forwardRef((props, ref) => {
   );
 });
 
-const reducer = createReducer(
-  {},
-  {
-    setOpen(state, action) {
-      state.open = action.payload;
-    },
-
-    setOptions(state, action) {
-      state.options = action.payload;
-    },
-
-    clearOptions(state, action) {
-      state.loading = false;
-      state.options = [];
-    },
-
-    setSearchText(state, action) {
-      state.searchText = action.payload;
-    },
-
-    loadClients(state, action) {
-      state.loading = true;
-    },
-
-    loadClientsSucceed(state, action) {
-      const { data, currentPage, totalPages } = action.payload;
-      state.loading = false;
-      state.options = data;
-      state.pagination = {
-        currentPage,
-        totalPages,
-      };
-    },
-
-    setLoadMore(state, action) {
-      state.loadMore = action.payload;
-    },
-
-    loadMore(state, action) {
-      state.loading = true;
-    },
-
-    loadMoreSucceed(state, action) {
-      const { data, currentPage, totalPages } = action.payload;
-      state.loading = false;
-      state.loadMore = false;
-      state.options = [...state.options, ...data];
-      state.pagination = {
-        currentPage,
-        totalPages,
-      };
-    },
+const reducer = createReducer({
+  setOpen(state, action) {
+    state.open = action.payload;
   },
-);
+
+  setOptions(state, action) {
+    state.options = action.payload;
+  },
+
+  clearOptions(state, action) {
+    state.loading = false;
+    state.options = [];
+  },
+
+  setSearchText(state, action) {
+    state.searchText = action.payload;
+  },
+
+  loadClients(state, action) {
+    state.loading = true;
+  },
+
+  loadClientsSucceed(state, action) {
+    const { data, currentPage, totalPages } = action.payload;
+    state.loading = false;
+    state.options = data;
+    state.pagination = {
+      currentPage,
+      totalPages,
+    };
+  },
+
+  setLoadMore(state, action) {
+    state.loadMore = action.payload;
+  },
+
+  loadMore(state, action) {
+    state.loading = true;
+  },
+
+  loadMoreSucceed(state, action) {
+    const { data, currentPage, totalPages } = action.payload;
+    state.loading = false;
+    state.loadMore = false;
+    state.options = [...state.options, ...data];
+    state.pagination = {
+      currentPage,
+      totalPages,
+    };
+  },
+});
 
 export default function ClientSelector({
   name,

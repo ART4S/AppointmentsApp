@@ -48,6 +48,7 @@ const useProfileLinkStyles = makeStyles((theme) => ({
     },
   },
 }));
+
 function ProfileLink() {
   const classes = useProfileLinkStyles();
   const commonClasses = useCommonStyles();

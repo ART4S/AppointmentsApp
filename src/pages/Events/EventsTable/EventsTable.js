@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { debounce } from "lodash";
 import { Paper, ClickAwayListener } from "@material-ui/core";
-
 import AnnouncementOutlinedIcon from "@material-ui/icons/AnnouncementOutlined";
 import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
 import NotificationImportantIcon from "@material-ui/icons/NotificationImportant";
@@ -13,11 +12,8 @@ import NotificationImportantIcon from "@material-ui/icons/NotificationImportant"
 import Table from "common/components/Table/Table";
 import TableToolBar from "common/components/TableToolbar/TableToolBar";
 import BusyScreen from "common/components/BusyScreen/BusyScreen";
-
 import useLocalization from "common/hooks/useLocalization";
-
 import eventTypes from "model/enums/eventTypes";
-
 import {
   loadEvents,
   markSeen,

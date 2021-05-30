@@ -7,9 +7,7 @@ import { Paper, ClickAwayListener } from "@material-ui/core";
 import Table from "common/components/Table/Table";
 import TableToolbar from "common/components/TableToolbar/TableToolBar";
 import BusyScreen from "common/components/BusyScreen/BusyScreen";
-
 import useLocalization from "common/hooks/useLocalization";
-
 import {
   loadAppointments,
   setSorting,
@@ -23,7 +21,6 @@ import {
   selectAppointment,
   selectBusy,
 } from "./appointmentsTableSlice";
-
 import AppointmentCreator from "../AppointmentCreator/AppointmentCreator";
 import AppointmentViewer from "../AppointmentViewer/AppointmentViewer";
 import AppointmentEditor from "../AppointmentEditor/AppointmentEditor";

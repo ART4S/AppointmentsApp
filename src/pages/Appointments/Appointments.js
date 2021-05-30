@@ -10,16 +10,12 @@ import {
 import { FilterList as FilterListIcon } from "@material-ui/icons";
 
 import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg";
-
 import Header from "common/components/Header/Header";
 import ErrorPopup from "common/components/ErrorPopup/ErrorPopup";
-
 import useLocalization from "common/hooks/useLocalization";
-
 import Accordion from "./components/Accordion/Accordion";
 import AppointmentsFilters from "./components/AppointmentsFilters/AppointmentsFilters";
 import AppointmentsTable from "./components/AppointmentsTable/AppointmentsTable";
-
 import { selectError } from "./components/AppointmentsTable/appointmentsTableSlice";
 
 const SPACING = 2;

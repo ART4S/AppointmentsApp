@@ -4,18 +4,14 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { Paper, ClickAwayListener, useTheme } from "@material-ui/core";
-
 import AnnouncementIcon from "@material-ui/icons/Announcement";
 import ErrorIcon from "@material-ui/icons/Error";
 
 import Table from "common/components/Table/Table";
 import TableToolBar from "common/components/TableToolbar/TableToolBar";
 import BusyScreen from "common/components/BusyScreen/BusyScreen";
-
 import useLocalization from "common/hooks/useLocalization";
-
 import notificationTypes from "model/enums/notificationTypes";
-
 import {
   loadNotifications,
   setSorting,

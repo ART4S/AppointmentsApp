@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => {
 
 export default function Badge({ content, children }) {
   const classes = useStyles();
-  // className={cn(classes.badge, { [classes.hidden]: !content })}
+
   return (
     <div className={classes.root}>
       <div className={cn(classes.badge, { [classes.hidden]: !content })}>

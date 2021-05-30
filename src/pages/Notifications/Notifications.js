@@ -6,11 +6,8 @@ import { ReactComponent as BroadcastIcon } from "assets/icons/broadcast.svg";
 
 import Header from "common/components/Header/Header";
 import ErrorPopup from "common/components/ErrorPopup/ErrorPopup";
-
 import useLocalization from "common/hooks/useLocalization";
-
 import NotificationsTable from "./NotificationsTable/NotificationsTable";
-
 import { selectError } from "./NotificationsTable/notificationsTableSlice";
 
 const SPACING = 2;
