@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import cn from "classnames";
+import { debounce } from "lodash";
 import {
   Box,
   Typography,
@@ -17,7 +18,7 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
 import useAuth from "common/hooks/useAuth";
-import useTheme from "common/hooks/useTheme";
+import useAppTheme from "common/hooks/useAppTheme";
 import { useLocalizationContext } from "common/hooks/useLocalization";
 
 const useCommonStyles = makeStyles((theme) => ({
@@ -142,27 +143,47 @@ function LangPicker() {
 }
 
 const useThemeSwitchStyles = makeStyles((theme) => ({
-  track: {
-    backgroundColor: theme.palette.common.white,
-  },
-  thumb: {
+  switchBase: {
     color: theme.palette.secondary.main,
+    "&$checked + $track": {
+      backgroundColor: theme.palette.background.default,
+      opacity: 0.7,
+    },
   },
+  track: {
+    backgroundColor: theme.palette.background.default,
+    opacity: 0.7,
+  },
+  checked: {},
 }));
 
 function ThemeSwitch() {
   const classes = useThemeSwitchStyles();
-  const theme = useTheme();
+  const theme = useAppTheme();
 
-  function handleChange(event) {
-    if (event.target.checked) {
-      theme.useLightTheme();
-    } else {
-      theme.useDarkTheme();
-    }
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleChange = React.useCallback(
+    debounce((checked) => {
+      if (checked) {
+        theme.useLightTheme();
+      } else {
+        theme.useDarkTheme();
+      }
+    }, 500),
+    [theme],
+  );
 
-  return <Switch checked={theme.isLightThemeOn} onChange={handleChange} />;
+  return (
+    <Switch
+      classes={{
+        switchBase: classes.switchBase,
+        track: classes.track,
+        checked: classes.checked,
+      }}
+      checked={theme.isLightThemeOn}
+      onChange={(e) => handleChange(e.target.checked)}
+    />
+  );
 }
 
 const useHeaderStyles = makeStyles((theme) => ({

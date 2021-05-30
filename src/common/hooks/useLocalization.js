@@ -3,34 +3,26 @@ import { useTranslation } from "react-i18next";
 
 const LocalizationContext = React.createContext();
 
-function ProvideLocalization({ children }) {
-  const { t, i18n } = useTranslation();
-
-  const languages = {
-    ru: { code: "ruRU", name: "Русский" },
-    en: { code: "enUS", name: "English" },
-  };
-
-  return (
-    <LocalizationContext.Provider
-      value={{
-        language: i18n.language,
-        languages,
-        setLanguage: (lang) => i18n.changeLanguage(lang),
-        l: t,
-      }}
-    >
-      {children}
-    </LocalizationContext.Provider>
-  );
-}
-
 export function withLocalization(Component) {
   return function WithLocalization(props) {
+    const { t, i18n } = useTranslation();
+
+    const languages = {
+      ru: { code: "ruRU", name: "Русский" },
+      en: { code: "enUS", name: "English" },
+    };
+
     return (
-      <ProvideLocalization>
+      <LocalizationContext.Provider
+        value={{
+          language: i18n.language,
+          languages,
+          setLanguage: (lang) => i18n.changeLanguage(lang),
+          l: t,
+        }}
+      >
         <Component {...props} />
-      </ProvideLocalization>
+      </LocalizationContext.Provider>
     );
   };
 }

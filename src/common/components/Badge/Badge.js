@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => {
       color: theme.palette.secondary.main,
       backgroundColor: theme.palette.background.default,
       fontWeight: theme.typography.fontWeightBold,
+      pointerEvents: "none",
     },
     hidden: {
       display: "none",

@@ -39,6 +39,7 @@
     "appointments": {
       "common": {
         "page": "Appointments",
+        "home": "Home",
         "filters": "Filters"
       },
 
@@ -93,6 +94,7 @@
 
     "events": {
       "page": "Events",
+      "home": "Home",
       "date": "Date",
       "name": "Name",
       "author": "Author"
@@ -100,6 +102,7 @@
 
     "notifications": {
       "page": "Notifications",
+      "home": "Home",
       "date": "Date",
       "name": "Name"
     },

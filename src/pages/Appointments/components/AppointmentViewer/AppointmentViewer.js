@@ -1,16 +1,12 @@
 /* eslint-disable no-param-reassign */
 import React from "react";
 import moment from "moment";
-
 import { Typography, Button, Box, Grid, makeStyles } from "@material-ui/core";
 
 import Popup from "common/components/Popup/Popup";
 import Progress from "common/components/Progress/Progress";
-
 import useLocalization from "common/hooks/useLocalization";
-
 import createReducer from "utils/createReducer";
-
 import { appointmentService } from "services";
 
 const DATE_FORMAT = "DD.MM.YYYY HH:MM";

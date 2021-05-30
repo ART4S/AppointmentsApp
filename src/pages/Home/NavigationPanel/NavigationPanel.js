@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
-import { Link } from "react-router-dom";
 import { Grid, Typography, makeStyles } from "@material-ui/core";
 
 import { ReactComponent as StarIcon } from "assets/icons/star.svg";
@@ -10,6 +9,7 @@ import { ReactComponent as BroadcastIcon } from "assets/icons/broadcast.svg";
 import { ReactComponent as EmployeesIcon } from "assets/icons/employees.svg";
 import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg";
 
+import RouterLink from "common/components/RouterLink/RouterLink";
 import Badge from "common/components/Badge/Badge";
 import useLocalization from "common/hooks/useLocalization";
 import { eventService } from "services";
@@ -34,10 +34,6 @@ const useNavigationItemStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.action.hover,
     },
   },
-  link: {
-    color: "inherit",
-    textDecoration: "inherit",
-  },
   icon: {
     fill: theme.palette.primary.main,
     width: theme.spacing(10),
@@ -50,12 +46,12 @@ function NavigationItem({ title, Icon, link, badgeContent }) {
 
   return (
     <Badge content={badgeContent}>
-      <Link className={classes.link} to={link}>
+      <RouterLink to={link}>
         <div className={classes.item}>
           <Icon className={classes.icon} />
           <Typography variant="h5">{title}</Typography>
         </div>
-      </Link>
+      </RouterLink>
     </Badge>
   );
 }

@@ -68,6 +68,6 @@ export function withTheme(Component) {
   };
 }
 
-export default function useTheme() {
+export default function useAppTheme() {
   return React.useContext(ThemeContext);
 }

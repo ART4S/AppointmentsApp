@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function CreateForm({ onSubmitted }) {
+function CreateForm({ onSubmitting, onSubmitted }) {
   const classes = useStyles();
   const l = useLocalization();
 
@@ -68,6 +68,8 @@ function CreateForm({ onSubmitted }) {
   }
 
   async function handleSubmit(values, { setSubmitting, setFieldError }) {
+    onSubmitting(true);
+
     const appointment = {
       date: values.date,
       holderId: values.holder.id,
@@ -78,31 +80,32 @@ function CreateForm({ onSubmitted }) {
 
     if (isSuccess) {
       onSubmitted();
-      return;
+    } else {
+      const {
+        error: { common, fields },
+      } = data;
+
+      setServerErrors(common);
+
+      Object.entries(fields).forEach(([field, errors]) => {
+        switch (field) {
+          case "clientId": {
+            field = "client";
+            break;
+          }
+          case "holderId": {
+            field = "holder";
+            break;
+          }
+        }
+
+        setFieldError(field, errors.join("; "));
+      });
+
+      setSubmitting(false);
     }
 
-    const {
-      error: { common, fields },
-    } = data;
-
-    setServerErrors(common);
-
-    Object.entries(fields).forEach(([field, errors]) => {
-      switch (field) {
-        case "clientId": {
-          field = "client";
-          break;
-        }
-        case "holderId": {
-          field = "holder";
-          break;
-        }
-      }
-
-      setFieldError(field, errors.join("; "));
-    });
-
-    setSubmitting(false);
+    onSubmitting(false);
   }
 
   return (
@@ -198,12 +201,19 @@ function CreateForm({ onSubmitted }) {
 }
 
 export default function AppointmentCreator({ onSubmitted, onClose }) {
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
   const l = useLocalization();
 
   return (
-    <Popup open title={l("appointments.creator.header")} onClose={onClose}>
+    <Popup
+      open
+      title={l("appointments.creator.header")}
+      closeDisabled={isSubmitting}
+      onClose={onClose}
+    >
       <Box pb={2}>
-        <CreateForm onSubmitted={onSubmitted} />
+        <CreateForm onSubmitting={setIsSubmitting} onSubmitted={onSubmitted} />
       </Box>
     </Popup>
   );

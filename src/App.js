@@ -15,7 +15,7 @@ import Notifications from "pages/Notifications/Notifications";
 import NotFound from "pages/NotFound/NotFound";
 
 import { withAuth } from "common/hooks/useAuth";
-import { withTheme } from "common/hooks/useTheme";
+import { withTheme } from "common/hooks/useAppTheme";
 import { withLocalization } from "common/hooks/useLocalization";
 
 import AuthRoute from "common/components/AuthRoute/AuthRoute";

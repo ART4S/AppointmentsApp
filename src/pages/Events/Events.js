@@ -1,10 +1,17 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { Grid, Container, makeStyles } from "@material-ui/core";
+import {
+  Grid,
+  Container,
+  Breadcrumbs as MuiBreadcrumbs,
+  Typography,
+  makeStyles,
+} from "@material-ui/core";
 
 import { ReactComponent as StarIcon } from "assets/icons/star.svg";
 import Header from "common/components/Header/Header";
 import ErrorPopup from "common/components/ErrorPopup/ErrorPopup";
+import RouterLink from "common/components/RouterLink/RouterLink";
 import useLocalization from "common/hooks/useLocalization";
 import EventsTable from "./EventsTable/EventsTable";
 import { selectError } from "./EventsTable/eventsTableSlice";
@@ -18,10 +25,23 @@ const useStyles = makeStyles((theme) => ({
   body: {
     marginTop: theme.spacing(SPACING),
   },
-  icon: {
-    color: theme.palette.common.white,
-  },
 }));
+
+function Breadcrumbs() {
+  const l = useLocalization();
+
+  return (
+    <MuiBreadcrumbs>
+      <RouterLink to="/">
+        <Typography color="textSecondary">{l("events.home")}</Typography>
+      </RouterLink>
+
+      <Typography color="textPrimary" style={{ cursor: "default" }}>
+        {l("events.page")}
+      </Typography>
+    </MuiBreadcrumbs>
+  );
+}
 
 export default function Events() {
   const classes = useStyles();
@@ -34,6 +54,10 @@ export default function Events() {
 
       <Container className={classes.body} maxWidth="md">
         <Grid item container direction="column" spacing={SPACING}>
+          <Grid item xs>
+            <Breadcrumbs />
+          </Grid>
+
           <Grid item xs>
             <EventsTable />
           </Grid>

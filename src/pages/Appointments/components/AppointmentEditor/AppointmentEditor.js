@@ -49,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
 function EditForm(props) {
   const {
     data: { appointment, client, holder },
+    onSubmitting,
     onSubmitted,
   } = props;
 
@@ -130,6 +131,8 @@ function EditForm(props) {
   }
 
   async function handleSubmit(values, { setSubmitting, setFieldError }) {
+    onSubmitting(true);
+
     const editedAppointment = {
       data: values.date,
       status: values.status,
@@ -170,6 +173,8 @@ function EditForm(props) {
 
       setSubmitting(false);
     }
+
+    onSubmitting(false);
   }
 
   return (
@@ -329,6 +334,10 @@ function EditForm(props) {
 }
 
 const reducer = createReducer({
+  setIsSubmitting(state, action) {
+    state.isSubmitting = action.payload;
+  },
+
   load(state) {
     state.loading = true;
     state.error = false;
@@ -353,6 +362,7 @@ export default function AppointmentEditor({
   const [state, dispatch] = React.useReducer(reducer, {
     loading: true,
     error: false,
+    isSubmitting: false,
     data: {
       appointment: null,
       client: null,
@@ -406,11 +416,24 @@ export default function AppointmentEditor({
       return <Progress />;
     }
 
-    return <EditForm data={state.data} onSubmitted={onSubmitted} />;
+    return (
+      <EditForm
+        data={state.data}
+        onSubmitting={(isSubmitting) =>
+          dispatch({ type: "setIsSubmitting", payload: isSubmitting })
+        }
+        onSubmitted={onSubmitted}
+      />
+    );
   }
 
   return (
-    <Popup open title={l("appointments.editor.header")} onClose={onClose}>
+    <Popup
+      open
+      title={l("appointments.editor.header")}
+      closeDisabled={state.isSubmitting}
+      onClose={onClose}
+    >
       <Box pb={2}>{renderForm()}</Box>
     </Popup>
   );
