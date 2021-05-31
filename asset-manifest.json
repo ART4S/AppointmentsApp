@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.js": "/appointments-app/static/js/main.2c79ce6a.chunk.js",
-    "main.js.map": "/appointments-app/static/js/main.2c79ce6a.chunk.js.map",
+    "main.js": "/appointments-app/static/js/main.876ce497.chunk.js",
+    "main.js.map": "/appointments-app/static/js/main.876ce497.chunk.js.map",
     "runtime-main.js": "/appointments-app/static/js/runtime-main.873612ca.js",
     "runtime-main.js.map": "/appointments-app/static/js/runtime-main.873612ca.js.map",
     "static/js/2.5c37b499.chunk.js": "/appointments-app/static/js/2.5c37b499.chunk.js",
@@ -19,6 +19,6 @@
   "entrypoints": [
     "static/js/runtime-main.873612ca.js",
     "static/js/2.5c37b499.chunk.js",
-    "static/js/main.2c79ce6a.chunk.js"
+    "static/js/main.876ce497.chunk.js"
   ]
 }
