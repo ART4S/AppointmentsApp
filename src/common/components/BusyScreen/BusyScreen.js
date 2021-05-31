@@ -1,4 +1,4 @@
-import { Box, makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 
 import Progress from "../Progress/Progress";
 
@@ -25,13 +25,13 @@ export default function BusyScreen({ isBusy, children }) {
   const classes = useStyles();
 
   return (
-    <Box className={classes.root}>
+    <div className={classes.root}>
       {isBusy && (
-        <Box className={classes.screen}>
+        <div className={classes.screen}>
           <Progress />
-        </Box>
+        </div>
       )}
-      <Box className={classes.content}>{children}</Box>
-    </Box>
+      <div className={classes.content}>{children}</div>
+    </div>
   );
 }

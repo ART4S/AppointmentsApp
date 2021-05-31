@@ -13,18 +13,23 @@ import auth from "mock/controllers/authController";
 import notifications from "mock/controllers/notificationsController";
 
 new Server({
+  urlPrefix: process.env.REACT_APP_API_URL,
   routes() {
-    this.timing = 3000;
+    this.timing = 1000;
 
-    this.get("/api/appointments", (_schema, request) => {
+    this.get("/appointments", (_schema, request) => {
       // return new Response(500, {}, { message: "server unavaliable" });
       // return new Response(401, {}, { message: "unauthorized" });
-      return appointments.getAll(request.queryParams);
+      const { employeeId } = auth.extractUser(request);
+      return appointments.getAll({
+        ...request.queryParams,
+        userId: employeeId,
+      });
     });
-    this.get("/api/appointments/:id", (_schema, request) => {
+    this.get("/appointments/:id", (_schema, request) => {
       return appointments.getById(request.params.id);
     });
-    this.post("/api/appointments", (_schema, request) => {
+    this.post("/appointments", (_schema, request) => {
       try {
         const id = appointments.create(JSON.parse(request.requestBody));
         return new Response(200, {}, id);
@@ -40,7 +45,7 @@ new Server({
         throw e;
       }
     });
-    this.put("/api/appointments/:id", (_schema, request) => {
+    this.put("/appointments/:id", (_schema, request) => {
       try {
         appointments.update(request.params.id, JSON.parse(request.requestBody));
         return new Response(200);
@@ -56,24 +61,24 @@ new Server({
         throw e;
       }
     });
-    this.delete("/api/appointments/:id", (_schema, request) => {
+    this.delete("/appointments/:id", (_schema, request) => {
       appointments.delete(request.params.id);
     });
 
-    this.get("/api/employees", () => employees.getAll());
-    this.get("/api/employees/:id", (_schema, request) =>
+    this.get("/employees", () => employees.getAll());
+    this.get("/employees/:id", (_schema, request) =>
       employees.getById(request.params.id),
     );
 
-    this.get("/api/clients", () => clients.getAll());
-    this.get("/api/clients/:id", (_schema, request) =>
+    this.get("/clients", () => clients.getAll());
+    this.get("/clients/:id", (_schema, request) =>
       clients.getById(request.params.id),
     );
-    this.get("/api/clients/search", (_schema, request) =>
+    this.get("/clients/search", (_schema, request) =>
       clients.search(request.queryParams),
     );
 
-    this.put("/api/auth/login", (_schema, request) => {
+    this.put("/auth/login", (_schema, request) => {
       const { email, password } = JSON.parse(request.requestBody);
       try {
         return auth.login(email, password);
@@ -85,22 +90,22 @@ new Server({
       }
     });
 
-    this.get("/api/events", (_schema, request) =>
+    this.get("/events", (_schema, request) =>
       events.getAll(request.queryParams),
     );
-    this.get("/api/events/count", () => events.getNewCount());
-    this.put("/api/events/:id", (_schema, request) =>
+    this.get("/events/count", () => events.getNewCount());
+    this.put("/events/:id", (_schema, request) =>
       events.update(request.params.id, JSON.parse(request.requestBody)),
     );
-    this.put("/api/events/markSeen", (_schema, request) => {
+    this.put("/events/markSeen", (_schema, request) => {
       const { ids } = JSON.parse(request.requestBody);
       events.markSeen(ids);
     });
 
-    this.get("/api/notifications", (_schema, request) =>
+    this.get("/notifications", (_schema, request) =>
       notifications.getAll(request.queryParams),
     );
-    this.put("/api/notifications/:id", (_schema, request) =>
+    this.put("/notifications/:id", (_schema, request) =>
       notifications.update(request.params.id, JSON.parse(request.requestBody)),
     );
   },

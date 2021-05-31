@@ -33,7 +33,9 @@ class AppointmentsController {
         (!params.clientId || params.clientId === item.clientId) &&
         (!params.status || params.status === item.status) &&
         (!params.holderId || params.holderId === item.holderId) &&
-        (!params.onlyMe || params.onlyMe === "false"),
+        (!params.onlyMe ||
+          params.onlyMe === "false" ||
+          item.holderId === employees[params.userId].id),
     );
 
     if (params.complaints) {

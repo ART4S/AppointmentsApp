@@ -4,6 +4,7 @@ import moment from "moment";
 import ServerError from "common/errors/ServerError";
 
 import users from "../data/users";
+import employees from "../data/employees";
 
 const secret = "1dsewr3";
 
@@ -17,7 +18,8 @@ class AuthController {
       throw new ServerError("Неверный логин или пароль");
     }
 
-    const { id, firstName, middleName, lastName } = user;
+    const { id, employeeId } = user;
+    const { firstName, middleName, lastName } = employees[employeeId];
 
     const expiresAt = moment().add(30, "minutes").format("DD.MM.YYYYThh:mm:ss");
 
@@ -30,6 +32,22 @@ class AuthController {
         lastName,
       },
     };
+  }
+
+  extractUser(request) {
+    const { Authorization } = request.requestHeaders;
+    if (!Authorization) {
+      return null;
+    }
+
+    const [, token] = /^Bearer (\S+$)/.exec(Authorization);
+    if (!token) {
+      return null;
+    }
+
+    const { id } = jwt.decode(token, secret);
+
+    return users[id];
   }
 }
 

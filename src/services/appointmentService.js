@@ -1,5 +1,5 @@
 import client from "api/client";
-import { handleResponse } from "utils/responseUtils";
+import handleResponse from "utils/handleResponse";
 
 async function getAll(params) {
   const { data } = await client.get("/appointments", params);

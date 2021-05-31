@@ -1,7 +1,6 @@
-/* eslint-disable import/prefer-default-export */
 import ClientError from "common/errors/ClientError";
 
-export async function handleResponse(promiseGetter) {
+export default async function handleResponse(promiseGetter) {
   let response;
   try {
     response = await promiseGetter();

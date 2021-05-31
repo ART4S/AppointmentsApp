@@ -7,6 +7,7 @@ import {
   IconButton,
   Breadcrumbs as MuiBreadcrumbs,
   Typography,
+  useTheme,
   makeStyles,
 } from "@material-ui/core";
 import { FilterList as FilterListIcon } from "@material-ui/icons";
@@ -41,28 +42,22 @@ function Breadcrumbs() {
   );
 }
 
-const useFiltersStyles = makeStyles((theme) => ({
-  icon: {
-    color: theme.palette.common.white,
-  },
-}));
-
-function Filters() {
-  const classes = useFiltersStyles();
+function FilterIcon() {
   const l = useLocalization();
-
-  function renderFilterIcon() {
-    return (
-      <Tooltip title={l("appointments.common.filters")}>
-        <IconButton className={classes.icon}>
-          <FilterListIcon />
-        </IconButton>
-      </Tooltip>
-    );
-  }
+  const theme = useTheme();
 
   return (
-    <Accordion header={renderFilterIcon()}>
+    <Tooltip title={l("appointments.common.filters")}>
+      <IconButton style={{ color: theme.palette.common.white }}>
+        <FilterListIcon />
+      </IconButton>
+    </Tooltip>
+  );
+}
+
+function Filters() {
+  return (
+    <Accordion header={<FilterIcon />}>
       <AppointmentsFilters />
     </Accordion>
   );
