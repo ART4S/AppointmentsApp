@@ -206,22 +206,45 @@ export default function Table({
   );
 }
 
-Table.propTypes = {
-  columns: PropTypes.arrayOf(
-    PropTypes.shape({
-      field: PropTypes.string.isRequired,
-      header: PropTypes.string,
-      enableSort: PropTypes.bool,
-      formatter: PropTypes.func,
-    }),
-  ).isRequired,
+const columnType = PropTypes.shape({
+  field: PropTypes.string.isRequired,
+  header: PropTypes.string,
+  enableSort: PropTypes.bool,
+  formatter: PropTypes.func,
+});
 
-  rows: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      visited: PropTypes.bool,
-      // eslint-disable-next-line react/forbid-prop-types
-      data: PropTypes.any.isRequired,
-    }),
-  ).isRequired,
+const rowType = PropTypes.shape({
+  key: PropTypes.string.isRequired,
+  visited: PropTypes.bool,
+  // eslint-disable-next-line react/forbid-prop-types
+  data: PropTypes.any.isRequired,
+});
+
+Table.propTypes = {
+  columns: PropTypes.arrayOf(columnType).isRequired,
+
+  rows: PropTypes.arrayOf(rowType).isRequired,
+
+  selectedRow: rowType,
+
+  pagination: PropTypes.shape({
+    currentPage: PropTypes.number.isRequired,
+    totalItems: PropTypes.number.isRequired,
+    itemsPerPage: PropTypes.number.isRequired,
+    availableItemsPerPage: PropTypes.arrayOf(PropTypes.number).isRequired,
+  }).isRequired,
+
+  sorting: PropTypes.shape({
+    field: PropTypes.string,
+    order: PropTypes.oneOf(["asc", "desc"]),
+  }).isRequired,
+
+  onCurrentPageChange: PropTypes.func.isRequired,
+  onItemsPerPageChange: PropTypes.func.isRequired,
+  onSortRequest: PropTypes.func.isRequired,
+  onSelectedRowChange: PropTypes.func.isRequired,
+};
+
+Table.defaultProps = {
+  selectedRow: undefined,
 };

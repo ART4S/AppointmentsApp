@@ -2,9 +2,10 @@ import React from "react";
 import { TextField } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { matchSorter } from "match-sorter";
+import PropTypes from "prop-types";
+
 import { getFullName } from "utils/userUtils";
 import { employeeService } from "services";
-
 import Progress from "common/components/Progress/Progress";
 
 export default function EmployeeSelector({
@@ -93,6 +94,14 @@ export default function EmployeeSelector({
     />
   );
 }
+
+EmployeeSelector.propTypes = {
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  error: PropTypes.bool,
+  helperText: PropTypes.string,
+  onChange: PropTypes.func.isRequired,
+};
 
 EmployeeSelector.defaultProps = {
   error: false,

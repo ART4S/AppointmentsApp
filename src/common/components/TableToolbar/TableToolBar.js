@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Toolbar, IconButton, makeStyles } from "@material-ui/core";
 
 import EditIcon from "@material-ui/icons/Edit";
@@ -43,3 +44,18 @@ export default function TableToolBar({
     </Toolbar>
   );
 }
+
+TableToolBar.propTypes = {
+  isItemSelected: PropTypes.bool.isRequired,
+  onCreateClick: PropTypes.func,
+  onViewClick: PropTypes.func,
+  onEditClick: PropTypes.func,
+  onDeleteClick: PropTypes.func,
+};
+
+TableToolBar.defaultProps = {
+  onCreateClick: () => {},
+  onViewClick: () => {},
+  onEditClick: () => {},
+  onDeleteClick: () => {},
+};

@@ -20,6 +20,7 @@ new Server({
     this.get("/appointments", (_schema, request) => {
       // return new Response(500, {}, { message: "server unavaliable" });
       // return new Response(401, {}, { message: "unauthorized" });
+      // eslint-disable-next-line no-unreachable
       const { employeeId } = auth.extractUser(request);
       return appointments.getAll({
         ...request.queryParams,

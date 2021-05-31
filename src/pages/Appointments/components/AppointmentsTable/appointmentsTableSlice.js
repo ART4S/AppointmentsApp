@@ -128,7 +128,7 @@ export const {
 
 export const selectBusy = (state) => selectState(state).busy;
 
-export const selectError = (state) => selectState(state).data.error;
+export const selectError = (state) => selectState(state).error;
 
 export const selectAppointment = (state) =>
   selectState(state).selectedAppointment;

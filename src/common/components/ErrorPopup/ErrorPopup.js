@@ -2,6 +2,7 @@
 /* eslint-disable prefer-arrow-callback */
 /* eslint-disable react/display-name */
 import React from "react";
+import PropTypes from "prop-types";
 import {
   Dialog,
   DialogTitle,
@@ -13,12 +14,11 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import { Error as ErrorIcon } from "@material-ui/icons";
-
-const ERROR = "Ошибка";
+import useLocalization from "common/hooks/useLocalization";
 
 const useStyles = makeStyles((theme) => ({
   title: {
-    padding: theme.spacing(1, 0),
+    padding: theme.spacing(0.3, 0),
   },
   content: {
     paddingBottom: theme.spacing(2),
@@ -37,14 +37,11 @@ const Transition = React.forwardRef((props, ref) => {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function ErrorPopup({
-  title,
-  text,
-  closeDelay,
-  ...dialogProps
-}) {
-  const classes = useStyles();
+export default function ErrorPopup({ text, closeDelay, ...dialogProps }) {
   const [open, setOpen] = React.useState(true);
+
+  const classes = useStyles();
+  const l = useLocalization();
 
   return (
     <Dialog
@@ -55,7 +52,7 @@ export default function ErrorPopup({
     >
       <DialogTitle>
         <Typography className={classes.title} variant="h5">
-          {title}
+          {l("errors.title")}
         </Typography>
       </DialogTitle>
 
@@ -76,7 +73,11 @@ export default function ErrorPopup({
   );
 }
 
+ErrorPopup.propTypes = {
+  text: PropTypes.string.isRequired,
+  closeDelay: PropTypes.number,
+};
+
 ErrorPopup.defaultProps = {
-  title: ERROR,
   closeDelay: 3000,
 };

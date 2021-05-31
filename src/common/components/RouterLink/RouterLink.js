@@ -1,5 +1,6 @@
 import { makeStyles } from "@material-ui/core";
 import cn from "classnames";
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((_theme) => ({
@@ -16,3 +17,8 @@ export default function RouterLink({ className, ...props }) {
 
   return <Link className={cn(classes.root, className)} {...props} />;
 }
+
+RouterLink.propTypes = {
+  // eslint-disable-next-line react/require-default-props
+  className: PropTypes.string,
+};

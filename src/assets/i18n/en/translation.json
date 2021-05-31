@@ -23,6 +23,7 @@
     },
 
     "errors": {
+      "title": "Error",
       "loadData": "Error while fetching data.\nPlease try reload page"
     },
 

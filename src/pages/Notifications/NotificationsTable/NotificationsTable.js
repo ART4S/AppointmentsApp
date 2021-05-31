@@ -111,12 +111,7 @@ export default function NotificationsTable() {
     >
       <Paper>
         <BusyScreen isBusy={busy}>
-          <TableToolBar
-            isItemSelected={Boolean(selectedNotification)}
-            onCreateClick={() => {}}
-            onViewClick={() => {}}
-            onEditClick={() => {}}
-          />
+          <TableToolBar isItemSelected={Boolean(selectedNotification)} />
 
           <Table
             columns={columns}

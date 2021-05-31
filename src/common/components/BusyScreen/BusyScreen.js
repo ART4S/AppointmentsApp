@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core";
 
 import Progress from "../Progress/Progress";
@@ -35,3 +36,11 @@ export default function BusyScreen({ isBusy, children }) {
     </div>
   );
 }
+
+BusyScreen.propTypes = {
+  isBusy: PropTypes.bool.isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]).isRequired,
+};

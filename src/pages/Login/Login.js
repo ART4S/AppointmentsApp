@@ -26,6 +26,63 @@ import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import useAuth from "common/hooks/useAuth";
 import useLocalization from "common/hooks/useLocalization";
 
+const useCopyrightStyles = makeStyles((_theme) => ({
+  root: {
+    display: "flex",
+    justifyContent: "center",
+  },
+}));
+
+function Copyright() {
+  const classes = useCopyrightStyles();
+  const l = useLocalization();
+
+  return (
+    <div className={classes.root}>
+      <Typography variant="body2" color="textSecondary">
+        {`© ${l("login.copyright")} ${new Date().getFullYear()} `}
+        <Link className={classes.link} color="inherit">
+          Appointments app
+        </Link>
+      </Typography>
+    </div>
+  );
+}
+
+const useLinksStyles = makeStyles((_theme) => ({
+  root: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
+  link: {
+    "&:hover": {
+      cursor: "pointer",
+    },
+  },
+  typo: {
+    pointerEvents: "none",
+  },
+}));
+
+function Links() {
+  const classes = useLinksStyles();
+  const l = useLocalization();
+
+  return (
+    <div className={classes.root}>
+      <Link className={classes.link}>
+        <Typography className={classes.typo}>
+          {l("login.forgotPassword")}
+        </Typography>
+      </Link>
+
+      <Link className={classes.link}>
+        <Typography className={classes.typo}>{l("login.signUp")}</Typography>
+      </Link>
+    </div>
+  );
+}
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -53,13 +110,7 @@ const useStyles = makeStyles((theme) => ({
       marginTop: theme.spacing(2),
     },
   },
-  links: {
-    display: "flex",
-    justifyContent: "space-between",
-  },
   copyright: {
-    display: "flex",
-    justifyContent: "center",
     marginTop: theme.spacing(10),
   },
 }));
@@ -201,24 +252,13 @@ export default function Login() {
               {l("login.signIn").toUpperCase()}
             </Button>
 
-            <div className={classes.links}>
-              <Link>
-                <Typography>{l("login.forgotPassword")}</Typography>
-              </Link>
-
-              <Link>
-                <Typography>{l("login.signUp")}</Typography>
-              </Link>
-            </div>
+            <Links />
           </Form>
         )}
       </Formik>
 
       <div className={classes.copyright}>
-        <Typography variant="body2" color="textSecondary">
-          {`© ${l("login.copyright")} ${new Date().getFullYear()} `}
-          <Link color="inherit">Appointments app</Link>
-        </Typography>
+        <Copyright />
       </div>
     </Container>
   );

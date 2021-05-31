@@ -2,6 +2,7 @@
 import React from "react";
 import cn from "classnames";
 import { makeStyles } from "@material-ui/core";
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles((theme) => {
   const size = theme.spacing(5);
@@ -44,3 +45,15 @@ export default function Badge({ content, children }) {
     </div>
   );
 }
+
+Badge.propTypes = {
+  content: PropTypes.node,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]).isRequired,
+};
+
+Badge.defaultProps = {
+  content: undefined,
+};

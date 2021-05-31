@@ -1,5 +1,6 @@
 {
   "name": "appointments-app",
+  "homepage": "http://art4s.github.io/appointments-app",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import {
   Dialog,
   DialogTitle,
@@ -47,6 +48,18 @@ export default function Popup({
     </Dialog>
   );
 }
+
+Popup.defaultProps = {
+  title: PropTypes.string.isRequired,
+  open: PropTypes.bool.isRequired,
+  maxWidth: PropTypes.string,
+  closeDisabled: PropTypes.bool,
+  onClose: PropTypes.func.isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]).isRequired,
+};
 
 Popup.defaultProps = {
   maxWidth: "sm",

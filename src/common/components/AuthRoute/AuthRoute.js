@@ -1,6 +1,7 @@
 /* eslint-disable no-confusing-arrow */
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
+import PropTypes from "prop-types";
 
 import useAuth from "common/hooks/useAuth";
 
@@ -19,3 +20,10 @@ export default function AuthRoute({ children, ...routeProps }) {
 
   return <Route {...routeProps} render={render} />;
 }
+
+AuthRoute.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]).isRequired,
+};

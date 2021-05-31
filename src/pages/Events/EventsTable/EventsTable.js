@@ -120,12 +120,7 @@ export default function EventsTable() {
     <ClickAwayListener onClickAway={() => dispatch(setSelectedEvent(null))}>
       <Paper>
         <BusyScreen isBusy={busy}>
-          <TableToolBar
-            isItemSelected={Boolean(selectedEvent)}
-            onCreateClick={() => {}}
-            onViewClick={() => {}}
-            onEditClick={() => {}}
-          />
+          <TableToolBar isItemSelected={Boolean(selectedEvent)} />
 
           <Table
             columns={columns}

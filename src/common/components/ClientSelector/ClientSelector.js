@@ -7,9 +7,9 @@ import { Autocomplete } from "@material-ui/lab";
 import { FixedSizeList } from "react-window";
 import parse from "autosuggest-highlight/parse";
 import { debounce } from "lodash";
+import PropTypes from "prop-types";
 
 import createReducer from "utils/createReducer";
-
 import clientService from "services/clientService";
 
 import Progress from "../Progress/Progress";
@@ -292,3 +292,16 @@ export default function ClientSelector({
     />
   );
 }
+
+ClientSelector.propTypes = {
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  error: PropTypes.bool,
+  helperText: PropTypes.string,
+  onChange: PropTypes.func.isRequired,
+};
+
+ClientSelector.defaultProps = {
+  error: false,
+  helperText: "",
+};

@@ -13,7 +13,6 @@ import {
   MenuItem,
   makeStyles,
 } from "@material-ui/core";
-
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
