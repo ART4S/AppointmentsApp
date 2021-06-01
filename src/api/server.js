@@ -11,6 +11,7 @@ import events from "mock/controllers/eventsController";
 import clients from "mock/controllers/clientsController";
 import auth from "mock/controllers/authController";
 import notifications from "mock/controllers/notificationsController";
+import users from "mock/controllers/usersController";
 
 new Server({
   urlPrefix: process.env.REACT_APP_API_URL,
@@ -109,5 +110,9 @@ new Server({
     this.put("/notifications/:id", (_schema, request) =>
       notifications.update(request.params.id, JSON.parse(request.requestBody)),
     );
+
+    this.get("/users/:id", (_schema, request) => {
+      return users.getById(request.params.id);
+    });
   },
 });

@@ -23,7 +23,7 @@ export function withTheme(Component) {
               main: "#2196f3",
             },
             secondary: {
-              main: "#f50057",
+              main: "#e91e63",
             },
             background: {
               default: "#ffffff",
@@ -37,13 +37,13 @@ export function withTheme(Component) {
         {
           palette: {
             primary: {
-              main: "#212121",
+              main: "#e91e63",
             },
             secondary: {
-              main: "#ffea00",
+              main: "#d500f9",
             },
             background: {
-              default: "#546e7a",
+              default: "#ffffff",
             },
           },
         },

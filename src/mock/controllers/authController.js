@@ -18,19 +18,14 @@ class AuthController {
       throw new ServerError("Неверный логин или пароль");
     }
 
-    const { id, employeeId } = user;
-    const { firstName, middleName, lastName } = employees[employeeId];
+    const { id } = user;
 
     const expiresAt = moment().add(30, "minutes").format("DD.MM.YYYYThh:mm:ss");
 
     return {
       token: jwt.encode({ id, expiresAt }, secret),
       expiresAt,
-      user: {
-        firstName,
-        middleName,
-        lastName,
-      },
+      userId: id,
     };
   }
 

@@ -11,9 +11,9 @@ import {
   Select,
   Switch,
   MenuItem,
+  Avatar,
   makeStyles,
 } from "@material-ui/core";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
 import useAuth from "common/hooks/useAuth";
@@ -60,7 +60,11 @@ function ProfileLink() {
         {`${auth.user.firstName} ${auth.user.lastName}`}
       </Typography>
 
-      <AccountCircleIcon className={commonClasses.icon} />
+      <Avatar
+        className={commonClasses.icon}
+        alt="avatar"
+        src={auth.user.avatar}
+      />
     </Link>
   );
 }

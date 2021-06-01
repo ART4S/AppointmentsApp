@@ -7,6 +7,7 @@ import * as yup from "yup";
 import { Formik, Form } from "formik";
 import {
   Container,
+  Box,
   Avatar,
   Typography,
   TextField,
@@ -92,11 +93,7 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     width: theme.spacing(5),
     height: theme.spacing(5),
-    marginTop: theme.spacing(10),
     backgroundColor: theme.palette.secondary.main,
-  },
-  title: {
-    marginTop: theme.spacing(2),
   },
   icon: {
     width: theme.spacing(3),
@@ -109,9 +106,6 @@ const useStyles = makeStyles((theme) => ({
     "& > *": {
       marginTop: theme.spacing(2),
     },
-  },
-  copyright: {
-    marginTop: theme.spacing(10),
   },
 }));
 
@@ -151,13 +145,15 @@ export default function Login() {
 
   return (
     <Container className={classes.root} maxWidth="xs" disableGutters fixed>
-      <Avatar className={classes.avatar}>
-        <LockOutlinedIcon className={classes.icon} />
-      </Avatar>
+      <Box mt={10}>
+        <Avatar className={classes.avatar}>
+          <LockOutlinedIcon className={classes.icon} />
+        </Avatar>
+      </Box>
 
-      <Typography className={classes.title} variant="h5">
-        {l("login.signIn")}
-      </Typography>
+      <Box mt={2}>
+        <Typography variant="h5">{l("login.signIn")}</Typography>
+      </Box>
 
       {auth.error && (
         <Alert severity="error" style={{ width: "100%" }}>
@@ -251,15 +247,17 @@ export default function Login() {
             >
               {l("login.signIn").toUpperCase()}
             </Button>
-
-            <Links />
           </Form>
         )}
       </Formik>
 
-      <div className={classes.copyright}>
+      <Box mt={2} width="100%">
+        <Links />
+      </Box>
+
+      <Box mt={10}>
         <Copyright />
-      </div>
+      </Box>
     </Container>
   );
 }

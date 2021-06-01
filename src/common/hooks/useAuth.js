@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-shadow */
 import React from "react";
-import authService from "services/authService";
+import { authService, userService } from "services";
 import tokenExpiredEvent from "common/events/tokenExpiredEvent";
 import createReducer from "utils/createReducer";
 
@@ -46,10 +46,11 @@ export function withAuth(Component) {
 
       const {
         isSuccess,
-        data: { user, token, error },
+        data: { userId, token, error },
       } = await authService.login(email, password);
 
       if (isSuccess) {
+        const user = await userService.getById(userId);
         dispatch({ type: "loginSucceed", payload: { user, token } });
       } else {
         dispatch({ type: "loginFailed", payload: error });
