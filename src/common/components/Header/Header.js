@@ -22,7 +22,7 @@ import { useLocalizationContext } from "common/hooks/useLocalization";
 
 const useCommonStyles = makeStyles((theme) => ({
   icon: {
-    fill: theme.palette.common.white,
+    fill: theme.palette.primary.contrastText,
     width: 50,
     height: 50,
   },

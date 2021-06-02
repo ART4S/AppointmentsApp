@@ -125,6 +125,12 @@
     "notFoundPage": {
       "title": "Page not found",
       "backToHomePage": "Back to home page"
+    },
+
+    "userProfile": {
+      "page": "Profile",
+      "home": "Home",
+      "settings": "User settings"
     }
   }
 }

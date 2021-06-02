@@ -8,6 +8,7 @@ import { flowRight as compose } from "lodash";
 import store from "redux/store";
 
 import Login from "pages/Login/Login";
+import UserProfile from "pages/UserProfile/UserProfile";
 import Home from "pages/Home/Home";
 import Appointments from "pages/Appointments/Appointments";
 import Events from "pages/Events/Events";
@@ -42,6 +43,10 @@ function App() {
 
         <AuthRoute path="/notifications">
           <Notifications />
+        </AuthRoute>
+
+        <AuthRoute path="/profile">
+          <UserProfile />
         </AuthRoute>
 
         <Route path="/">

@@ -5,8 +5,6 @@ import {
   Container,
   Tooltip,
   IconButton,
-  Breadcrumbs as MuiBreadcrumbs,
-  Typography,
   useTheme,
   makeStyles,
 } from "@material-ui/core";
@@ -15,7 +13,7 @@ import { FilterList as FilterListIcon } from "@material-ui/icons";
 import { ReactComponent as AppointmentIcon } from "assets/icons/appointment.svg";
 import Header from "common/components/Header/Header";
 import ErrorPopup from "common/components/ErrorPopup/ErrorPopup";
-import RouterLink from "common/components/RouterLink/RouterLink";
+import Breadcrumbs from "common/components/Breadcrumbs/Breadcrumbs";
 import useLocalization from "common/hooks/useLocalization";
 import Accordion from "./components/Accordion/Accordion";
 import AppointmentsFilters from "./components/AppointmentsFilters/AppointmentsFilters";
@@ -23,24 +21,6 @@ import AppointmentsTable from "./components/AppointmentsTable/AppointmentsTable"
 import { selectError } from "./components/AppointmentsTable/appointmentsTableSlice";
 
 const SPACING = 2;
-
-function Breadcrumbs() {
-  const l = useLocalization();
-
-  return (
-    <MuiBreadcrumbs>
-      <RouterLink to="/">
-        <Typography color="textSecondary">
-          {l("appointments.common.home")}
-        </Typography>
-      </RouterLink>
-
-      <Typography color="textPrimary" style={{ cursor: "default" }}>
-        {l("appointments.common.page")}
-      </Typography>
-    </MuiBreadcrumbs>
-  );
-}
 
 function FilterIcon() {
   const l = useLocalization();
@@ -84,7 +64,12 @@ export default function Appointments() {
       <Container className={classes.body} maxWidth="md">
         <Grid item container direction="column" spacing={SPACING}>
           <Grid item xs>
-            <Breadcrumbs />
+            <Breadcrumbs
+              pages={[
+                { name: l("appointments.common.home"), to: "/" },
+                { name: l("appointments.common.page") },
+              ]}
+            />
           </Grid>
 
           <Grid item xs>
